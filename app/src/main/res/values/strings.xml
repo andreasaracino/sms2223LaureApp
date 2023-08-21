@@ -1,3 +1,11 @@
 <resources>
     <string name="app_name">sms2223LaureApp</string>
+    <string name="title_activity_login" translatable="false">LoginActivity</string>
+    <string name="prompt_email" translatable="false">Email</string>
+    <string name="prompt_password" translatable="false">Password</string>
+    <string name="action_sign_up">Sign up</string>
+    <string name="action_sign_in">Sign in</string>
+    <string name="sign_in_fail">Sign in failed!</string>
+    <string name="sign_out">Sign out</string>
+    <string name="dashboard" translatable="false">Dashboard</string>
 </resources>

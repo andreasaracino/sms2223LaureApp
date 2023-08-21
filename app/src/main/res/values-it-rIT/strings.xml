@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">sms2223LaureApp</string>
+    <string name="action_sign_up">Registrati</string>
+    <string name="action_sign_in">Entra</string>
+    <string name="sign_in_fail">Login fallito!</string>
+    <string name="sign_out">Esci</string>
+</resources>
