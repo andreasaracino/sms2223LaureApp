@@ -1,4 +1,4 @@
-package it.uniba.dib.sms22231;
+package it.uniba.dib.sms22231.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -13,7 +13,11 @@ import android.widget.Toast;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+import it.uniba.dib.sms22231.R;
+import it.uniba.dib.sms22231.service.UserService;
+
 public class SignInActivity extends AppCompatActivity {
+    private UserService userService;
     private FirebaseAuth mAuth;
     private EditText emailField;
     private EditText passwordField;
@@ -32,6 +36,8 @@ public class SignInActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
+
+        userService = UserService.getInstance();
         checkLogin(false);
     }
 
@@ -79,16 +85,14 @@ public class SignInActivity extends AppCompatActivity {
         String email = emailField.getText().toString();
         String password = passwordField.getText().toString();
 
-        if (!email.isEmpty() && !password.isEmpty()) {
-            mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(this, task -> {
-                setLoading(false);
+        userService.signIn(email, password, isSuccessful -> {
+            setLoading(false);
 
-                if (task.isSuccessful()) {
-                    checkLogin(true);
-                } else {
-                    Toast.makeText(SignInActivity.this, R.string.sign_in_fail, Toast.LENGTH_SHORT).show();
-                }
-            });
-        }
+            if (isSuccessful) {
+                checkLogin(true);
+            } else {
+                Toast.makeText(SignInActivity.this, R.string.sign_in_fail, Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 }
