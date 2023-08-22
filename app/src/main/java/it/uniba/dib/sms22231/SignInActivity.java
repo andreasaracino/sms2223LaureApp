@@ -32,7 +32,7 @@ public class SignInActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        checkLogin();
+        checkLogin(false);
     }
 
     private void initUi() {
@@ -42,10 +42,17 @@ public class SignInActivity extends AppCompatActivity {
         progressBar = findViewById(R.id.progressBar);
     }
 
-    private void checkLogin() {
+    private void checkLogin(Boolean loggingIn) {
         FirebaseUser currentUser = mAuth.getCurrentUser();
+
         if (currentUser != null) {
-            goToDashboard();
+            if (currentUser.isEmailVerified()) {
+                goToDashboard();
+            } else {
+                Toast.makeText(this, R.string.verify_mail, Toast.LENGTH_SHORT).show();
+            }
+        } else if (loggingIn) {
+            Toast.makeText(this, R.string.sign_in_fail, Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -53,6 +60,11 @@ public class SignInActivity extends AppCompatActivity {
         Intent intent = new Intent(this, DashboardActivity.class);
         startActivity(intent);
         finish();
+    }
+
+    public void goToSignUp(View view) {
+        Intent intent = new Intent(this, SignUpActivity.class);
+        startActivity(intent);
     }
 
     private void setLoading(Boolean loading) {
@@ -72,7 +84,7 @@ public class SignInActivity extends AppCompatActivity {
                 setLoading(false);
 
                 if (task.isSuccessful()) {
-                    goToDashboard();
+                    checkLogin(true);
                 } else {
                     Toast.makeText(SignInActivity.this, R.string.sign_in_fail, Toast.LENGTH_SHORT).show();
                 }

@@ -8,4 +8,6 @@
     <string name="sign_in_fail">Sign in failed!</string>
     <string name="sign_out">Sign out</string>
     <string name="dashboard" translatable="false">Dashboard</string>
+    <string name="sign_up_fail">Sign up failed</string>
+    <string name="verify_mail">Please verify your e-mail</string>
 </resources>

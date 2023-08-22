@@ -5,4 +5,6 @@
     <string name="action_sign_in">Entra</string>
     <string name="sign_in_fail">Login fallito!</string>
     <string name="sign_out">Esci</string>
+    <string name="sign_up_fail">Registrazione fallita!</string>
+    <string name="verify_mail">Per favore, verifica la tua e-mail</string>
 </resources>
