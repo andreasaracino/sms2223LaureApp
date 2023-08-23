@@ -4,69 +4,76 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activities.SignInActivity">
+    tools:context=".activities.UserInformationActivity">
 
     <EditText
-        android:id="@+id/editTextTextEmailAddress"
+        android:id="@+id/nameField"
         android:layout_width="@dimen/field_width"
         android:layout_height="@dimen/field_height"
+        android:layout_marginStart="24dp"
         android:layout_marginTop="32dp"
+        android:layout_marginEnd="24dp"
         android:ems="10"
-        android:hint="@string/prompt_email"
-        android:inputType="textEmailAddress"
+        android:hint="@string/prompt_name"
+        android:inputType="textPersonName"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
-        android:id="@+id/editTextTextPassword"
+        android:id="@+id/phoneField"
         android:layout_width="@dimen/field_width"
         android:layout_height="@dimen/field_height"
+        android:layout_marginStart="24dp"
         android:layout_marginTop="8dp"
+        android:layout_marginEnd="24dp"
+        android:autofillHints="phone"
         android:ems="10"
-        android:hint="@string/prompt_password"
-        android:inputType="textPassword"
+        android:hint="@string/prompt_phone"
+        android:inputType="phone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/editTextTextEmailAddress" />
+        app:layout_constraintTop_toBottomOf="@id/nameField" />
 
-    <Button
-        android:id="@+id/loginButton"
+    <EditText
+        android:id="@+id/regNumberField"
         android:layout_width="@dimen/field_width"
         android:layout_height="@dimen/field_height"
+        android:layout_marginStart="24dp"
         android:layout_marginTop="8dp"
-        android:onClick="doLogin"
-        android:text="@string/action_sign_in"
+        android:layout_marginEnd="24dp"
+        android:ems="10"
+        android:hint="@string/prompt_reg_number"
+        android:inputType="number"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editTextTextPassword" />
-
-    <ProgressBar
-        android:id="@+id/progressBar"
-        style="?android:attr/progressBarStyle"
-        android:layout_width="64dp"
-        android:layout_height="64dp"
-        android:indeterminate="true"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/loginButton"
-        tools:visibility="gone" />
+        app:layout_constraintTop_toBottomOf="@id/phoneField" />
 
     <Button
-        android:id="@+id/button"
-        style="@android:style/Widget.Material.Button.Borderless"
+        android:id="@+id/confirmButton"
+        android:layout_width="@dimen/field_width"
+        android:layout_height="@dimen/field_height"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="24dp"
+        android:onClick="doConfirm"
+        android:text="@string/action_confirm"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/regNumberField" />
+
+    <Button
+        android:id="@+id/button3"
+        style="@android:style/Widget.Material.Light.Button.Borderless"
         android:layout_width="@dimen/field_width"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
         android:backgroundTint="@android:color/transparent"
-        android:onClick="goToSignUp"
+        android:onClick="goToSignIn"
         android:shadowRadius="0"
-        android:text="@string/action_sign_up"
-        android:textColor="?colorPrimary"
+        android:text="@string/action_delete_acc"
+        android:textColor="@color/design_default_color_error"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/loginButton" />
+        app:layout_constraintTop_toBottomOf="@+id/confirmButton" />
 </androidx.constraintlayout.widget.ConstraintLayout>

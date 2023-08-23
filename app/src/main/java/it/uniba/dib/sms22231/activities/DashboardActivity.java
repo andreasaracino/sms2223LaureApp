@@ -1,4 +1,4 @@
-package it.uniba.dib.sms22231;
+package it.uniba.dib.sms22231.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -9,6 +9,8 @@ import android.view.View;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+import it.uniba.dib.sms22231.R;
+
 public class DashboardActivity extends AppCompatActivity {
     FirebaseAuth mAuth = FirebaseAuth.getInstance();
     FirebaseUser user;
@@ -17,6 +19,9 @@ public class DashboardActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dashboard);
+
+        Intent intent = new Intent(this, UserInformationActivity.class);
+        startActivity(intent);
     }
 
     @Override
