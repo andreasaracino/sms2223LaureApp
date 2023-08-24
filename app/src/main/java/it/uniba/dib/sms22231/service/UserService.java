@@ -38,13 +38,17 @@ public class UserService {
         userDocument.get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 DocumentSnapshot doc = task.getResult();
+                User userData;
 
                 if (doc.exists()) {
-                    User userData = new User(Objects.requireNonNull(doc.getData()));
-                    userData.uid = user.getUid();
-                    userData.email = user.getEmail();
-                    userObservable.next(userData);
+                    userData = new User(Objects.requireNonNull(doc.getData()));
+                } else {
+                    userData = new User();
                 }
+
+                userData.uid = user.getUid();
+                userData.email = user.getEmail();
+                userObservable.next(userData);
             }
         });
     }
