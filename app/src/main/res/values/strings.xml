@@ -15,4 +15,6 @@
     <string name="prompt_reg_number">Registration number</string>
     <string name="action_confirm">Confirm</string>
     <string name="action_delete_acc">Delete account</string>
+    <string name="team_name" translatable="false">Team\nSaracino-Piteo</string>
+    <string name="app_name_short" translatable="false">Laure App</string>
 </resources>

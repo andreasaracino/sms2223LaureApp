@@ -15,17 +15,17 @@
             android:id="@+id/AppLogo"
             android:layout_width="350dp"
             android:layout_height="350dp"
-            app:srcCompat="@drawable/tocco_icon"
-            android:layout_gravity="center" />
+            android:layout_gravity="center"
+            android:contentDescription="@null"
+            app:srcCompat="@drawable/tocco_icon" />
 
         <TextView
             android:id="@+id/AppName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:fontFamily="serif"
-            android:text="Laure App"
+            android:text="@string/app_name_short"
             android:textAlignment="center"
-            android:textColor="@color/black"
             android:textSize="50sp"
             android:textStyle="bold"
             android:translationY="-60dp" />
@@ -34,17 +34,17 @@
             android:id="@+id/TeamLogo"
             android:layout_width="200dp"
             android:layout_height="200dp"
-            app:srcCompat="@drawable/logo_team"
             android:layout_gravity="center"
-            android:translationY="-40dp"/>
+            android:contentDescription="@null"
+            android:translationY="-40dp"
+            app:srcCompat="@drawable/logo_team" />
 
         <TextView
             android:id="@+id/TeamName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Team \n Saracino-Piteo"
+            android:text="@string/team_name"
             android:textAlignment="center"
-            android:textColor="@color/black"
             android:textSize="30sp"
             android:textStyle="bold"
             android:translationY="-30dp" />
