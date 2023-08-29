@@ -7,23 +7,22 @@ public class Attachment {
     public String id;
     public String type;
     public String path;
-    public User[] authorizedUIDs;
+    public User[] user;
 
     public Attachment() {
     }
 
-    public Attachment(String id, String type, String path, User[] authorizedUIDs) {
+    public Attachment(String id, String type, String path, User[] user) {
         this.id = id;
         this.type = type;
         this.path = path;
-        this.authorizedUIDs = authorizedUIDs;
+        this.user = user;
     }
 
     public Attachment(Map<String, Object> data) {
         id = (String) data.get("id");
         type = (String) data.get("type");
         path = (String) data.get("path");
-        authorizedUIDs = (User[]) data.get("authorizedUIDs");
     }
 
     public Map<String, Object> toMap() {
@@ -31,7 +30,6 @@ public class Attachment {
         map.put("id", id);
         map.put("type", type);
         map.put("path", path);
-        map.put("authorizedUIDs", authorizedUIDs);
         return map;
     }
 }

@@ -9,17 +9,17 @@ public class Application {
     public String status;
     public String thesisId;
     public String studentId;
-    public Requirement[] requirementsIds;
+    public Requirement[] requirement;
 
     public Application() {
     }
 
-    public Application(String id, String status, String thesisId, String studentId, Requirement[] requirementsIds) {
+    public Application(String id, String status, String thesisId, String studentId, Requirement[] requirement) {
         this.id = id;
         this.status = status;
         this.thesisId = thesisId;
         this.studentId = studentId;
-        this.requirementsIds = requirementsIds;
+        this.requirement = requirement;
     }
 
     public Application(Map<String, Object> data) {
@@ -27,7 +27,6 @@ public class Application {
         status = (String) data.get("status");
         thesisId = (String) data.get("thesisId");
         studentId = (String) data.get("studentId");
-        requirementsIds = (Requirement[]) data.get("requirementsIds");
     }
 
     public Map<String, Object> toMap() {
@@ -36,7 +35,6 @@ public class Application {
         map.put("status", status);
         map.put("thesisId", thesisId);
         map.put("studentId", studentId);
-        map.put("requirementsIds", requirementsIds);
         return map;
     }
 }

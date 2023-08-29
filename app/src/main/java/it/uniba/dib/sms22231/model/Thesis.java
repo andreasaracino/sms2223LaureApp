@@ -8,17 +8,17 @@ public class Thesis {
     public String title;
     public String description;
     public String teacherId;
-    public Attachment[] attachments;
+    public Attachment[] attachment;
 
     public Thesis() {
     }
 
-    public Thesis(String id, String title, String description, String teacherId, Attachment[] attachments) {
+    public Thesis(String id, String title, String description, String teacherId, Attachment[] attachment) {
         this.id = id;
         this.title = title;
         this.description = description;
         this.teacherId = teacherId;
-        this.attachments = attachments;
+        this.attachment = attachment;
     }
 
     public Thesis(Map<String, Object> data) {
@@ -26,7 +26,6 @@ public class Thesis {
         title = (String) data.get("title");
         description = (String) data.get("description");
         teacherId = (String) data.get("teacherId");
-        attachments = (Attachment[]) data.get ("attachments");
     }
 
     public Map<String, Object> toMap() {
@@ -35,7 +34,6 @@ public class Thesis {
         map.put("title", title);
         map.put("description", description);
         map.put("teacherId", teacherId);
-        map.put("attachments", attachments);
         return map;
     }
 }
