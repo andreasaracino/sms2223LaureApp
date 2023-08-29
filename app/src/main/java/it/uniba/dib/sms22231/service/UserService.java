@@ -14,7 +14,7 @@ import it.uniba.dib.sms22231.utility.CallbackFunction;
 
 // SERVICE SINGLETON
 public class UserService {
-    static UserService instance;
+    static UserService instance;    // Istanza singleton
     private FirebaseFirestore db;   // Istanza database Firestore
     private FirebaseAuth mAuth;     // Istanza gestore autenticazione
     private FirebaseUser user;      // Istanza utente corrente
