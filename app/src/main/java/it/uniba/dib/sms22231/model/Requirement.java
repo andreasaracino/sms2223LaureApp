@@ -6,23 +6,23 @@ import java.util.Map;
 public class Requirement {
     public String id;
     public String thesisId;
-    public String name;
+    public String description;
     public String values;
 
     public Requirement() {
     }
 
-    public Requirement(String id, String thesisId, String name, String values) {
+    public Requirement(String id, String thesisId, String description, String values) {
         this.id = id;
         this.thesisId = thesisId;
-        this.name = name;
+        this.description = description;
         this.values = values;
     }
 
     public Requirement(Map<String, Object> data) {
         id = (String) data.get("id");
         thesisId = (String) data.get("thesisId");
-        name = (String) data.get("name");
+        description = (String) data.get("description");
         values = (String) data.get("values");
     }
 
@@ -30,7 +30,7 @@ public class Requirement {
         Map<String, Object> map = new HashMap<>();
         map.put("id", id);
         map.put("thesisId", thesisId);
-        map.put("name", name);
+        map.put("description", description);
         map.put("values", values);
         return map;
     }

@@ -9,16 +9,18 @@ public class Message {
     public String attachmentId;
     public String text;
     public String senderUID;
+    public String taskId;
 
     public Message() {
     }
 
-    public Message(String id, String chatId, String attachmentId, String text, String senderUID) {
+    public Message(String id, String chatId, String attachmentId, String text, String senderUID, String taskId) {
         this.id = id;
         this.chatId = chatId;
         this.attachmentId = attachmentId;
         this.text = text;
         this.senderUID = senderUID;
+        this.taskId = taskId;
     }
 
     public Message(Map<String, Object> data) {
@@ -27,6 +29,7 @@ public class Message {
         attachmentId = (String) data.get("attachmentId");
         text = (String) data.get("text");
         senderUID = (String) data.get("senderUID");
+        taskId = (String) data.get("taskId");
     }
 
     public Map<String, Object> toMap() {
@@ -36,6 +39,7 @@ public class Message {
         map.put("attachmentId", attachmentId);
         map.put("text", text);
         map.put("senderUID", senderUID);
+        map.put("taskId", taskId);
         return map;
     }
 }

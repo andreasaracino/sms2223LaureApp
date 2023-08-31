@@ -5,7 +5,6 @@ import java.util.Map;
 
 public class Chat {
     public String id;
-    public String thesisId;
     public String applicationId;
     public String studentId;
     public String teacherId;
@@ -13,9 +12,8 @@ public class Chat {
     public Chat() {
     }
 
-    public Chat(String id, String thesisId, String applicationId, String studentId, String teacherId) {
+    public Chat(String id, String applicationId, String studentId, String teacherId) {
         this.id = id;
-        this.thesisId = thesisId;
         this.applicationId = applicationId;
         this.studentId = studentId;
         this.teacherId = teacherId;
@@ -23,7 +21,7 @@ public class Chat {
 
     public Chat(Map<String, Object> data) {
         id = (String) data.get("id");
-        thesisId = (String) data.get("thesisId");
+        applicationId = (String) data.get("applicationId");
         studentId = (String) data.get("studentId");
         teacherId = (String) data.get("teacherId");
     }
@@ -31,7 +29,7 @@ public class Chat {
     public Map<String, Object> toMap() {
         Map<String, Object> map = new HashMap<>();
         map.put("id", id);
-        map.put("thesisId", thesisId);
+        map.put("applicationId", applicationId);
         map.put("studentId", studentId);
         map.put("teacherId", teacherId);
         return map;
