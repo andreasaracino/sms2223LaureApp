@@ -70,7 +70,9 @@ public class UserService {
      * a task completato si segnala, attraverso il callback, la buona riuscita dell'operazione al metodo chiamante
      */
     public void saveUserData(User user, CallbackFunction<Boolean> callback) {
-        userDocument.set(user).addOnCompleteListener(task -> callback.apply(task.isSuccessful()));
+        if (userDocument != null) {
+            userDocument.set(user).addOnCompleteListener(task -> callback.apply(task.isSuccessful()));
+        }
     }
 
     /*

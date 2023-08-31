@@ -8,7 +8,7 @@
     <string name="sign_up_fail">Registrazione fallita!</string>
     <string name="verify_mail">Per favore, verifica la tua e-mail</string>
     <string name="prompt_name">Full name</string>
-    <string name="prompt_phone">Phone number</string>
+    <string name="prompt_phone">Numero di cellulare</string>
     <string name="prompt_reg_number">Registration number</string>
     <string name="action_confirm">Confirm</string>
     <string name="action_delete_acc">Delete account</string>

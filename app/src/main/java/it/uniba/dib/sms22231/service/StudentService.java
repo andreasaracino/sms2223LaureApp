@@ -1,0 +1,64 @@
+package it.uniba.dib.sms22231.service;
+
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.util.Map;
+import java.util.Objects;
+
+import it.uniba.dib.sms22231.model.Student;
+import it.uniba.dib.sms22231.utility.CallbackFunction;
+import it.uniba.dib.sms22231.utility.Observable;
+
+public class StudentService {
+    private static final String COLLECTION_NAME = "students";
+    private static StudentService instance;
+
+    private FirebaseFirestore db;
+    private UserService userService;
+    private DocumentReference studentDocument;
+    private Map<String, Object> studentRawData;
+    private Student studentData;
+    private Observable<Student> studentObservable = new Observable<>(null);
+
+    private StudentService() {
+        initData();
+    }
+
+    private void initData() {
+        db = FirebaseFirestore.getInstance();
+        userService = UserService.getInstance();
+        userService.userObservable.subscribe((user) -> {
+            if (user != null) {
+                getStudentByUid(user.uid);
+            } else {
+                studentDocument = null;
+            }
+        });
+    }
+
+    private void getStudentByUid(String uid) {
+        studentDocument = db.collection(COLLECTION_NAME).document(uid);
+        studentDocument.get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                studentRawData = task.getResult().getData();
+                studentData = new Student(Objects.requireNonNull(studentRawData));
+                studentObservable.next(studentData);
+            }
+        });
+    }
+
+    private void saveStudent(Student student, CallbackFunction<Boolean> callback) {
+        if (studentDocument != null) {
+            studentDocument.set(student).addOnCompleteListener(task -> callback.apply(task.isSuccessful()));
+        }
+    }
+
+    public static StudentService getInstance() {
+        if (instance == null) {
+            instance = new StudentService();
+        }
+
+        return instance;
+    }
+}
