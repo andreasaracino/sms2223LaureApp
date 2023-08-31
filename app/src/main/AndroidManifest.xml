@@ -28,6 +28,7 @@
             android:label="@string/action_sign_in" />
         <activity
             android:name=".activities.MainActivity"
+            android:theme="@style/Theme.Design.Light.NoActionBar"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
