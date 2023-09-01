@@ -14,7 +14,6 @@ public class UserInformationActivity extends AppCompatActivity {
     private Observable<User>.Subscription userSubscription;
     private UserService userService;
     private EditText fullNameField;
-    private EditText phoneNumberField;
     private EditText regNumberField;
 
     @Override
@@ -34,7 +33,6 @@ public class UserInformationActivity extends AppCompatActivity {
             if (user != null) {
                 this.user = user;
                 fullNameField.setText(user.fullName);
-                phoneNumberField.setText(user.phoneNumber);
                 regNumberField.setText(user.registrationNumber);
             }
         });
@@ -49,13 +47,11 @@ public class UserInformationActivity extends AppCompatActivity {
 
     private void initUi() {
         fullNameField = findViewById(R.id.nameField);
-        phoneNumberField = findViewById(R.id.phoneField);
         regNumberField = findViewById(R.id.regNumberField);
     }
 
     public void doConfirm(View view) {
         user.fullName = fullNameField.getText().toString();
-        user.phoneNumber = phoneNumberField.getText().toString();
         user.registrationNumber = regNumberField.getText().toString();
         userService.saveUserData(user, isSuccessful -> finish());
     }
