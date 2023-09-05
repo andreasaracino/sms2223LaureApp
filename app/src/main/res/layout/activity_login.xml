@@ -10,13 +10,30 @@
         android:id="@+id/editTextTextEmailAddress"
         android:layout_width="@dimen/field_width"
         android:layout_height="@dimen/field_height"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="172dp"
         android:ems="10"
         android:hint="@string/prompt_email"
         android:inputType="textEmailAddress"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.505"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/button"
+        style="@style/borderless_button"
+        android:layout_width="@dimen/field_width"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:backgroundTint="@android:color/transparent"
+        android:onClick="goToSignUp"
+        android:shadowRadius="0"
+        android:text="@string/action_sign_up"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.505"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/loginButton" />
 
     <EditText
         android:id="@+id/editTextTextPassword"
@@ -27,19 +44,34 @@
         android:hint="@string/prompt_password"
         android:inputType="textPassword"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.505"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/editTextTextEmailAddress" />
 
     <Button
         android:id="@+id/loginButton"
+        style="@style/button"
         android:layout_width="@dimen/field_width"
         android:layout_height="@dimen/field_height"
         android:layout_marginTop="8dp"
         android:onClick="doLogin"
         android:text="@string/action_sign_in"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.505"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/editTextTextPassword" />
+
+    <Button
+        android:id="@+id/button4"
+        style="@style/borderless_button"
+        android:layout_width="@dimen/field_width"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="@string/guest"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.505"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/button" />
 
     <ProgressBar
         android:id="@+id/progressBar"
@@ -54,19 +86,4 @@
         app:layout_constraintTop_toBottomOf="@+id/loginButton"
         tools:visibility="gone" />
 
-    <Button
-        android:id="@+id/button"
-        style="@android:style/Widget.Material.Button.Borderless"
-        android:layout_width="@dimen/field_width"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:backgroundTint="@android:color/transparent"
-        android:onClick="goToSignUp"
-        android:shadowRadius="0"
-        android:text="@string/action_sign_up"
-        android:textColor="?colorPrimary"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/loginButton" />
 </androidx.constraintlayout.widget.ConstraintLayout>
