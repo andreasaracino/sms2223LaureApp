@@ -11,12 +11,14 @@
         android:layout_width="@dimen/field_width"
         android:layout_height="@dimen/field_height"
         android:layout_marginStart="24dp"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="112dp"
         android:layout_marginEnd="24dp"
         android:ems="10"
         android:hint="@string/prompt_name"
         android:inputType="textPersonName"
+        android:autofillHints="name"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.488"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -25,48 +27,23 @@
         android:layout_width="@dimen/field_width"
         android:layout_height="@dimen/field_height"
         android:layout_marginStart="24dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="16dp"
         android:layout_marginEnd="24dp"
         android:autofillHints="phone"
         android:ems="10"
         android:hint="@string/prompt_phone"
         android:inputType="phone"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.488"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/nameField" />
-
-    <EditText
-        android:id="@+id/regNumberField"
-        android:layout_width="@dimen/field_width"
-        android:layout_height="@dimen/field_height"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="24dp"
-        android:ems="10"
-        android:hint="@string/prompt_reg_number"
-        android:inputType="number"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/phoneField" />
+        app:layout_constraintTop_toBottomOf="@+id/roleSpinner" />
 
     <Button
-        android:id="@+id/confirmButton"
-        android:layout_width="@dimen/field_width"
-        android:layout_height="@dimen/field_height"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="24dp"
-        android:onClick="doConfirm"
-        android:text="@string/action_confirm"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/regNumberField" />
-
-    <Button
-        android:id="@+id/button3"
+        android:id="@+id/goSignInButton"
         style="@android:style/Widget.Material.Light.Button.Borderless"
         android:layout_width="@dimen/field_width"
         android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
         android:backgroundTint="@android:color/transparent"
         android:onClick="goToSignIn"
         android:shadowRadius="0"
@@ -74,6 +51,49 @@
         android:textColor="@color/design_default_color_error"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.494"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/confirmButton" />
+
+    <Button
+        android:id="@+id/confirmButton"
+        android:layout_width="@dimen/field_width"
+        android:layout_height="@dimen/field_height"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="24dp"
+        android:onClick="doConfirm"
+        android:text="@string/action_confirm"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.488"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/regNumberField" />
+
+    <EditText
+        android:id="@+id/regNumberField"
+        android:layout_width="@dimen/field_width"
+        android:layout_height="@dimen/field_height"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="24dp"
+        android:ems="10"
+        android:hint="@string/prompt_reg_number"
+        android:inputType="number"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.488"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/phoneField" />
+
+    <Spinner
+        android:id="@+id/roleSpinner"
+        style="@android:style/Widget.Material.Light.Spinner.Underlined"
+        android:layout_width="@dimen/field_width"
+        android:layout_height="@dimen/field_height"
+        android:layout_marginTop="16dp"
+        android:entries="@array/user_types"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.494"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/nameField" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -4,16 +4,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activities.SignInActivity">
+    tools:context=".activities.SignUpActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="horizontal"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        android:orientation="horizontal">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -23,56 +19,54 @@
             android:orientation="vertical">
 
             <EditText
-                android:id="@+id/editTextTextEmailAddress"
+                android:id="@+id/signUpEmail"
                 android:layout_width="@dimen/field_width"
                 android:layout_height="@dimen/field_height"
+                android:autofillHints="emailAddress"
                 android:ems="10"
                 android:hint="@string/prompt_email"
                 android:inputType="textEmailAddress" />
 
             <EditText
-                android:id="@+id/editTextTextPassword"
+                android:id="@+id/signUpPassword"
                 android:layout_width="@dimen/field_width"
                 android:layout_height="@dimen/field_height"
+                android:autofillHints="password"
                 android:ems="10"
                 android:hint="@string/prompt_password"
                 android:inputType="textPassword" />
+
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:gravity="center|center_horizontal|center_vertical"
+            android:gravity="center"
             android:orientation="vertical">
 
             <Button
-                android:id="@+id/loginButton"
+                android:id="@+id/signUpButton"
                 style="@style/button"
                 android:layout_width="@dimen/field_width"
                 android:layout_height="@dimen/field_height"
-                android:onClick="doLogin"
-                android:text="@string/action_sign_in" />
+                android:onClick="doSignUp"
+                android:text="@string/action_sign_up" />
 
             <Button
-                android:id="@+id/goSignUpButton"
-                style="@style/borderless_button"
+                android:id="@+id/goSignInButton"
+                style="@android:style/Widget.Material.Light.Button.Borderless"
                 android:layout_width="@dimen/field_width"
                 android:layout_height="wrap_content"
                 android:backgroundTint="@android:color/transparent"
-                android:onClick="goToSignUp"
+                android:onClick="goToSignIn"
                 android:shadowRadius="0"
-                android:text="@string/action_sign_up"
+                android:text="@string/action_sign_in"
+                android:textColor="?colorPrimary"
                 android:textStyle="bold" />
 
-            <Button
-                android:id="@+id/guestButton"
-                style="@style/borderless_button"
-                android:layout_width="@dimen/field_width"
-                android:layout_height="wrap_content"
-                android:text="@string/guest" />
-
         </LinearLayout>
+
     </LinearLayout>
 
     <ProgressBar
@@ -85,7 +79,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/loginButton"
+        app:layout_constraintTop_toBottomOf="@+id/signUpButton"
         tools:visibility="gone" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

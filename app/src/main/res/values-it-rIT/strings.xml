@@ -2,7 +2,7 @@
 <resources>
     <string name="app_name">sms2223LaureApp</string>
     <string name="action_sign_up">Registrati</string>
-    <string name="action_sign_in">Entra</string>
+    <string name="action_sign_in">Accedi</string>
     <string name="sign_in_fail">Login fallito!</string>
     <string name="sign_out">Esci</string>
     <string name="sign_up_fail">Registrazione fallita!</string>
@@ -13,4 +13,7 @@
     <string name="action_confirm">Confirm</string>
     <string name="action_delete_acc">Delete account</string>
     <string name="guest">Accedi come Ospite</string>
+    <string name="logout">Esci</string>
+    <string name="teacher">Professore</string>
+    <string name="student">Studente</string>
 </resources>

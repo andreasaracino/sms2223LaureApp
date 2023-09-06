@@ -6,45 +6,42 @@
     android:layout_height="match_parent"
     tools:context=".activities.SignInActivity">
 
+    <ImageView
+        android:id="@+id/logo_login"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:contentDescription="@null"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/tocco_icon" />
+
     <EditText
         android:id="@+id/editTextTextEmailAddress"
         android:layout_width="@dimen/field_width"
         android:layout_height="@dimen/field_height"
-        android:layout_marginTop="172dp"
+        android:layout_marginTop="52dp"
+        android:autofillHints="emailAddress"
         android:ems="10"
         android:hint="@string/prompt_email"
         android:inputType="textEmailAddress"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.505"
+        app:layout_constraintHorizontal_bias="0.494"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <Button
-        android:id="@+id/button"
-        style="@style/borderless_button"
-        android:layout_width="@dimen/field_width"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:backgroundTint="@android:color/transparent"
-        android:onClick="goToSignUp"
-        android:shadowRadius="0"
-        android:text="@string/action_sign_up"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.505"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/loginButton" />
+        app:layout_constraintTop_toBottomOf="@+id/logo_login" />
 
     <EditText
         android:id="@+id/editTextTextPassword"
         android:layout_width="@dimen/field_width"
         android:layout_height="@dimen/field_height"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="16dp"
+        android:autofillHints="password"
         android:ems="10"
         android:hint="@string/prompt_password"
         android:inputType="textPassword"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.505"
+        app:layout_constraintHorizontal_bias="0.494"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/editTextTextEmailAddress" />
 
@@ -53,25 +50,41 @@
         style="@style/button"
         android:layout_width="@dimen/field_width"
         android:layout_height="@dimen/field_height"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="16dp"
         android:onClick="doLogin"
         android:text="@string/action_sign_in"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.505"
+        app:layout_constraintHorizontal_bias="0.494"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/editTextTextPassword" />
 
     <Button
-        android:id="@+id/button4"
+        android:id="@+id/goSignUpButton"
         style="@style/borderless_button"
         android:layout_width="@dimen/field_width"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="16dp"
+        android:backgroundTint="@android:color/transparent"
+        android:onClick="goToSignUp"
+        android:shadowRadius="0"
+        android:text="@string/action_sign_up"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.494"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/loginButton" />
+
+    <Button
+        android:id="@+id/guestButton"
+        style="@style/borderless_button"
+        android:layout_width="@dimen/field_width"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
         android:text="@string/guest"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.505"
+        app:layout_constraintHorizontal_bias="0.494"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/button" />
+        app:layout_constraintTop_toBottomOf="@+id/goSignUpButton" />
 
     <ProgressBar
         android:id="@+id/progressBar"
@@ -85,5 +98,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/loginButton"
         tools:visibility="gone" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
