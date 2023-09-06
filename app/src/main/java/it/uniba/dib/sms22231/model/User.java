@@ -19,7 +19,9 @@ public class User {
         email = (String) data.get("email");
         fullName = (String) data.get("fullName");
         registrationNumber = (String) data.get("registrationNumber");
-        userType = UserTypes.valueOf((String) data.get("userType"));
+        if (data.get("userType") != null) {
+            userType = UserTypes.valueOf((String) data.get("userType"));
+        }
     }
 
     public User(String uid, String email, String fullName, String registrationNumber, UserTypes userType) {

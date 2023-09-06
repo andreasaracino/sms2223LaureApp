@@ -1,6 +1,7 @@
 package it.uniba.dib.sms22231.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
+
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
@@ -36,8 +37,10 @@ public class UserInformationActivity extends AppCompatActivity {
         userSubscription = userService.userObservable.subscribe(user -> {
             this.user = user;
             fullNameField.setText(user.fullName);
-            roleSpinner.setSelection(user.userType.ordinal());
             regNumberField.setText(user.registrationNumber);
+            if (user.userType != null) {
+                roleSpinner.setSelection(user.userType.ordinal());
+            }
         });
     }
 

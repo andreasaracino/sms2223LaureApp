@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
@@ -35,8 +36,10 @@ public class DashboardActivity extends AppCompatActivity {
         label = findViewById(R.id.textView);
 
         userService.userObservable.subscribe(user -> {
-            this.user = user;
-            label.setText(user.fullName);
+            if (user != null) {
+                this.user = user;
+                label.setText(user.fullName);
+            }
         });
     }
 
@@ -51,9 +54,25 @@ public class DashboardActivity extends AppCompatActivity {
         finish();
     }
 
+    private void goToUserInformation(){
+        Intent intent = new Intent(this, UserInformationActivity.class);
+        startActivity(intent);
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.dashboard_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == R.id.account) {
+            goToUserInformation();
+        } else if (id == R.id.logout) {
+            doLogout(null);
+        }
         return true;
     }
 }
