@@ -22,4 +22,8 @@
     <string name="logout">Log out</string>
     <string name="teacher">Teacher</string>
     <string name="student">Student</string>
+    <string name="all_theses">All theses</string>
+    <string name="my_thesis">My thesis</string>
+    <string name="my_theses">My theses</string>
+    <string name="my_students">My students</string>
 </resources>

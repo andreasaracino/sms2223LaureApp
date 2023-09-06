@@ -16,4 +16,8 @@
     <string name="logout">Esci</string>
     <string name="teacher">Professore</string>
     <string name="student">Studente</string>
+    <string name="all_theses">Elenco tesi</string>
+    <string name="my_thesis">La mia tesi</string>
+    <string name="my_theses">Le mie tesi</string>
+    <string name="my_students">Gestione studenti</string>
 </resources>
