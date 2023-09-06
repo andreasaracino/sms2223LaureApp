@@ -12,4 +12,5 @@
     <string name="prompt_reg_number">Registration number</string>
     <string name="action_confirm">Confirm</string>
     <string name="action_delete_acc">Delete account</string>
+    <string name="guest">Accedi come Ospite</string>
 </resources>

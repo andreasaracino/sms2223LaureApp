@@ -17,4 +17,5 @@
     <string name="action_delete_acc">Delete account</string>
     <string name="team_name" translatable="false">Team\nSaracino-Piteo</string>
     <string name="app_name_short" translatable="false">Laure App</string>
+    <string name="guest">Log in as Guest</string>
 </resources>
