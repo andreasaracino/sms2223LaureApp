@@ -3,11 +3,14 @@ package it.uniba.dib.sms22231.model;
 import java.util.HashMap;
 import java.util.Map;
 
+import it.uniba.dib.sms22231.config.UserTypes;
+
 public class User {
     public String uid;
     public String email;
     public String fullName;
     public String registrationNumber;
+    public UserTypes userType;
 
     public User() {}
 
@@ -16,13 +19,15 @@ public class User {
         email = (String) data.get("email");
         fullName = (String) data.get("fullName");
         registrationNumber = (String) data.get("registrationNumber");
+        userType = (UserTypes) data.get("userType");
     }
 
-    public User(String uid, String email, String fullName, String registrationNumber) {
+    public User(String uid, String email, String fullName, String registrationNumber, UserTypes userType) {
         this.uid = uid;
         this.email = email;
         this.fullName = fullName;
         this.registrationNumber = registrationNumber;
+        this.userType = userType;
     }
 
     public Map<String, Object> toMap() {
@@ -31,6 +36,7 @@ public class User {
         map.put("email", email);
         map.put("fullName", fullName);
         map.put("registrationNumber", registrationNumber);
+        map.put("userType", userType);
         return map;
     }
 }
