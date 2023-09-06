@@ -32,7 +32,10 @@ public class Observable<T> {
 
         public Subscription(CallbackFunction<T> updateFunction) {
             this.updateFunction = updateFunction;
-            updateFunction.apply(data);
+
+            if (data != null) {
+                updateFunction.apply(data);
+            }
         }
 
         public void update(T data) {
