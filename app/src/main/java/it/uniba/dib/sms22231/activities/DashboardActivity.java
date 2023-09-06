@@ -36,8 +36,10 @@ public class DashboardActivity extends AppCompatActivity {
         label = findViewById(R.id.textView);
 
         userService.userObservable.subscribe(user -> {
-            this.user = user;
-            label.setText(user.fullName);
+            if (user != null) {
+                this.user = user;
+                label.setText(user.fullName);
+            }
         });
     }
 

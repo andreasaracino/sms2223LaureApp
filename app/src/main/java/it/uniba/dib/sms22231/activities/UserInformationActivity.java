@@ -37,8 +37,10 @@ public class UserInformationActivity extends AppCompatActivity {
             if (user != null) {
                 this.user = user;
                 fullNameField.setText(user.fullName);
-                roleSpinner.setSelection(user.userType.ordinal());
                 regNumberField.setText(user.registrationNumber);
+                if (user.userType != null) {
+                    roleSpinner.setSelection(user.userType.ordinal());
+                }
             }
         });
     }
