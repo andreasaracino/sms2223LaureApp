@@ -34,12 +34,10 @@ public class UserInformationActivity extends AppCompatActivity {
 
         userService = UserService.getInstance();
         userSubscription = userService.userObservable.subscribe(user -> {
-            if (user != null) {
-                this.user = user;
-                fullNameField.setText(user.fullName);
-                roleSpinner.setSelection(user.userType.ordinal());
-                regNumberField.setText(user.registrationNumber);
-            }
+            this.user = user;
+            fullNameField.setText(user.fullName);
+            roleSpinner.setSelection(user.userType.ordinal());
+            regNumberField.setText(user.registrationNumber);
         });
     }
 
