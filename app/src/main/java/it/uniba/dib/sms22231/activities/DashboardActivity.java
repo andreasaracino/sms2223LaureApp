@@ -7,15 +7,19 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 import it.uniba.dib.sms22231.R;
+import it.uniba.dib.sms22231.model.User;
+import it.uniba.dib.sms22231.service.UserService;
 
 public class DashboardActivity extends AppCompatActivity {
-    FirebaseAuth mAuth = FirebaseAuth.getInstance();
-    FirebaseUser user;
+    private final UserService userService = UserService.getInstance();
+    private User user;
+    private TextView label;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,11 +33,16 @@ public class DashboardActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        user = mAuth.getCurrentUser();
+        label = findViewById(R.id.textView);
+
+        userService.userObservable.subscribe(user -> {
+            this.user = user;
+            label.setText(user.fullName);
+        });
     }
 
     public void doLogout(View view) {
-        mAuth.signOut();
+        userService.signOut();
         goToLogin();
     }
 

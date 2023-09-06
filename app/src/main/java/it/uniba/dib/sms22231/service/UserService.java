@@ -90,6 +90,10 @@ public class UserService {
         }
     }
 
+    public void signOut() {
+        mAuth.signOut();
+    }
+
     /*
      * metodo per ottenere il valore corrente dell'observable
      */
