@@ -6,6 +6,8 @@ public class Observable<T> {
     private T data;
     private final ArrayList<Subscription> subscribers = new ArrayList<>();
 
+    public Observable() {}
+
     public Observable(T data) {
         this.data = data;
     }

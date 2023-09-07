@@ -8,6 +8,8 @@ public class Chat {
     public String applicationId;
     public String studentId;
     public String teacherId;
+    public Integer unreadMessages;
+
 
     public Chat() {
     }
