@@ -13,6 +13,10 @@
         android:theme="@style/Theme.Sms2223LaureApp"
         tools:targetApi="31">
         <activity
+            android:name=".activities.ChatActivity"
+            android:exported="false">
+        </activity>
+        <activity
             android:name=".activities.UserInformationActivity"
             android:exported="false" />
         <activity
@@ -24,7 +28,6 @@
             android:label="@string/dashboard" />
         <activity
             android:name=".activities.SignInActivity"
-
             android:exported="false"
             android:label="@string/action_sign_in" />
         <activity

@@ -54,6 +54,9 @@ public class DashboardActivity extends AppCompatActivity {
     }
 
     private void initDashboard() {
+        if (user.userType == null) {
+            return;
+        }
         switch (user.userType) {
             case STUDENT:
                 dash1.setText(R.string.all_theses);
