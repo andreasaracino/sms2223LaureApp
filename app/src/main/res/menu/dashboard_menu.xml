@@ -4,10 +4,12 @@
 
     <item
         android:id="@+id/account"
+        android:icon="@drawable/account"
         android:title="@string/account" />
     <item
         android:id="@+id/logout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:icon="@drawable/logout"
         android:title="@string/logout" />
 </menu>
