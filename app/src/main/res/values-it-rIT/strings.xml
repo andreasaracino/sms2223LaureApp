@@ -7,11 +7,11 @@
     <string name="sign_out">Esci</string>
     <string name="sign_up_fail">Registrazione fallita!</string>
     <string name="verify_mail">Per favore, verifica la tua e-mail</string>
-    <string name="prompt_name">Full name</string>
+    <string name="prompt_name">Nome e cognome</string>
     <string name="prompt_phone">Numero di cellulare</string>
-    <string name="prompt_reg_number">Registration number</string>
-    <string name="action_confirm">Confirm</string>
-    <string name="action_delete_acc">Delete account</string>
+    <string name="prompt_reg_number">Matricola</string>
+    <string name="action_confirm">Conferma</string>
+    <string name="action_delete_acc">Elimina account</string>
     <string name="guest">Accedi come Ospite</string>
     <string name="logout">Esci</string>
     <string name="teacher">Professore</string>
