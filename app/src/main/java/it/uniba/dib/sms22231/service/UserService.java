@@ -19,7 +19,7 @@ public class UserService {
     private FirebaseAuth mAuth;     // Istanza gestore autenticazione
     private FirebaseUser user;      // Istanza utente corrente
     private DocumentReference userDocument; // Riferimento al documento sul database
-    public final Observable<User> userObservable = new Observable<>(null);  // Observable contenente i dati dell'utente
+    public final Observable<User> userObservable = new Observable<>();  // Observable contenente i dati dell'utente
 
     private UserService() {
         initData();

@@ -19,11 +19,12 @@ public class Message {
     public String taskId;
     public Date dateSent;
     public boolean read;
+    public boolean sent;
 
     public Message() {
     }
 
-    public Message(String id, String chatId, String attachmentId, String text, String senderUID, String taskId, Date dateSent, Boolean read) {
+    public Message(String id, String chatId, String attachmentId, String text, String senderUID, String taskId, Date dateSent, Boolean read, Boolean sent) {
         this.id = id;
         this.chatId = chatId;
         this.attachmentId = attachmentId;
@@ -32,6 +33,7 @@ public class Message {
         this.taskId = taskId;
         this.dateSent = dateSent;
         this.read = read;
+        this.sent = sent;
     }
 
     public Message(Map<String, Object> data) {
@@ -41,7 +43,7 @@ public class Message {
         text = (String) data.get("text");
         senderUID = (String) data.get("senderUID");
         taskId = (String) data.get("taskId");
-        read = Boolean.getBoolean((String) Objects.requireNonNull(data.get("read")));
+        read = (Boolean) data.get("read");
 
         try {
             @SuppressLint("SimpleDateFormat") DateFormat simpleDateFormat = new SimpleDateFormat("yyyy/MM/dd - HH:mm");
@@ -62,5 +64,18 @@ public class Message {
         @SuppressLint("SimpleDateFormat") DateFormat simpleDateFormat = new SimpleDateFormat("yyyy/MM/dd - HH:mm");
         map.put("dateSent", simpleDateFormat.format(dateSent));
         return map;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Message message = (Message) o;
+        return id.equals(message.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }

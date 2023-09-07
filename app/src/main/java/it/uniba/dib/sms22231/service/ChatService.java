@@ -2,12 +2,16 @@ package it.uniba.dib.sms22231.service;
 
 import com.google.firebase.firestore.AggregateSource;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 import it.uniba.dib.sms22231.model.Chat;
 import it.uniba.dib.sms22231.model.Message;
@@ -38,11 +42,10 @@ public class ChatService {
         userService = UserService.getInstance();
         userService.userObservable.subscribe((user) -> {
             currentUser = user;
-            getCurrentUserChats();
         });
     }
 
-    private void getCurrentUserChats() {
+    public void getCurrentUserChats() {
         chatsCollection.whereEqualTo(currentUser.userType.toString().toLowerCase() + "Id", currentUser.uid).get().addOnCompleteListener((task) -> {
             if (task.isSuccessful()) {
                 mapChatsResult(task.getResult(), chatsObservable::next);
@@ -68,36 +71,54 @@ public class ChatService {
     }
 
     private void getUnreadMessages(String chatId, CallbackFunction<Integer> callback) {
-        messagesCollection
-                .whereEqualTo("chatId", chatId)
-                .whereEqualTo("read", false)
-                .count().get(AggregateSource.SERVER)
-                .addOnCompleteListener(task -> callback.apply((int) task.getResult().getCount()));
+        messagesCollection.whereEqualTo("chatId", chatId).whereEqualTo("read", false).count().get(AggregateSource.SERVER).addOnCompleteListener(task -> callback.apply((int) task.getResult().getCount()));
     }
 
-    private Observable<List<Message>> getChatMessages(String chatId) {
+    public Observable<List<Message>> getChatMessages(String chatId) {
         Observable<List<Message>> messagesObservable = new Observable<>();
 
         messagesCollection.whereEqualTo("chatId", chatId).orderBy("dateSent").limit(100).get().addOnCompleteListener(task -> {
-            mapMessagesResult(task.getResult(), messagesObservable::next);
+            List<Message> messageList = mapMessagesResult(task.getResult());
+            messagesObservable.next(messageList);
+
+            messagesCollection.whereEqualTo("chatId", chatId).orderBy("dateSent").addSnapshotListener((snapshot, e) -> {
+                if (e != null || snapshot == null) return;
+
+                for (DocumentChange documentChange : snapshot.getDocumentChanges()) {
+                    Message message = new Message(documentChange.getDocument().getData());
+                    message.id = documentChange.getDocument().getId();
+
+                    if (documentChange.getType() == DocumentChange.Type.ADDED && !messageList.contains(message)) {
+                        message.sent = Objects.equals(message.senderUID, userService.getUserData().uid);
+                        messageList.add(message);
+                    }
+                }
+
+                messagesObservable.next(messageList);
+            });
         });
 
         return messagesObservable;
     }
 
-    private List<Message> mapMessagesResult(QuerySnapshot querySnapshot, CallbackFunction<List<Message>> callback) {
+    private List<Message> mapMessagesResult(QuerySnapshot querySnapshot) {
         List<Message> messageList = new ArrayList<>();
 
         for (QueryDocumentSnapshot rawMessage : querySnapshot) {
             Message message = new Message(rawMessage.getData());
             message.id = rawMessage.getId();
+            message.sent = Objects.equals(message.senderUID, currentUser.uid);
             messageList.add(message);
         }
 
         return messageList;
     }
 
-    private void sendMessage(Message message) {
+    public void sendMessage(Message message) {
+        message.dateSent = Date.from(Instant.now());
+        message.read = false;
+        message.senderUID = currentUser.uid;
+
         messagesCollection.add(message.toMap());
     }
 
