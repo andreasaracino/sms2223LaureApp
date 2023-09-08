@@ -84,6 +84,40 @@ public class DashboardActivity extends AppCompatActivity {
         }
     }
 
+    public void dash1OnClick (View view){
+        Intent intent = null;
+        if (user.userType == null) {
+            return;
+        }
+        switch (user.userType) {
+            case STUDENT:
+                intent = new Intent(this, AllThesesActivity.class);
+                break;
+            case TEACHER:
+                intent = new Intent(this, MyThesesActivity.class);
+        }
+        if (intent != null){
+            startActivity(intent);
+        }
+    }
+
+    public void dash2OnClick (View view){
+        Intent intent = null;
+        if (user.userType == null) {
+            return;
+        }
+        switch (user.userType) {
+            case STUDENT:
+                intent = new Intent(this, MyThesisActivity.class);
+                break;
+            case TEACHER:
+                intent = new Intent(this, MyStudentsActivity.class);
+        }
+        if (intent != null){
+            startActivity(intent);
+        }
+    }
+
     public void doLogout(View view) {
         userService.signOut();
         goToLogin();

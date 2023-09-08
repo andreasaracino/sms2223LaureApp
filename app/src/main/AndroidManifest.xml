@@ -13,9 +13,20 @@
         android:theme="@style/Theme.Sms2223LaureApp"
         tools:targetApi="31">
         <activity
+            android:name=".activities.MyStudentsActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.MyThesesActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.MyThesisActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.AllThesesActivity"
+            android:exported="false" />
+        <activity
             android:name=".activities.ChatActivity"
-            android:exported="false">
-        </activity>
+            android:exported="false" />
         <activity
             android:name=".activities.UserInformationActivity"
             android:exported="false" />
@@ -32,8 +43,8 @@
             android:label="@string/action_sign_in" />
         <activity
             android:name=".activities.MainActivity"
-            android:theme="@style/Theme.Design.Light.NoActionBar"
-            android:exported="true">
+            android:exported="true"
+            android:theme="@style/Theme.Design.Light.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

@@ -20,4 +20,9 @@
     <string name="my_thesis">La mia tesi</string>
     <string name="my_theses">Le mie tesi</string>
     <string name="my_students">Gestione studenti</string>
+    <string name="available">Tesi disponibili</string>
+    <string name="rank">Classifica tesi</string>
+    <string name="Thesis">Tesi</string>
+    <string name="requests">Richieste</string>
+    <string name="progress">In corso</string>
 </resources>

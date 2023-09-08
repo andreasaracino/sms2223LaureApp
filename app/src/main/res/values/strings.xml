@@ -26,4 +26,10 @@
     <string name="my_thesis">My thesis</string>
     <string name="my_theses">My theses</string>
     <string name="my_students">My students</string>
+    <string name="available">Available theses</string>
+    <string name="rank">Theses ranking</string>
+    <string name="Thesis">Thesis</string>
+    <string name="Task" translatable="false">Task</string>
+    <string name="requests">Requests</string>
+    <string name="progress">In progress</string>
 </resources>
