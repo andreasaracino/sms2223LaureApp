@@ -1,5 +1,7 @@
 package it.uniba.dib.sms22231.service;
 
+import android.widget.Toast;
+
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
@@ -8,6 +10,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.Objects;
 
+import it.uniba.dib.sms22231.R;
 import it.uniba.dib.sms22231.model.User;
 import it.uniba.dib.sms22231.utility.Observable;
 import it.uniba.dib.sms22231.utility.CallbackFunction;
@@ -26,10 +29,10 @@ public class UserService {
     }
 
     /*
-    * creazione dell'istanza di FirebaseFirestore
-    * creazione dell'istanza di FirebaseAuth
-    * se l'utente è loggato, allora ottieni i suoi dati
-    */
+     * creazione dell'istanza di FirebaseFirestore
+     * creazione dell'istanza di FirebaseAuth
+     * se l'utente è loggato, allora ottieni i suoi dati
+     */
     private void initData() {
         db = FirebaseFirestore.getInstance();
         mAuth = FirebaseAuth.getInstance();
@@ -70,9 +73,20 @@ public class UserService {
      * a task completato si segnala, attraverso il callback, la buona riuscita dell'operazione al metodo chiamante
      */
     public void saveUserData(User user, CallbackFunction<Boolean> callback) {
-        if (userDocument != null) {
-            userDocument.set(user).addOnCompleteListener(task -> callback.apply(task.isSuccessful()));
-        }
+        userDocument.set(user).addOnCompleteListener(task -> {
+            if (!task.isSuccessful()) {
+                callback.apply(false);
+                return;
+            }
+
+            switch (user.userType) {
+                case STUDENT:
+                    StudentService.getInstance().saveStudent(user, callback);
+                    break;
+                case TEACHER:
+                    TeacherService.getInstance().saveTeacher(user, callback);
+            }
+        });
     }
 
     /*
@@ -87,6 +101,20 @@ public class UserService {
             });
         } else {
             callback.apply(false);
+        }
+    }
+
+    public void signUp(String email, String password, CallbackFunction<Boolean> callback) {
+        if (!email.isEmpty() && !password.isEmpty()) {
+            mAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(task -> {
+                if (task.isSuccessful()) {
+                    FirebaseUser user = mAuth.getCurrentUser();
+                    user.sendEmailVerification();
+                    mAuth.signOut();
+                }
+
+                callback.apply(task.isSuccessful());
+            });
         }
     }
 

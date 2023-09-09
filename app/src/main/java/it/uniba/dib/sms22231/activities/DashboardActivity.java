@@ -2,7 +2,6 @@ package it.uniba.dib.sms22231.activities;
 
 import static android.content.ContentValues.TAG;
 
-import androidx.annotation.Px;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
@@ -11,12 +10,8 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
-import android.widget.TextView;
 
 import com.google.android.material.button.MaterialButton;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 
 import java.lang.reflect.Method;
 
@@ -35,9 +30,6 @@ public class DashboardActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dashboard);
-
-        Intent intent = new Intent(this, UserInformationActivity.class);
-        startActivity(intent);
     }
 
     @Override
@@ -48,6 +40,11 @@ public class DashboardActivity extends AppCompatActivity {
         dash2 = findViewById(R.id.dash2);
 
         userService.userObservable.subscribe(user -> {
+            if (user.userType == null) {
+                goToUserInformation();
+                finish();
+            }
+
             this.user = user;
             initDashboard();
         });

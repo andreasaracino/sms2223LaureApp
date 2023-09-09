@@ -10,13 +10,10 @@ import com.google.android.material.tabs.TabLayoutMediator;
 
 import it.uniba.dib.sms22231.R;
 import it.uniba.dib.sms22231.adapters.VPAdapter;
-import it.uniba.dib.sms22231.fragments.AvailableFragment;
 import it.uniba.dib.sms22231.fragments.MyThesisFragment;
-import it.uniba.dib.sms22231.fragments.RankingFragment;
 import it.uniba.dib.sms22231.fragments.TaskFragment;
 
 public class MyThesisActivity extends AppCompatActivity {
-
     private TabLayout tabLayout;
     private ViewPager2 viewPager2;
 
@@ -26,7 +23,6 @@ public class MyThesisActivity extends AppCompatActivity {
         setContentView(R.layout.activity_my_thesis);
 
         useViewPagerAdapter();
-
     }
 
     private void useViewPagerAdapter(){

@@ -24,7 +24,7 @@ public class User {
         }
     }
 
-    public User(String uid, String email, String fullName, String registrationNumber, UserTypes userType) {
+    public User(String uid, String email, String fullName, String registrationNumber, UserTypes userType, Boolean signedUp) {
         this.uid = uid;
         this.email = email;
         this.fullName = fullName;
