@@ -1,9 +1,12 @@
 package it.uniba.dib.sms22231.activities;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager2.widget.ViewPager2;
 
 import android.os.Bundle;
+import android.view.MenuItem;
 
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
@@ -23,6 +26,10 @@ public class MyStudentsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_students);
+
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setTitle(R.string.my_students);
+        actionBar.setDisplayHomeAsUpEnabled(true);
 
         useViewPagerAdapter();
 
@@ -48,5 +55,15 @@ public class MyStudentsActivity extends AppCompatActivity {
                     tab.setIcon(R.drawable.progress);
             }
         }).attach();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                this.finish();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }
