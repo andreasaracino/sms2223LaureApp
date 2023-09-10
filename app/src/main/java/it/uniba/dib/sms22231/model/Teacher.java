@@ -14,6 +14,8 @@ public class Teacher {
     }
 
     public Teacher(Map<String, Object> data) {
+        if (data == null) return;
+
         uid = (String) data.get("uid");
     }
 

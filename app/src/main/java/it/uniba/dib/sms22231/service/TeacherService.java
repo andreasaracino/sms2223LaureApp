@@ -4,9 +4,9 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.Map;
-import java.util.Objects;
 
 import it.uniba.dib.sms22231.model.Teacher;
+import it.uniba.dib.sms22231.model.User;
 import it.uniba.dib.sms22231.utility.CallbackFunction;
 import it.uniba.dib.sms22231.utility.Observable;
 
@@ -16,7 +16,7 @@ public class TeacherService {
 
     private FirebaseFirestore db;
     private UserService userService;
-    private DocumentReference studentDocument;
+    private DocumentReference teacherDocument;
     private Map<String, Object> teacherRawData;
     private Teacher teacherData;
     private final Observable<Teacher> teacherObservable = new Observable<>(null);
@@ -32,26 +32,24 @@ public class TeacherService {
             if (user != null) {
                 getTeacherByUid(user.uid);
             } else {
-                studentDocument = null;
+                teacherDocument = null;
             }
         });
     }
 
     private void getTeacherByUid(String uid) {
-        studentDocument = db.collection(COLLECTION_NAME).document(uid);
-        studentDocument.get().addOnCompleteListener(task -> {
+        teacherDocument = db.collection(COLLECTION_NAME).document(uid);
+        teacherDocument.get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 teacherRawData = task.getResult().getData();
-                teacherData = new Teacher(Objects.requireNonNull(teacherRawData));
+                teacherData = new Teacher(teacherRawData);
                 teacherObservable.next(teacherData);
             }
         });
     }
 
-    private void saveTeacher(Teacher teacher, CallbackFunction<Boolean> callback) {
-        if (studentDocument != null) {
-            studentDocument.set(teacher).addOnCompleteListener(task -> callback.apply(task.isSuccessful()));
-        }
+    public void saveTeacher(User user, CallbackFunction<Boolean> callback) {
+        teacherDocument.set(new Teacher(user.uid)).addOnCompleteListener(task -> callback.apply(task.isSuccessful()));
     }
 
     public static TeacherService getInstance() {

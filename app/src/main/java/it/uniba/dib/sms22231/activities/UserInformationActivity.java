@@ -2,10 +2,12 @@ package it.uniba.dib.sms22231.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import it.uniba.dib.sms22231.R;
 import it.uniba.dib.sms22231.config.UserTypes;
@@ -34,12 +36,15 @@ public class UserInformationActivity extends AppCompatActivity {
         super.onStart();
 
         userService = UserService.getInstance();
+
         userSubscription = userService.userObservable.subscribe(user -> {
             this.user = user;
             fullNameField.setText(user.fullName);
             regNumberField.setText(user.registrationNumber);
             if (user.userType != null) {
                 roleSpinner.setSelection(user.userType.ordinal());
+                // TODO decommentare questa riga
+                // roleSpinner.setEnabled(false);
             }
         });
     }
@@ -61,6 +66,19 @@ public class UserInformationActivity extends AppCompatActivity {
         user.fullName = fullNameField.getText().toString();
         user.userType = UserTypes.values()[roleSpinner.getSelectedItemPosition()];
         user.registrationNumber = regNumberField.getText().toString();
-        userService.saveUserData(user, isSuccessful -> finish());
+
+        userService.saveUserData(user, isSuccessful -> {
+            if (isSuccessful) {
+                goToDashboard();
+            } else {
+                Toast.makeText(this, "Error, try again later", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void goToDashboard() {
+        Intent intent = new Intent(this, DashboardActivity.class);
+        startActivity(intent);
+        finish();
     }
 }

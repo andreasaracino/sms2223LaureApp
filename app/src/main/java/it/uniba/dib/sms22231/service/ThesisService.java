@@ -8,7 +8,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 import java.util.ArrayList;
 import java.util.List;
 
-import it.uniba.dib.sms22231.model.Teacher;
+import it.uniba.dib.sms22231.model.Student;
 import it.uniba.dib.sms22231.model.Thesis;
 import it.uniba.dib.sms22231.utility.CallbackFunction;
 import it.uniba.dib.sms22231.utility.Observable;
@@ -18,7 +18,8 @@ public class ThesisService {
     private static ThesisService instance;
 
     private FirebaseFirestore db;
-    private UserService userService;
+    private final UserService userService = UserService.getInstance();;
+    private final StudentService studentService = StudentService.getInstance();
     private CollectionReference thesesCollection;
     private final Observable<List<Thesis>> userOwnTheses = new Observable<>(null);
 
@@ -28,12 +29,11 @@ public class ThesisService {
 
     private void initData() {
         db = FirebaseFirestore.getInstance();
-        userService = UserService.getInstance();
         thesesCollection = db.collection(COLLECTION_NAME);
     }
 
     public void getUserOwnTheses() {
-        String uid = userService.userObservable.getValue().uid;
+        String uid = userService.getUserData().uid;
 
         thesesCollection.whereEqualTo("teacherId", uid).get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
@@ -41,6 +41,26 @@ public class ThesisService {
                 userOwnTheses.next(theses);
             }
         });
+    }
+
+    public Observable<List<Thesis>> getSavedTheses() {
+        Observable<List<Thesis>> savedTheses = new Observable<>();
+        Student student = studentService.getStudentData();
+
+        thesesCollection.whereIn("id", student.savedThesesIds).get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                List<Thesis> theses = new ArrayList<>();
+                QuerySnapshot result = task.getResult();
+
+                for (QueryDocumentSnapshot rawThesis : result) {
+                    theses.add(new Thesis(rawThesis.getData()));
+                }
+
+                savedTheses.next(theses);
+            }
+        });
+
+        return savedTheses;
     }
 
     public void getThesesById(List<String> ids, CallbackFunction<List<Thesis>> callback) {
