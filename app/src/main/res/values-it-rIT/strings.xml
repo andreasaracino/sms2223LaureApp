@@ -26,4 +26,9 @@
     <string name="requests">Richieste</string>
     <string name="progress">In corso</string>
     <string name="addThesis">Aggiungi Tesi</string>
+    <string name="title">Titolo:</string>
+    <string name="description">Descrizione:</string>
+    <string name="addFile">Aggiungi File</string>
+    <string name="cancel">Annulla</string>
+    <string name="saveThesis">Salva Tesi</string>
 </resources>

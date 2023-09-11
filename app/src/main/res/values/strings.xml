@@ -33,5 +33,10 @@
     <string name="requests">Requests</string>
     <string name="progress">In progress</string>
     <string name="addThesis">Add Thesis</string>
+    <string name="title">Title:</string>
+    <string name="description">Description:</string>
+    <string name="addFile">Add File</string>
+    <string name="cancel">Cancel</string>
+    <string name="saveThesis">Save Thesis</string>
 
 </resources>
