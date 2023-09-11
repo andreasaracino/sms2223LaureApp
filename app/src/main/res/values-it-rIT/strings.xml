@@ -25,4 +25,5 @@
     <string name="Thesis">Tesi</string>
     <string name="requests">Richieste</string>
     <string name="progress">In corso</string>
+    <string name="addThesis">Aggiungi Tesi</string>
 </resources>
