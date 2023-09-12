@@ -31,4 +31,7 @@
     <string name="addFile">Aggiungi File</string>
     <string name="cancel">Annulla</string>
     <string name="saveThesis">Salva Tesi</string>
+    <string name="requirement">Aggiungi vincolo</string>
+    <string name="average">Media</string>
+    <string name="exam">Esame</string>
 </resources>

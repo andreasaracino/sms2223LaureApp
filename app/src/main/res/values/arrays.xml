@@ -4,4 +4,8 @@
         <item>@string/student</item>
         <item>@string/teacher</item>
     </string-array>
+    <string-array name="requirements">
+        <item>@string/average</item>
+        <item>@string/exam</item>
+    </string-array>
 </resources>

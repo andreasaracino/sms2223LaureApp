@@ -38,5 +38,8 @@
     <string name="addFile">Add File</string>
     <string name="cancel">Cancel</string>
     <string name="saveThesis">Save Thesis</string>
+    <string name="requirement">Add Requirements</string>
+    <string name="average">Average</string>
+    <string name="exam">Exam</string>
 
 </resources>
