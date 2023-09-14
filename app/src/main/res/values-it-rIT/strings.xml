@@ -31,7 +31,11 @@
     <string name="addFile">Aggiungi File</string>
     <string name="cancel">Annulla</string>
     <string name="saveThesis">Salva Tesi</string>
-    <string name="requirement">Aggiungi vincolo</string>
+    <string name="requirement">Aggiungi requisito</string>
     <string name="average">Media</string>
     <string name="exam">Esame</string>
+    <string name="Cancel">Annulla</string>
+    <string name="addReq">Scegli il tipo di requisito e il suo valore</string>
+    <string name="timelimit">Tempo Limite</string>
+    <string name="error">Campo obbligatorio</string>
 </resources>

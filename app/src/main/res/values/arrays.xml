@@ -7,5 +7,7 @@
     <string-array name="requirements">
         <item>@string/average</item>
         <item>@string/exam</item>
+        <item>@string/skill</item>
+        <item>@string/timelimit</item>
     </string-array>
 </resources>

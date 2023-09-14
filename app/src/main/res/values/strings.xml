@@ -41,5 +41,10 @@
     <string name="requirement">Add Requirements</string>
     <string name="average">Average</string>
     <string name="exam">Exam</string>
+    <string name="Cancel">Cancel</string>
+    <string name="addReq">Choose requirement\'s type and its value</string>
+    <string name="skill" translatable="false">Skill</string>
+    <string name="timelimit">Time Limit</string>
+    <string name="error">Mandatory field</string>
 
 </resources>

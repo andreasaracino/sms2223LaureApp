@@ -95,6 +95,8 @@ public class AddThesisActivity extends AppCompatActivity {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         final View customLayout = getLayoutInflater().inflate(R.layout.custom_alert, null);
         builder.setView(customLayout);
+        builder.setTitle(R.string.requirement);
+        builder.setMessage(R.string.addReq);
 
         builder.setPositiveButton("OK", (dialog, which) -> {
             String req = null;
@@ -107,12 +109,24 @@ public class AddThesisActivity extends AppCompatActivity {
                     break;
                 case 1:
                     req = (getString(R.string.exam) + ": " + (editText.getText().toString()));
+                    break;
+                case 2:
+                    req = (getString(R.string.skill) + ": " + (editText.getText().toString()));
+                    break;
+                case 3:
+                    req = (getString(R.string.timelimit) + ": " + (editText.getText().toString()));
             }
-            if (req != null) {
+            String control =editText.getText().toString();
+            if ( control.trim().isEmpty() ) {
+                editText.setError(getText(R.string.error));
+                editText.requestFocus();
+            } else {
                 requirement.add(req);
                 fillList(requirement, listViewReq);
             }
         });
+
+        builder.setNegativeButton(R.string.cancel, null);
 
         AlertDialog dialog = builder.create();
         dialog.show();
