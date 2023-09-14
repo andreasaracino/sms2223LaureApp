@@ -105,13 +105,16 @@ public class AddThesisActivity extends AppCompatActivity {
 
     public void addRequirement(View view) {
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
         final View customLayout = getLayoutInflater().inflate(R.layout.custom_alert, null);
-        builder.setView(customLayout);
-        builder.setTitle(R.string.requirement);
-        builder.setMessage(R.string.addReq);
+        AlertDialog builder = new AlertDialog.Builder(this)
+                .setView(customLayout)
+                .setTitle(R.string.requirement)
+                .setMessage(R.string.addReq)
+                .setPositiveButton("OK", null)
+                .setNegativeButton(R.string.cancel, null)
+                .show();
 
-        builder.setPositiveButton("OK", (dialog, which) -> {
+        builder.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(view1 -> {
             Requirement req = null;
             Spinner spinner = customLayout.findViewById(R.id.reqSpinner);
             EditText editText = customLayout.findViewById(R.id.reqEdit);
@@ -137,13 +140,9 @@ public class AddThesisActivity extends AppCompatActivity {
             } else {
                 requirements.add(req);
                 //fillList(requirements.to, listViewReq);
+                builder.dismiss();
             }
         });
-
-        builder.setNegativeButton(R.string.cancel, null);
-
-        AlertDialog dialog = builder.create();
-        dialog.show();
     }
 
     public void onSave(View view) {
