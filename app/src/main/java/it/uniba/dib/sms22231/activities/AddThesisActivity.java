@@ -153,7 +153,7 @@ public class AddThesisActivity extends AppCompatActivity {
         thesis.description = thesisDescription.getText().toString();
 
         thesisService.saveNewThesis(thesis, requirements, filesList, isSuccessful -> {
-            Toast.makeText(this, isSuccessful, Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, isSuccessful.toString(), Toast.LENGTH_SHORT).show();
         });
     }
 }
