@@ -1,6 +1,9 @@
 package it.uniba.dib.sms22231.service;
 
+import android.net.Uri;
+
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -8,6 +11,8 @@ import com.google.firebase.firestore.QuerySnapshot;
 import java.util.ArrayList;
 import java.util.List;
 
+import it.uniba.dib.sms22231.model.Attachment;
+import it.uniba.dib.sms22231.model.Requirement;
 import it.uniba.dib.sms22231.model.Student;
 import it.uniba.dib.sms22231.model.Thesis;
 import it.uniba.dib.sms22231.utility.CallbackFunction;
@@ -18,8 +23,9 @@ public class ThesisService {
     private static ThesisService instance;
 
     private FirebaseFirestore db;
-    private final UserService userService = UserService.getInstance();;
+    private final UserService userService = UserService.getInstance();
     private final StudentService studentService = StudentService.getInstance();
+    private AttachmentService attachmentService = AttachmentService.getInstance();
     private CollectionReference thesesCollection;
     private final Observable<List<Thesis>> userOwnTheses = new Observable<>(null);
 
@@ -69,8 +75,17 @@ public class ThesisService {
         });
     }
 
-    public void saveNewThesis(Thesis thesis, CallbackFunction<Boolean> callback) {
-        thesesCollection.add(thesis).addOnCompleteListener(task -> callback.apply(task.isSuccessful()));
+    public void saveNewThesis(Thesis thesis, List<Requirement> requirements, List<Uri> attachments, CallbackFunction<Boolean> callback) {
+        thesesCollection.add(thesis).addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                DocumentReference savedThesis = task.getResult();
+
+                attachmentService.saveAttachments(attachments, savedFiles -> {
+                    savedThesis.update("attachmentIds", savedFiles);
+                    callback.apply(true);
+                });
+            }
+        });
     }
 
     public void modifyThesis(Thesis thesis, CallbackFunction<Boolean> callback) {

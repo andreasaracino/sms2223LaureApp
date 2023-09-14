@@ -20,19 +20,28 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
 import it.uniba.dib.sms22231.R;
+import it.uniba.dib.sms22231.model.Attachment;
+import it.uniba.dib.sms22231.model.Requirement;
+import it.uniba.dib.sms22231.model.Thesis;
+import it.uniba.dib.sms22231.service.ThesisService;
 
 public class AddThesisActivity extends AppCompatActivity {
+    private ThesisService thesisService = ThesisService.getInstance();
 
     private ActivityResultLauncher<Intent> resultLauncher;
+    private EditText thesisTitle;
+    private EditText thesisDescription;
     private ListView listViewFile;
     private ListView listViewReq;
     private ArrayList<String> fileName;
-    private ArrayList<String> requirement;
+    private ArrayList<Requirement> requirements;
     private ArrayAdapter<String> listadapter;
+    private ArrayList<Uri> filesList;
 
 
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,10 +52,13 @@ public class AddThesisActivity extends AppCompatActivity {
         actionBar.setTitle(R.string.addThesis);
         actionBar.setDisplayHomeAsUpEnabled(true);
 
+        thesisTitle = findViewById(R.id.titleEditText);
+        thesisDescription = findViewById(R.id.descriptionEditText);
         listViewFile = findViewById(R.id.fileListView);
-        fileName = new ArrayList<String>();
+        fileName = new ArrayList<>();
         listViewReq = findViewById(R.id.reqListView);
-        requirement = new ArrayList<String>();
+        requirements = new ArrayList<>();
+        filesList = new ArrayList<>();
 
         resultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
             @Override
@@ -56,6 +68,7 @@ public class AddThesisActivity extends AppCompatActivity {
                     Uri uri = data.getData();
                     String name = getNameFromUri(uri);
                     fileName.add(name);
+                    filesList.add(uri);
                     fillList(fileName, listViewFile);
                 }
             }
@@ -97,20 +110,21 @@ public class AddThesisActivity extends AppCompatActivity {
         builder.setView(customLayout);
 
         builder.setPositiveButton("OK", (dialog, which) -> {
-            String req = null;
+            Requirement req = null;
             Spinner spinner = customLayout.findViewById(R.id.reqSpinner);
             EditText editText = customLayout.findViewById(R.id.reqEdit);
             int position = spinner.getSelectedItemPosition();
             switch (position) {
                 case 0:
-                    req = (getString(R.string.average) + ": " + (editText.getText().toString()));
+                    req = new Requirement(null, getString(R.string.average), null, (editText.getText().toString()));
                     break;
                 case 1:
-                    req = (getString(R.string.exam) + ": " + (editText.getText().toString()));
+                    req = new Requirement(null, getString(R.string.exam), null, (editText.getText().toString()));
             }
+
             if (req != null) {
-                requirement.add(req);
-                fillList(requirement, listViewReq);
+                requirements.add(req);
+                //fillList(requirements.to, listViewReq);
             }
         });
 
@@ -118,4 +132,14 @@ public class AddThesisActivity extends AppCompatActivity {
         dialog.show();
     }
 
+    public void onSave(View view) {
+        Thesis thesis = new Thesis();
+
+        thesis.title = thesisTitle.getText().toString();
+        thesis.description = thesisDescription.getText().toString();
+
+        thesisService.saveNewThesis(thesis, requirements, filesList, isSuccessful -> {
+            Toast.makeText(this, isSuccessful, Toast.LENGTH_SHORT).show();
+        });
+    }
 }

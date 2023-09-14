@@ -1,6 +1,7 @@
 package it.uniba.dib.sms22231.model;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class Thesis {
@@ -8,17 +9,18 @@ public class Thesis {
     public String title;
     public String description;
     public String teacherId;
-    public Attachment[] attachment;
+    public List<Attachment> attachments;
+    public List<Requirement> requirements;
 
     public Thesis() {
     }
 
-    public Thesis(String id, String title, String description, String teacherId, Attachment[] attachment) {
+    public Thesis(String id, String title, String description, String teacherId, List<Attachment> attachments) {
         this.id = id;
         this.title = title;
         this.description = description;
         this.teacherId = teacherId;
-        this.attachment = attachment;
+        this.attachments = attachments;
     }
 
     public Thesis(Map<String, Object> data) {
