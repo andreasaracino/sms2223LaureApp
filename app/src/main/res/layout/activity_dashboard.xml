@@ -21,14 +21,16 @@
             style="@style/button"
             android:layout_width="200dp"
             android:layout_height="200dp"
-            android:onClick="dash1OnClick" />
+            android:onClick="dash1OnClick"
+            app:iconGravity="top" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/dash2"
             style="@style/button"
             android:layout_width="200dp"
             android:layout_height="200dp"
-            android:onClick="dash2OnClick" />
+            android:onClick="dash2OnClick"
+            app:iconGravity="top" />
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

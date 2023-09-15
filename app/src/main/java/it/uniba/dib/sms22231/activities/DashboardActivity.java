@@ -5,6 +5,7 @@ import static android.content.ContentValues.TAG;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -56,32 +57,25 @@ public class DashboardActivity extends AppCompatActivity {
         }
         switch (user.userType) {
             case STUDENT:
-                dash1.setText(R.string.all_theses);
-                dash1.setIconResource(R.drawable.eletesi);
-                dash1.setIconGravity(MaterialButton.ICON_GRAVITY_TEXT_TOP);
-                dash1.setIconSize(200);
-                dash1.setIconPadding(50);
-                dash2.setText(R.string.my_thesis);
-                dash2.setIconResource(R.drawable.miatesi);
-                dash2.setIconGravity(MaterialButton.ICON_GRAVITY_TEXT_TOP);
-                dash2.setIconSize(200);
-                dash2.setIconPadding(50);
+                setDash(dash1, R.drawable.eletesi, R.string.all_theses);
+                setDash(dash2, R.drawable.miatesi, R.string.my_thesis);
                 break;
             case TEACHER:
-                dash1.setText(R.string.my_theses);
-                dash1.setIconResource(R.drawable.mietesi);
-                dash1.setIconGravity(MaterialButton.ICON_GRAVITY_TEXT_TOP);
-                dash1.setIconSize(200);
-                dash1.setIconPadding(50);
-                dash2.setText(R.string.my_students);
-                dash2.setIconResource(R.drawable.geststud);
-                dash2.setIconGravity(MaterialButton.ICON_GRAVITY_TEXT_TOP);
-                dash2.setIconSize(200);
-                dash2.setIconPadding(50);
+                setDash(dash1, R.drawable.mietesi, R.string.my_theses);
+                setDash(dash2, R.drawable.geststud, R.string.my_students);
         }
     }
 
-    public void dash1OnClick (View view){
+    public void setDash(MaterialButton dash, int iconId, int textId) {
+        dash.setText(textId);
+        dash.setIconSize(200);
+        dash.setIconPadding(50);
+        dash.setIconGravity(MaterialButton.ICON_GRAVITY_TEXT_TOP);
+        dash.setIconResource(iconId);
+
+    }
+
+    public void dash1OnClick(View view) {
         Intent intent = null;
         if (user.userType == null) {
             return;
@@ -93,12 +87,12 @@ public class DashboardActivity extends AppCompatActivity {
             case TEACHER:
                 intent = new Intent(this, MyThesesActivity.class);
         }
-        if (intent != null){
+        if (intent != null) {
             startActivity(intent);
         }
     }
 
-    public void dash2OnClick (View view){
+    public void dash2OnClick(View view) {
         Intent intent = null;
         if (user.userType == null) {
             return;
@@ -110,7 +104,7 @@ public class DashboardActivity extends AppCompatActivity {
             case TEACHER:
                 intent = new Intent(this, MyStudentsActivity.class);
         }
-        if (intent != null){
+        if (intent != null) {
             startActivity(intent);
         }
     }
@@ -135,17 +129,15 @@ public class DashboardActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.dashboard_menu, menu);
 
-        if(menu.getClass().getSimpleName().equals("MenuBuilder")){
-            try{
+        if (menu.getClass().getSimpleName().equals("MenuBuilder")) {
+            try {
                 Method m = menu.getClass().getDeclaredMethod(
                         "setOptionalIconsVisible", Boolean.TYPE);
                 m.setAccessible(true);
                 m.invoke(menu, true);
-            }
-            catch(NoSuchMethodException e){
+            } catch (NoSuchMethodException e) {
                 Log.e(TAG, "onMenuOpened", e);
-            }
-            catch(Exception e){
+            } catch (Exception e) {
                 throw new RuntimeException(e);
             }
         }
