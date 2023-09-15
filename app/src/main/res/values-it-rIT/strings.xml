@@ -38,4 +38,6 @@
     <string name="addReq">Scegli il tipo di requisito e il suo valore</string>
     <string name="timelimit">Tempo Limite</string>
     <string name="error">Campo obbligatorio</string>
+    <string name="delete">Elimina</string>
+    <string name="suredelete">Eliminare questo elemento?</string>
 </resources>

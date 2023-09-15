@@ -46,5 +46,7 @@
     <string name="skill" translatable="false">Skill</string>
     <string name="timelimit">Time Limit</string>
     <string name="error">Mandatory field</string>
+    <string name="delete">Delete</string>
+    <string name="suredelete">Delete this element?</string>
 
 </resources>
