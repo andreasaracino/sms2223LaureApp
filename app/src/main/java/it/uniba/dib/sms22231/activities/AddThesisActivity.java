@@ -121,16 +121,16 @@ public class AddThesisActivity extends AppCompatActivity {
             int position = spinner.getSelectedItemPosition();
             switch (position) {
                 case 0:
-                    req = new Requirement(null, getString(R.string.average), null, (editText.getText().toString()));
+                    req = new Requirement(null,null, getString(R.string.average),  (editText.getText().toString()));
                     break;
                 case 1:
-                    req = new Requirement(null, getString(R.string.exam), null, (editText.getText().toString()));
+                    req = new Requirement(null, null, getString(R.string.exam),  (editText.getText().toString()));
                     break;
                 case 2:
-                    req = new Requirement(null, getString(R.string.skill), null, (editText.getText().toString()));
+                    req = new Requirement(null, null, getString(R.string.skill),  (editText.getText().toString()));
                     break;
                 case 3:
-                    req = new Requirement(null, getString(R.string.timelimit), null, (editText.getText().toString()));
+                    req = new Requirement(null, null, getString(R.string.timelimit),  (editText.getText().toString()));
 
             }
             String control =editText.getText().toString();
