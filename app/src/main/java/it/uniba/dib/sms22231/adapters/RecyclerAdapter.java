@@ -33,9 +33,9 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.Viewho
     @Override
     public void onBindViewHolder(@NonNull RecyclerAdapter.Viewholder holder, int position) {
         String title = (cardData.get(position)).getTitle();
-        String name = (cardData.get(position)).getName();
+        String subtitle = (cardData.get(position)).getSubtitle();
         holder.titleText.setText(title);
-        holder.nameText.setText(name);
+        holder.subtitleText.setText(subtitle);
     }
 
     @Override
@@ -45,11 +45,11 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.Viewho
 
     public static class Viewholder extends RecyclerView.ViewHolder{
         private final TextView titleText;
-        private final TextView nameText;
+        private final TextView subtitleText;
         public Viewholder(@NonNull View itemView) {
             super(itemView);
             titleText = itemView.findViewById(R.id.titleCardText);
-            nameText = itemView.findViewById(R.id.nameCardText);
+            subtitleText = itemView.findViewById(R.id.subtitleCardText);
         }
     }
 }

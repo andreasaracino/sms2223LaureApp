@@ -2,18 +2,18 @@ package it.uniba.dib.sms22231.model;
 
 public class CardData {
     private String title;
-    private String name;
+    private String subtitle;
 
-    public CardData(String title, String name) {
+    public CardData(String title, String subtitle) {
         this.title = title;
-        this.name = name;
+        this.subtitle = subtitle;
     }
 
     public String getTitle() {
         return title;
     }
 
-    public String getName() {
-        return name;
+    public String getSubtitle() {
+        return subtitle;
     }
 }
