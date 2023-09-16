@@ -28,6 +28,7 @@ public class Requirement {
 
     public Map<String, Object> toMap() {
         Map<String, Object> map = new HashMap<>();
+        map.put("id", id);
         map.put("thesisId", thesisId);
         map.put("description", description);
         map.put("value", value);

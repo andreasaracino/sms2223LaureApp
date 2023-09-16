@@ -9,7 +9,6 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
@@ -24,18 +23,17 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.PopupMenu;
 import android.widget.Spinner;
-import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.concurrent.atomic.AtomicReference;
 
 import it.uniba.dib.sms22231.R;
-import it.uniba.dib.sms22231.model.Attachment;
 import it.uniba.dib.sms22231.model.Requirement;
 import it.uniba.dib.sms22231.model.Thesis;
 import it.uniba.dib.sms22231.service.ThesisService;
 
 public class AddThesisActivity extends AppCompatActivity {
-    private ThesisService thesisService = ThesisService.getInstance();
+    private final ThesisService thesisService = ThesisService.getInstance();
 
     private ActivityResultLauncher<Intent> resultLauncher;
     private EditText thesisTitle;
@@ -223,8 +221,14 @@ public class AddThesisActivity extends AppCompatActivity {
         thesis.title = thesisTitle.getText().toString();
         thesis.description = thesisDescription.getText().toString();
 
+        AtomicReference<Boolean> success = new AtomicReference<>(false);
+
         thesisService.saveNewThesis(thesis, requirements, filesList, isSuccessful -> {
-            Toast.makeText(this, isSuccessful.toString(), Toast.LENGTH_SHORT).show();
+            if (success.get()) {
+                finish();
+            }
+
+            success.set(isSuccessful);
         });
     }
 

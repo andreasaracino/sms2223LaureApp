@@ -10,8 +10,8 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 
-import it.uniba.dib.sms22231.model.Attachment;
 import it.uniba.dib.sms22231.model.Requirement;
 import it.uniba.dib.sms22231.model.Student;
 import it.uniba.dib.sms22231.model.Thesis;
@@ -22,21 +22,15 @@ public class ThesisService {
     private static final String COLLECTION_NAME = "theses";
     private static ThesisService instance;
 
-    private FirebaseFirestore db;
+    private final FirebaseFirestore db = FirebaseFirestore.getInstance();
+    private final CollectionReference thesesCollection = db.collection(COLLECTION_NAME);
     private final UserService userService = UserService.getInstance();
     private final StudentService studentService = StudentService.getInstance();
-    private AttachmentService attachmentService = AttachmentService.getInstance();
-    private CollectionReference thesesCollection;
+    private final AttachmentService attachmentService = AttachmentService.getInstance();
+    private final RequirementService requirementService = RequirementService.getInstance();
     private final Observable<List<Thesis>> userOwnTheses = new Observable<>(null);
 
-    private ThesisService() {
-        initData();
-    }
-
-    private void initData() {
-        db = FirebaseFirestore.getInstance();
-        thesesCollection = db.collection(COLLECTION_NAME);
-    }
+    private ThesisService() {}
 
     public void getUserOwnTheses() {
         String uid = userService.getUserData().uid;
@@ -79,11 +73,12 @@ public class ThesisService {
         thesesCollection.add(thesis).addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 DocumentReference savedThesis = task.getResult();
-
                 attachmentService.saveAttachments(attachments, savedFiles -> {
                     savedThesis.update("attachmentIds", savedFiles);
-                    callback.apply(true);
+                    callback.apply(savedFiles.size() > 0);
                 });
+
+                requirementService.addRequirements(requirements, savedThesis.getId(), callback);
             }
         });
     }
