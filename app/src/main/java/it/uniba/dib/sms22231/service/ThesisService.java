@@ -28,7 +28,7 @@ public class ThesisService {
     private final StudentService studentService = StudentService.getInstance();
     private final AttachmentService attachmentService = AttachmentService.getInstance();
     private final RequirementService requirementService = RequirementService.getInstance();
-    private final Observable<List<Thesis>> userOwnTheses = new Observable<>(null);
+    public final Observable<List<Thesis>> userOwnTheses = new Observable<>(null);
 
     private ThesisService() {}
 
