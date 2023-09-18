@@ -19,7 +19,7 @@ public class TeacherService {
     private DocumentReference teacherDocument;
     private Map<String, Object> teacherRawData;
     private Teacher teacherData;
-    private final Observable<Teacher> teacherObservable = new Observable<>(null);
+    public final Observable<Teacher> teacherObservable = new Observable<>(null);
 
     private TeacherService() {
         initData();
@@ -37,7 +37,7 @@ public class TeacherService {
         });
     }
 
-    private void getTeacherByUid(String uid) {
+    public void getTeacherByUid(String uid) {
         teacherDocument = db.collection(COLLECTION_NAME).document(uid);
         teacherDocument.get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {

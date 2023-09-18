@@ -8,6 +8,8 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.database.Cursor;
@@ -28,9 +30,15 @@ import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicReference;
 
 import it.uniba.dib.sms22231.R;
+import it.uniba.dib.sms22231.adapters.RecyclerAdapter;
+import it.uniba.dib.sms22231.model.CardData;
 import it.uniba.dib.sms22231.model.Requirement;
+import it.uniba.dib.sms22231.model.Teacher;
 import it.uniba.dib.sms22231.model.Thesis;
+import it.uniba.dib.sms22231.model.User;
+import it.uniba.dib.sms22231.service.TeacherService;
 import it.uniba.dib.sms22231.service.ThesisService;
+import it.uniba.dib.sms22231.service.UserService;
 
 public class AddThesisActivity extends AppCompatActivity {
     private final ThesisService thesisService = ThesisService.getInstance();
@@ -46,6 +54,8 @@ public class AddThesisActivity extends AppCompatActivity {
     private ArrayList<Uri> filesList;
     private ArrayList<String> reqString;
 
+    private final UserService userService = UserService.getInstance();
+    private final TeacherService teacherService = TeacherService.getInstance();
 
 
     protected void onCreate(Bundle savedInstanceState) {
@@ -217,6 +227,18 @@ public class AddThesisActivity extends AppCompatActivity {
 
     public void onSave(View view) {
         Thesis thesis = new Thesis();
+
+        User user = userService.getUserData();
+        String userId = user.uid;
+
+
+        teacherService.teacherObservable.subscribe(teacher1 -> {
+            Teacher teacher = teacher1;
+            String teacherId = teacher.uid;
+            thesis.teacherId = teacherId;
+        });
+
+        teacherService.getTeacherByUid(userId);
 
         thesis.title = thesisTitle.getText().toString();
         thesis.description = thesisDescription.getText().toString();

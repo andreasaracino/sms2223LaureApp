@@ -17,8 +17,18 @@ import java.util.ArrayList;
 import it.uniba.dib.sms22231.R;
 import it.uniba.dib.sms22231.adapters.RecyclerAdapter;
 import it.uniba.dib.sms22231.model.CardData;
+import it.uniba.dib.sms22231.model.Thesis;
+import it.uniba.dib.sms22231.model.User;
+import it.uniba.dib.sms22231.service.ThesisService;
+import it.uniba.dib.sms22231.service.UserService;
+import it.uniba.dib.sms22231.utility.CallbackFunction;
 
 public class MyThesesActivity extends AppCompatActivity {
+
+    private final ThesisService thesisService = ThesisService.getInstance();
+    private final UserService userService = UserService.getInstance();
+    private User user;
+    private ArrayList<CardData> cardData;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,19 +39,29 @@ public class MyThesesActivity extends AppCompatActivity {
         actionBar.setTitle(R.string.my_theses);
         actionBar.setDisplayHomeAsUpEnabled(true);
 
-        //TODO fake data - recycler test
-        ArrayList<CardData> cardData = new ArrayList<>();
-        CardData tes1 = new CardData("TITOLO: Interazione utente","PROFESSORE: Marcello Piteo" );
-        cardData.add(tes1);
-        CardData tesi2 = new CardData("TITOLO: Programmazione","PROFESSORE: Andrea Saracino" );
-        cardData.add(tesi2);
-        RecyclerView rec = findViewById(R.id.thesisRecycler);
-        RecyclerAdapter  recad = new RecyclerAdapter(cardData, this);
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL,false);
-        rec.setLayoutManager(linearLayoutManager);
-        rec.setAdapter(recad);
+        fillCard();
 
+    }
 
+    private void fillCard() {
+
+        user = userService.getUserData();
+        String subtitle = user.fullName;
+        thesisService.userOwnTheses.subscribe(theses -> {
+            cardData = new ArrayList<>();
+            for (Thesis t : theses) {
+                String title = t.title;
+                CardData thesis = new CardData(title, subtitle);
+                cardData.add(thesis);
+            }
+            RecyclerView rec = findViewById(R.id.thesisRecycler);
+            RecyclerAdapter  recad = new RecyclerAdapter(cardData, this);
+            LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL,false);
+            rec.setLayoutManager(linearLayoutManager);
+            rec.setAdapter(recad);
+        });
+
+        thesisService.getUserOwnTheses();
     }
 
     @Override
