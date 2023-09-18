@@ -227,19 +227,10 @@ public class AddThesisActivity extends AppCompatActivity {
 
     public void onSave(View view) {
         Thesis thesis = new Thesis();
-
         User user = userService.getUserData();
         String userId = user.uid;
 
-
-        teacherService.teacherObservable.subscribe(teacher1 -> {
-            Teacher teacher = teacher1;
-            String teacherId = teacher.uid;
-            thesis.teacherId = teacherId;
-        });
-
-        teacherService.getTeacherByUid(userId);
-
+        thesis.teacherId = userId;
         thesis.title = thesisTitle.getText().toString();
         thesis.description = thesisDescription.getText().toString();
 
