@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
 import it.uniba.dib.sms22231.model.Requirement;
+import it.uniba.dib.sms22231.model.Thesis;
 import it.uniba.dib.sms22231.utility.CallbackFunction;
 import it.uniba.dib.sms22231.utility.Observable;
 
@@ -19,9 +20,9 @@ public class RequirementService {
     private final FirebaseFirestore db = FirebaseFirestore.getInstance();
     private final CollectionReference requirementsCollection = db.collection(COLLECTION_NAME);
 
-    public Observable<List<Requirement>> getRequirementsByThesisId(String thesisId) {
+    public Observable<List<Requirement>> getRequirementsByThesis(Thesis thesis) {
         return new Observable<>((next) -> {
-            requirementsCollection.whereEqualTo("thesisId", thesisId).get().addOnCompleteListener(task -> {
+            requirementsCollection.whereEqualTo("thesisId", thesis.id).get().addOnCompleteListener(task -> {
                 List<Requirement> requirements = new ArrayList<>();
                 QuerySnapshot querySnapshot = task.getResult();
 
