@@ -32,13 +32,20 @@ public class ThesisService {
 
     private ThesisService() {}
 
+    public Observable<List<Thesis>> getAllTheses() {
+        return new Observable<>((next) -> {
+            thesesCollection.get().addOnCompleteListener(task -> {
+                mapThesesResult(task.getResult(), next);
+            });
+        });
+    }
+
     public void getUserOwnTheses() {
         String uid = userService.getUserData().uid;
 
         thesesCollection.whereEqualTo("teacherId", uid).get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
-                List<Thesis> theses = mapThesesResult(task.getResult());
-                userOwnTheses.next(theses);
+                mapThesesResult(task.getResult(), userOwnTheses::next);
             }
         });
     }
@@ -65,7 +72,7 @@ public class ThesisService {
 
     public void getThesesById(List<String> ids, CallbackFunction<List<Thesis>> callback) {
         thesesCollection.whereIn("id", ids).get().addOnCompleteListener(task -> {
-            callback.apply(mapThesesResult(task.getResult()));
+            mapThesesResult(task.getResult(), callback);
         });
     }
 
@@ -87,16 +94,23 @@ public class ThesisService {
         thesesCollection.document(thesis.id).set(thesis).addOnCompleteListener(task -> callback.apply(task.isSuccessful()));
     }
 
-    private List<Thesis> mapThesesResult(QuerySnapshot querySnapshot) {
+    private void mapThesesResult(QuerySnapshot querySnapshot, CallbackFunction<List<Thesis>> callback) {
         ArrayList<Thesis> theses = new ArrayList<>();
 
         for (QueryDocumentSnapshot thesisRaw : querySnapshot) {
             Thesis thesis = new Thesis(thesisRaw.getData());
             thesis.id = thesisRaw.getId();
-            theses.add(thesis);
+
+            userService.getUserByUid(thesis.teacherId, user -> {
+                thesis.teacherFullname = user.fullName;
+                theses.add(thesis);
+
+                if (theses.size() == querySnapshot.size()) {
+                    callback.apply(theses);
+                }
+            });
         }
 
-        return theses;
     }
 
     public static ThesisService getInstance() {

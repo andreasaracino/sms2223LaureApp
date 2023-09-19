@@ -1,16 +1,14 @@
 package it.uniba.dib.sms22231.service;
 
-import android.widget.Toast;
-
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.Objects;
 
-import it.uniba.dib.sms22231.R;
 import it.uniba.dib.sms22231.model.User;
 import it.uniba.dib.sms22231.utility.Observable;
 import it.uniba.dib.sms22231.utility.CallbackFunction;
@@ -18,10 +16,11 @@ import it.uniba.dib.sms22231.utility.CallbackFunction;
 // SERVICE SINGLETON
 public class UserService {
     static UserService instance;    // Istanza singleton
-    private FirebaseFirestore db;   // Istanza database Firestore
-    private FirebaseAuth mAuth;     // Istanza gestore autenticazione
+    private final FirebaseFirestore db = FirebaseFirestore.getInstance();   // Istanza database Firestore
+    private final FirebaseAuth mAuth = FirebaseAuth.getInstance();     // Istanza gestore autenticazione
     private FirebaseUser user;      // Istanza utente corrente
     private DocumentReference userDocument; // Riferimento al documento sul database
+    private final CollectionReference usersCollection = db.collection("users");
     public final Observable<User> userObservable = new Observable<>();  // Observable contenente i dati dell'utente
 
     private UserService() {
@@ -34,8 +33,6 @@ public class UserService {
      * se l'utente è loggato, allora ottieni i suoi dati
      */
     private void initData() {
-        db = FirebaseFirestore.getInstance();
-        mAuth = FirebaseAuth.getInstance();
         user = mAuth.getCurrentUser();
         if (user != null) {
             updateDocuments();
@@ -49,7 +46,7 @@ public class UserService {
      * successivamente si passano anche UID ed email dell'utente loggato, oltre ad aggiornare l'observable
      */
     private void updateDocuments() {
-        userDocument = db.collection("users").document(user.getUid());
+        userDocument = usersCollection.document(user.getUid());
         userDocument.get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 DocumentSnapshot doc = task.getResult();
@@ -127,6 +124,14 @@ public class UserService {
      */
     public User getUserData() {
         return userObservable.getValue();
+    }
+
+    public void getUserByUid(String uid, CallbackFunction<User> callback) {
+        usersCollection.document(uid).get().addOnCompleteListener(task -> {
+           User user = new User(task.getResult().getData());
+
+           callback.apply(user);
+        });
     }
 
     /*

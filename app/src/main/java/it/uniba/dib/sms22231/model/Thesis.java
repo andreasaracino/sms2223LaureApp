@@ -9,6 +9,7 @@ public class Thesis {
     public String title;
     public String description;
     public String teacherId;
+    public String teacherFullname;
     public List<Attachment> attachments;
     public List<Requirement> requirements;
 
