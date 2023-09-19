@@ -1,5 +1,6 @@
 package it.uniba.dib.sms22231.fragments;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -13,12 +14,15 @@ import android.view.ViewGroup;
 import java.util.ArrayList;
 
 import it.uniba.dib.sms22231.R;
+import it.uniba.dib.sms22231.activities.AllThesesActivity;
+import it.uniba.dib.sms22231.activities.DetailActivity;
 import it.uniba.dib.sms22231.adapters.RecyclerAdapter;
 import it.uniba.dib.sms22231.model.CardData;
 import it.uniba.dib.sms22231.model.Thesis;
 import it.uniba.dib.sms22231.service.ThesisService;
+import it.uniba.dib.sms22231.utility.RecyclerViewInterface;
 
-public class AvailableFragment extends Fragment {
+public class AvailableFragment extends Fragment implements RecyclerViewInterface {
     ThesisService thesisService = ThesisService.getInstance();
     ArrayList<CardData> cardData;
     @Override
@@ -36,12 +40,18 @@ public class AvailableFragment extends Fragment {
                 cardData.add(thesis);
             }
             RecyclerView rec = view.findViewById(R.id.availableRecycler);
-            RecyclerAdapter recad = new RecyclerAdapter(cardData, getContext());
+            RecyclerAdapter recad = new RecyclerAdapter(cardData, getContext(), this);
             LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL,false);
             rec.setLayoutManager(linearLayoutManager);
             rec.setAdapter(recad);
         });
 
         return view;
+    }
+
+    @Override
+    public void onItemClick(int position) {
+        Intent intent = new Intent(getContext(), DetailActivity.class);
+        startActivity(intent);
     }
 }

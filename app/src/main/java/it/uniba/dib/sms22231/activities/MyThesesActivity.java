@@ -22,8 +22,9 @@ import it.uniba.dib.sms22231.model.User;
 import it.uniba.dib.sms22231.service.ThesisService;
 import it.uniba.dib.sms22231.service.UserService;
 import it.uniba.dib.sms22231.utility.CallbackFunction;
+import it.uniba.dib.sms22231.utility.RecyclerViewInterface;
 
-public class MyThesesActivity extends AppCompatActivity {
+public class MyThesesActivity extends AppCompatActivity implements RecyclerViewInterface {
 
     private final ThesisService thesisService = ThesisService.getInstance();
     private final UserService userService = UserService.getInstance();
@@ -55,7 +56,7 @@ public class MyThesesActivity extends AppCompatActivity {
                 cardData.add(thesis);
             }
             RecyclerView rec = findViewById(R.id.thesisRecycler);
-            RecyclerAdapter  recad = new RecyclerAdapter(cardData, this);
+            RecyclerAdapter  recad = new RecyclerAdapter(cardData, this, this);
             LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL,false);
             rec.setLayoutManager(linearLayoutManager);
             rec.setAdapter(recad);
@@ -76,6 +77,12 @@ public class MyThesesActivity extends AppCompatActivity {
 
     public void goToAddThesis(View view){
         Intent intent = new Intent(this, AddThesisActivity.class);
+        startActivity(intent);
+    }
+
+    @Override
+    public void onItemClick(int position) {
+        Intent intent = new Intent(this, DetailActivity.class);
         startActivity(intent);
     }
 }

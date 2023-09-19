@@ -13,21 +13,24 @@ import java.util.ArrayList;
 
 import it.uniba.dib.sms22231.R;
 import it.uniba.dib.sms22231.model.CardData;
+import it.uniba.dib.sms22231.utility.RecyclerViewInterface;
 
 public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.Viewholder> {
     private final ArrayList<CardData> cardData;
     private final Context context;
+    private final RecyclerViewInterface recyclerViewInterface;
 
-    public RecyclerAdapter(ArrayList<CardData> cardData, Context context) {
+    public RecyclerAdapter(ArrayList<CardData> cardData, Context context, RecyclerViewInterface recyclerViewInterface) {
         this.cardData = cardData;
         this.context = context;
+        this.recyclerViewInterface = recyclerViewInterface;
     }
 
     @NonNull
     @Override
     public RecyclerAdapter.Viewholder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.card_layout, parent,false);
-        return new Viewholder(view);
+        return new Viewholder(view, recyclerViewInterface);
     }
 
     @Override
@@ -46,10 +49,23 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.Viewho
     public static class Viewholder extends RecyclerView.ViewHolder{
         private final TextView titleText;
         private final TextView subtitleText;
-        public Viewholder(@NonNull View itemView) {
+        public Viewholder(@NonNull View itemView, RecyclerViewInterface recyclerViewInterface) {
             super(itemView);
             titleText = itemView.findViewById(R.id.titleCardText);
             subtitleText = itemView.findViewById(R.id.subtitleCardText);
+
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (recyclerViewInterface != null){
+                        int pos = getAdapterPosition();
+
+                        if (pos != RecyclerView.NO_POSITION){
+                            recyclerViewInterface.onItemClick(pos);
+                        }
+                    }
+                }
+            });
         }
     }
 }
