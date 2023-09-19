@@ -7,6 +7,7 @@ public class Attachment {
     public String id;
     public String type;
     public String path;
+    public String fileName;
     public String ownerUid;
 
     public Attachment() {

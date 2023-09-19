@@ -11,7 +11,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
+import it.uniba.dib.sms22231.model.Attachment;
+import it.uniba.dib.sms22231.model.Thesis;
 import it.uniba.dib.sms22231.utility.CallbackFunction;
+import it.uniba.dib.sms22231.utility.Observable;
 
 public class AttachmentService {
     private static final String COLLECTION_NAME = "attachments";
@@ -36,6 +39,26 @@ public class AttachmentService {
                 }
             });
         }
+    }
+
+    public Observable<List<Attachment>> getAttachmentsByThesis(Thesis thesis) {
+        return new Observable<>((next) -> {
+            List<Attachment> attachments = new ArrayList<>();
+            List<String> filesIds = thesis.attachments;
+
+            for (String fileId : filesIds) {
+                StorageReference storedFile = storageReference.child(fileId);
+
+                Attachment attachment = new Attachment();
+                attachment.id = fileId;
+                attachment.fileName = storedFile.getName();
+                attachment.path = storedFile.getPath();
+
+                attachments.add(attachment);
+            }
+
+            next.apply(attachments);
+        });
     }
 
     private AttachmentService() {
