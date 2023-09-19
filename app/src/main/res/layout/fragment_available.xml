@@ -5,13 +5,8 @@
     android:layout_height="match_parent"
     tools:context=".fragments.AvailableFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/availableRecycler"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="Fragment Available"
-        android:textSize="60sp"
-        android:gravity="center"
-        android:textColor="#007fff"/>
-
+        android:layout_height="match_parent" />
 </FrameLayout>
