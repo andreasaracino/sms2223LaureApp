@@ -55,7 +55,6 @@ public class AddThesisActivity extends AppCompatActivity {
     private ArrayList<String> reqString;
 
     private final UserService userService = UserService.getInstance();
-    private final TeacherService teacherService = TeacherService.getInstance();
 
 
     protected void onCreate(Bundle savedInstanceState) {
@@ -136,14 +135,6 @@ public class AddThesisActivity extends AppCompatActivity {
                 popupMenu.show();
             }
         });
-    }
-
-    public void deletePopup(View view) {
-
-    }
-
-    public void deleteAlert() {
-
     }
 
     private void fillList(ArrayList<String> arrayList, ListView listView) {
