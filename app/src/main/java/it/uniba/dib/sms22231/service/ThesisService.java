@@ -70,9 +70,9 @@ public class ThesisService {
         return savedTheses;
     }
 
-    public void getThesesById(List<String> ids, CallbackFunction<List<Thesis>> callback) {
-        thesesCollection.whereIn("id", ids).get().addOnCompleteListener(task -> {
-            mapThesesResult(task.getResult(), callback);
+    public void getThesisById(String id, CallbackFunction<Thesis> callback) {
+        thesesCollection.whereEqualTo("id", id).get().addOnCompleteListener(task -> {
+            mapThesesResult(task.getResult(), theses -> callback.apply(theses.get(0)));
         });
     }
 

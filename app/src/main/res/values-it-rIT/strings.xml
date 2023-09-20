@@ -40,4 +40,7 @@
     <string name="error">Campo obbligatorio</string>
     <string name="delete">Elimina</string>
     <string name="suredelete">Eliminare questo elemento?</string>
+    <string name="detail">Dettaglio Tesi</string>
+    <string name="req">Requisiti:</string>
+    <string name="attach">File allegati:</string>
 </resources>

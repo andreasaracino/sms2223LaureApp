@@ -47,12 +47,10 @@ public class MyThesesActivity extends AppCompatActivity implements RecyclerViewI
     private void fillCard() {
 
         user = userService.getUserData();
-        String subtitle = user.fullName;
         thesisService.userOwnTheses.subscribe(theses -> {
             cardData = new ArrayList<>();
             for (Thesis t : theses) {
-                String title = t.title;
-                CardData thesis = new CardData(title, subtitle);
+                CardData thesis = new CardData(t.title, user.fullName, t.id);
                 cardData.add(thesis);
             }
             RecyclerView rec = findViewById(R.id.thesisRecycler);
@@ -83,6 +81,8 @@ public class MyThesesActivity extends AppCompatActivity implements RecyclerViewI
     @Override
     public void onItemClick(int position) {
         Intent intent = new Intent(this, DetailActivity.class);
+        String id = cardData.get(position).getId();
+        intent.putExtra("id",id);
         startActivity(intent);
     }
 }

@@ -48,5 +48,8 @@
     <string name="error">Mandatory field</string>
     <string name="delete">Delete</string>
     <string name="suredelete">Delete this element?</string>
+    <string name="detail">Thesis Detail</string>
+    <string name="req">Requiremnts:</string>
+    <string name="attach">Attachments:</string>
 
 </resources>
