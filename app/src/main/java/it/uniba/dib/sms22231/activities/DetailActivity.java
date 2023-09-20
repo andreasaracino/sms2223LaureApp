@@ -31,7 +31,7 @@ public class DetailActivity extends AppCompatActivity {
         TextView txtTitle = findViewById(R.id.titleText);
         TextView txtDescription = findViewById(R.id.descriptionText);
 
-        thesisService.getThesisById(id, thesis->{
+        thesisService.getThesisById(id, thesis -> {
             String s = getString(R.string.title) + ": " + thesis.title;
             txtTitle.setText(s);
 

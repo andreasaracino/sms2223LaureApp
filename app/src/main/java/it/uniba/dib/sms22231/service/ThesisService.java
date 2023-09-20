@@ -4,13 +4,14 @@ import android.net.Uri;
 
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicReference;
+import java.util.Map;
 
 import it.uniba.dib.sms22231.model.Requirement;
 import it.uniba.dib.sms22231.model.Student;
@@ -71,8 +72,9 @@ public class ThesisService {
     }
 
     public void getThesisById(String id, CallbackFunction<Thesis> callback) {
-        thesesCollection.whereEqualTo("id", id).get().addOnCompleteListener(task -> {
-            mapThesesResult(task.getResult(), theses -> callback.apply(theses.get(0)));
+        thesesCollection.document(id).get().addOnCompleteListener(task -> {
+            DocumentSnapshot documentSnapshot = task.getResult();
+            mapThesis(documentSnapshot.getId(), documentSnapshot.getData(), callback);
         });
     }
 
@@ -98,11 +100,7 @@ public class ThesisService {
         ArrayList<Thesis> theses = new ArrayList<>();
 
         for (QueryDocumentSnapshot thesisRaw : querySnapshot) {
-            Thesis thesis = new Thesis(thesisRaw.getData());
-            thesis.id = thesisRaw.getId();
-
-            userService.getUserByUid(thesis.teacherId, user -> {
-                thesis.teacherFullname = user.fullName;
+            mapThesis(thesisRaw.getId(), thesisRaw.getData(), thesis -> {
                 theses.add(thesis);
 
                 if (theses.size() == querySnapshot.size()) {
@@ -111,6 +109,17 @@ public class ThesisService {
             });
         }
 
+    }
+
+    private void mapThesis(String id, Map<String, Object> data, CallbackFunction<Thesis> callback) {
+        Thesis thesis = new Thesis(data);
+        thesis.id = id;
+
+        userService.getUserByUid(thesis.teacherId, user -> {
+            thesis.teacherFullname = user.fullName;
+
+            callback.apply(thesis);
+        });
     }
 
     public static ThesisService getInstance() {
