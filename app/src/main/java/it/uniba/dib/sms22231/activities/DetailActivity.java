@@ -65,6 +65,7 @@ public class DetailActivity extends AppCompatActivity {
         txtDescription = findViewById(R.id.descriptionText);
         txtOwner = findViewById(R.id.ownerText);
         reqListview = findViewById(R.id.reqList);
+        fileListView = findViewById(R.id.fileList);
 
         thesisService.getThesisById(id, thesis -> {
             txtTitle.setText(thesis.title);
@@ -80,19 +81,19 @@ public class DetailActivity extends AppCompatActivity {
                 }
                 fillList(req, reqListview);
             });
-            /*attachmentService.getAttachmentsByThesis(thesis).subscribe(attachments -> {
+            attachmentService.getAttachmentsByThesis(thesis).subscribe(attachments -> {
                 attach = new ArrayList<>();
                 for (Attachment attachment : attachments) {
                     String attachtemp = attachment.fileName;
                     attach.add(attachtemp);
                 }
                 fillList(attach, fileListView);
-            });*/
+            });
         });
     }
 
     private void fillList(ArrayList<String> arrayList, ListView listView) {
-        ArrayAdapter<String> listAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, arrayList);
+        ArrayAdapter<String> listAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, arrayList);
         listView.setAdapter(listAdapter);
     }
 

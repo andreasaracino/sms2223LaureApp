@@ -26,9 +26,7 @@ public class Student {
         Object thesesObject = data.get("savedThesesIds");
         try {
             savedThesesIds = new ArrayList<>((Collection<String>) thesesObject);
-        } catch (Exception e) {
-
-        }
+        } catch (Exception e) {}
     }
 
     public Map<String, Object> toMap() {

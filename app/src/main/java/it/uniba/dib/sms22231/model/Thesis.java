@@ -1,5 +1,8 @@
 package it.uniba.dib.sms22231.model;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,6 +32,12 @@ public class Thesis {
         title = (String) data.get("title");
         description = (String) data.get("description");
         teacherId = (String) data.get("teacherId");
+
+        Object attachmentsObject = data.get("attachmentIds");
+
+        try {
+            attachments = new ArrayList<>((Collection<String>) attachmentsObject);
+        } catch (Exception e) {}
     }
 
     public Map<String, Object> toMap() {

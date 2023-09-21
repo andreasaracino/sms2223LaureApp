@@ -17,12 +17,9 @@ import it.uniba.dib.sms22231.utility.CallbackFunction;
 import it.uniba.dib.sms22231.utility.Observable;
 
 public class AttachmentService {
-    private static final String COLLECTION_NAME = "attachments";
     private static AttachmentService instance;
-    private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private FirebaseStorage storage = FirebaseStorage.getInstance();
     private StorageReference storageReference = storage.getReference();
-    private CollectionReference attachmentsCollection;
 
     public void saveAttachments(List<Uri> filesList, CallbackFunction<List<String>> callback) {
         List<String> savedFilesPaths = new ArrayList<>();
@@ -43,27 +40,30 @@ public class AttachmentService {
 
     public Observable<List<Attachment>> getAttachmentsByThesis(Thesis thesis) {
         return new Observable<>((next) -> {
-            List<Attachment> attachments = new ArrayList<>();
             List<String> filesIds = thesis.attachments;
 
-            for (String fileId : filesIds) {
-                StorageReference storedFile = storageReference.child(fileId);
+            if (filesIds != null) {
+                List<Attachment> attachments = new ArrayList<>();
 
-                Attachment attachment = new Attachment();
-                attachment.id = fileId;
-                attachment.fileName = storedFile.getName();
-                attachment.path = storedFile.getPath();
+                for (String fileId : filesIds) {
+                    StorageReference storedFile = storageReference.child(fileId);
 
-                attachments.add(attachment);
+                    Attachment attachment = new Attachment();
+                    attachment.id = fileId;
+                    attachment.fileName = storedFile.getName();
+                    attachment.path = storedFile.getPath();
+
+                    attachments.add(attachment);
+                }
+
+                next.apply(attachments);
+            } else {
+                next.apply(new ArrayList<>());
             }
-
-            next.apply(attachments);
         });
     }
 
-    private AttachmentService() {
-        attachmentsCollection = db.collection(COLLECTION_NAME);
-    }
+    private AttachmentService() {}
 
     public static AttachmentService getInstance() {
         if (instance == null) {
