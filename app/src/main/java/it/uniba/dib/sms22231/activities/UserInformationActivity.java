@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Spinner;
@@ -67,13 +68,18 @@ public class UserInformationActivity extends AppCompatActivity {
         user.userType = UserTypes.values()[roleSpinner.getSelectedItemPosition()];
         user.registrationNumber = regNumberField.getText().toString();
 
-        userService.saveUserData(user, isSuccessful -> {
-            if (isSuccessful) {
-                goToDashboard();
-            } else {
-                Toast.makeText(this, "Error, try again later", Toast.LENGTH_SHORT).show();
-            }
-        });
+        if (TextUtils.isEmpty(fullNameField.getText())){
+            fullNameField.setError(getText(R.string.error));
+            fullNameField.requestFocus();
+        } else {
+            userService.saveUserData(user, isSuccessful -> {
+                if (isSuccessful) {
+                    goToDashboard();
+                } else {
+                    Toast.makeText(this, "Error, try again later", Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
     }
 
     private void goToDashboard() {
