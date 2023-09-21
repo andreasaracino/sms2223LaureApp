@@ -43,4 +43,8 @@
     <string name="detail">Dettaglio Tesi</string>
     <string name="req">Requisiti:</string>
     <string name="attach">File allegati:</string>
+    <string name="reqThesis">Richiedi tesi</string>
+    <string name="favorite">Preferiti</string>
+    <string name="share">Condividi</string>
+    <string name="modify">Modifica tesi</string>
 </resources>

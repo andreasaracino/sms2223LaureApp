@@ -51,5 +51,9 @@
     <string name="detail">Thesis Detail</string>
     <string name="req">Requiremnts:</string>
     <string name="attach">Attachments:</string>
+    <string name="reqThesis">Request Thesis</string>
+    <string name="favorite">Favorite</string>
+    <string name="share">Share</string>
+    <string name="modify">Modify thesis</string>
 
 </resources>

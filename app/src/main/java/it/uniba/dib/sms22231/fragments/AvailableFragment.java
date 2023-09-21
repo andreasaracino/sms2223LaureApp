@@ -54,6 +54,7 @@ public class AvailableFragment extends Fragment implements RecyclerViewInterface
         Intent intent = new Intent(getContext(), DetailActivity.class);
         String id = cardData.get(position).getId();
         intent.putExtra("id",id);
+        intent.putExtra("caller", 1);
         startActivity(intent);
     }
 }

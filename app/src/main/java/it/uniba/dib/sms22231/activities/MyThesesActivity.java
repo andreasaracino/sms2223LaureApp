@@ -82,6 +82,7 @@ public class MyThesesActivity extends AppCompatActivity implements RecyclerViewI
         Intent intent = new Intent(this, DetailActivity.class);
         String id = cardData.get(position).getId();
         intent.putExtra("id",id);
+        intent.putExtra("caller",2);
         startActivity(intent);
     }
 

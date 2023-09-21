@@ -12,6 +12,8 @@ import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.google.android.material.bottomappbar.BottomAppBar;
+
 import java.util.ArrayList;
 
 import it.uniba.dib.sms22231.R;
@@ -33,6 +35,7 @@ public class DetailActivity extends AppCompatActivity {
     private final AttachmentService attachmentService = AttachmentService.getInstance();
     private ListView fileListView;
     private ArrayList<String> attach;
+    BottomAppBar bottomAppBar;
 
 
     @Override
@@ -46,6 +49,18 @@ public class DetailActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         String id = intent.getStringExtra("id");
+        int caller = intent.getIntExtra("caller", 0);
+
+        bottomAppBar = findViewById(R.id.bottomAppBar);
+        switch (caller){
+            case 1:
+                bottomAppBar.replaceMenu(R.menu.detail_available_bottom_menu);
+                break;
+            case 2:
+                bottomAppBar.replaceMenu(R.menu.detail_my_theses_bottom_menu);
+        }
+
+
         txtTitle = findViewById(R.id.titleText);
         txtDescription = findViewById(R.id.descriptionText);
         txtOwner = findViewById(R.id.ownerText);
