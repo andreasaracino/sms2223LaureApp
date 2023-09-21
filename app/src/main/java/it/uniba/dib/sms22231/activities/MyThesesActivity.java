@@ -1,5 +1,7 @@
 package it.uniba.dib.sms22231.activities;
 
+import static android.content.ContentValues.TAG;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
@@ -8,10 +10,13 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 
 import it.uniba.dib.sms22231.R;
@@ -30,6 +35,8 @@ public class MyThesesActivity extends AppCompatActivity implements RecyclerViewI
     private final UserService userService = UserService.getInstance();
     private User user;
     private ArrayList<CardData> cardData;
+
+    private MenuItem menuItem;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,17 +70,9 @@ public class MyThesesActivity extends AppCompatActivity implements RecyclerViewI
         thesisService.getUserOwnTheses();
     }
 
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                this.finish();
-                return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
 
-    public void goToAddThesis(View view){
+
+    public void goToAddThesis(){
         Intent intent = new Intent(this, AddThesisActivity.class);
         startActivity(intent);
     }
@@ -85,4 +84,36 @@ public class MyThesesActivity extends AppCompatActivity implements RecyclerViewI
         intent.putExtra("id",id);
         startActivity(intent);
     }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.my_theses_menu, menu);
+
+        if (menu.getClass().getSimpleName().equals("MenuBuilder")) {
+            try {
+                Method m = menu.getClass().getDeclaredMethod(
+                        "setOptionalIconsVisible", Boolean.TYPE);
+                m.setAccessible(true);
+                m.invoke(menu, true);
+            } catch (NoSuchMethodException e) {
+                Log.e(TAG, "onMenuOpened", e);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == R.id.add) {
+            goToAddThesis();
+        }
+        if (id == android.R.id.home){
+            this.finish();
+        }
+        return true;
+    }
+
 }
