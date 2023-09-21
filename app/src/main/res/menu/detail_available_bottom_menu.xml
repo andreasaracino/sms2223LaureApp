@@ -8,6 +8,12 @@
         android:tooltipText="@string/chat"
         app:showAsAction="always" />
     <item
+        android:id="@+id/qr"
+        android:icon="@drawable/baseline_qr_code_24"
+        android:title="@string/qr"
+        android:tooltipText="@string/qr"
+        app:showAsAction="always" />
+    <item
         android:id="@+id/share"
         android:icon="@drawable/outline_share_24"
         android:title="@string/share"

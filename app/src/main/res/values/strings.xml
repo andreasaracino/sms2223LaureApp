@@ -56,5 +56,6 @@
     <string name="share">Share</string>
     <string name="modify">Modify thesis</string>
     <string name="chat">Chat</string>
+    <string name="qr">Qr</string>
 
 </resources>
