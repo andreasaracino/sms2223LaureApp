@@ -55,5 +55,6 @@
     <string name="favorite">Favorite</string>
     <string name="share">Share</string>
     <string name="modify">Modify thesis</string>
+    <string name="chat">Chat</string>
 
 </resources>
