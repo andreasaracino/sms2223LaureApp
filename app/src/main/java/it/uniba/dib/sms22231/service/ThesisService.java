@@ -78,11 +78,11 @@ public class ThesisService {
         });
     }
 
-    public void saveNewThesis(Thesis thesis, List<Requirement> requirements, List<Uri> attachments, CallbackFunction<Boolean> callback) {
+    public void saveNewThesis(Thesis thesis, List<Requirement> requirements, List<Uri> attachments, List<String> fileNames, CallbackFunction<Boolean> callback) {
         thesesCollection.add(thesis).addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 DocumentReference savedThesis = task.getResult();
-                attachmentService.saveAttachments(attachments, savedFiles -> {
+                attachmentService.saveAttachments(attachments, fileNames, savedFiles -> {
                     savedThesis.update("attachmentIds", savedFiles);
                     callback.apply(savedFiles.size() > 0);
                 });

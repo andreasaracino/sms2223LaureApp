@@ -8,8 +8,6 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.database.Cursor;
@@ -30,13 +28,9 @@ import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicReference;
 
 import it.uniba.dib.sms22231.R;
-import it.uniba.dib.sms22231.adapters.RecyclerAdapter;
-import it.uniba.dib.sms22231.model.CardData;
 import it.uniba.dib.sms22231.model.Requirement;
-import it.uniba.dib.sms22231.model.Teacher;
 import it.uniba.dib.sms22231.model.Thesis;
 import it.uniba.dib.sms22231.model.User;
-import it.uniba.dib.sms22231.service.TeacherService;
 import it.uniba.dib.sms22231.service.ThesisService;
 import it.uniba.dib.sms22231.service.UserService;
 
@@ -48,7 +42,7 @@ public class AddThesisActivity extends AppCompatActivity {
     private EditText thesisDescription;
     private ListView listViewFile;
     private ListView listViewReq;
-    private ArrayList<String> fileName;
+    private ArrayList<String> fileNames;
     private ArrayList<Requirement> requirements;
     private ArrayAdapter<String> listadapter;
     private ArrayList<Uri> filesList;
@@ -68,7 +62,7 @@ public class AddThesisActivity extends AppCompatActivity {
         thesisTitle = findViewById(R.id.titleEditText);
         thesisDescription = findViewById(R.id.descriptionEditText);
         listViewFile = findViewById(R.id.fileListView);
-        fileName = new ArrayList<>();
+        fileNames = new ArrayList<>();
         listViewReq = findViewById(R.id.reqListView);
         requirements = new ArrayList<>();
         filesList = new ArrayList<>();
@@ -81,9 +75,9 @@ public class AddThesisActivity extends AppCompatActivity {
                 if (data != null) {
                     Uri uri = data.getData();
                     String name = getNameFromUri(uri);
-                    fileName.add(name);
+                    fileNames.add(name);
                     filesList.add(uri);
-                    fillList(fileName, listViewFile);
+                    fillList(fileNames, listViewFile);
                 }
             }
         });
@@ -101,9 +95,9 @@ public class AddThesisActivity extends AppCompatActivity {
                             .show();
                     Button positiveButton = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
                     positiveButton.setOnClickListener(view1 -> {
-                        fileName.remove(i);
+                        fileNames.remove(i);
                         filesList.remove(i);
-                        fillList(fileName, listViewFile);
+                        fillList(fileNames, listViewFile);
                         dialog.dismiss();
                     });
                     return false;
@@ -227,7 +221,7 @@ public class AddThesisActivity extends AppCompatActivity {
 
         AtomicReference<Boolean> success = new AtomicReference<>(false);
 
-        thesisService.saveNewThesis(thesis, requirements, filesList, isSuccessful -> {
+        thesisService.saveNewThesis(thesis, requirements, filesList, fileNames, isSuccessful -> {
             if (success.get()) {
                 finish();
             }

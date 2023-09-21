@@ -21,12 +21,13 @@ public class AttachmentService {
     private FirebaseStorage storage = FirebaseStorage.getInstance();
     private StorageReference storageReference = storage.getReference();
 
-    public void saveAttachments(List<Uri> filesList, CallbackFunction<List<String>> callback) {
+    public void saveAttachments(List<Uri> filesList, List<String> fileNames, CallbackFunction<List<String>> callback) {
         List<String> savedFilesPaths = new ArrayList<>();
         AtomicReference<Integer> savedFiles = new AtomicReference<>(0);
 
+        int index = 0;
         for (Uri file : filesList) {
-            String uniqueFilePath = System.currentTimeMillis() + "_" + file.getPath().substring(file.getPath().lastIndexOf("/") + 1);
+            String uniqueFilePath = System.currentTimeMillis() + "_" + fileNames.get(index++);
             savedFilesPaths.add(uniqueFilePath);
             storageReference.child(uniqueFilePath).putFile(file).addOnCompleteListener(task -> {
                 savedFiles.updateAndGet(v -> v + 1);
@@ -48,15 +49,20 @@ public class AttachmentService {
                 for (String fileId : filesIds) {
                     StorageReference storedFile = storageReference.child(fileId);
 
-                    Attachment attachment = new Attachment();
-                    attachment.id = fileId;
-                    attachment.fileName = storedFile.getName();
-                    attachment.path = storedFile.getPath();
+                    storedFile.getDownloadUrl().addOnCompleteListener(task -> {
+                        String fileName = storedFile.getName();
+                        Attachment attachment = new Attachment();
+                        attachment.id = fileId;
+                        attachment.fileName = fileName.substring(fileName.indexOf("_") + 1);
+                        attachment.path = task.getResult();
 
-                    attachments.add(attachment);
+                        attachments.add(attachment);
+
+                        if (attachments.size() == filesIds.size()) {
+                            next.apply(attachments);
+                        }
+                    });
                 }
-
-                next.apply(attachments);
             } else {
                 next.apply(new ArrayList<>());
             }
