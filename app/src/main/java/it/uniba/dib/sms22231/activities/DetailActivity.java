@@ -52,12 +52,11 @@ public class DetailActivity extends AppCompatActivity {
         reqListview = findViewById(R.id.reqList);
 
         thesisService.getThesisById(id, thesis -> {
-            String temp = getString(R.string.title) + " " + thesis.title;
-            txtTitle.setText(temp);
-            temp = getString(R.string.description) + " " + thesis.description;
-            txtDescription.setText(temp);
-            temp = getString(R.string.teacher) + ": " + thesis.teacherFullname;
+            txtTitle.setText(thesis.title);
+            String temp = getString(R.string.teacher) + ": " + thesis.teacherFullname;
             txtOwner.setText(temp);
+            txtDescription.setText(thesis.description);
+
             requirementService.getRequirementsByThesis(thesis).subscribe(requirements -> {
                 req = new ArrayList<>();
                 for (Requirement requirement : requirements) {
