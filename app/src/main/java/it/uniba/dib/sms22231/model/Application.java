@@ -3,18 +3,22 @@ package it.uniba.dib.sms22231.model;
 import java.util.HashMap;
 import java.util.Map;
 
+import it.uniba.dib.sms22231.config.ApplicationStatus;
+
 public class Application {
 
     public String id;
-    public String status;
+    public ApplicationStatus status;
     public String thesisId;
     public String studentUid;
     public Requirement[] requirement;
     public String chatId;
+    public String thesisTitle;
+    public String studentName;
 
     public Application() {}
 
-    public Application(String id, String status, String thesisId, String studentUid, Requirement[] requirement, String chatId) {
+    public Application(String id, ApplicationStatus status, String thesisId, String studentUid, Requirement[] requirement, String chatId) {
         this.id = id;
         this.status = status;
         this.thesisId = thesisId;
@@ -26,7 +30,7 @@ public class Application {
     public Application(Map<String, Object> data) {
         if (data != null) {
             id = (String) data.get("id");
-            status = (String) data.get("status");
+            status = ApplicationStatus.valueOf((String) data.get("status"));
             thesisId = (String) data.get("thesisId");
             studentUid = (String) data.get("studentUid");
             chatId = (String) data.get("chatId");
