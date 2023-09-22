@@ -2,29 +2,38 @@ package it.uniba.dib.sms22231.activities;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ArrayAdapter;
-import android.widget.ListAdapter;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.google.android.material.bottomappbar.BottomAppBar;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.navigation.NavigationBarView;
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.WriterException;
+import com.google.zxing.common.BitMatrix;
+import com.google.zxing.qrcode.QRCodeWriter;
 
 import java.util.ArrayList;
 
 import it.uniba.dib.sms22231.R;
 import it.uniba.dib.sms22231.model.Attachment;
 import it.uniba.dib.sms22231.model.Requirement;
-import it.uniba.dib.sms22231.model.Thesis;
 import it.uniba.dib.sms22231.service.AttachmentService;
 import it.uniba.dib.sms22231.service.RequirementService;
 import it.uniba.dib.sms22231.service.ThesisService;
 
-public class DetailActivity extends AppCompatActivity {
+public class DetailActivity extends AppCompatActivity{
     private final ThesisService thesisService = ThesisService.getInstance();
     private TextView txtTitle;
     private TextView txtDescription;
@@ -35,8 +44,9 @@ public class DetailActivity extends AppCompatActivity {
     private final AttachmentService attachmentService = AttachmentService.getInstance();
     private ListView fileListView;
     private ArrayList<String> attach;
-    BottomAppBar bottomAppBar;
-
+    private BottomNavigationView bottomNavigationView;
+    private int caller;
+    private String id;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,19 +58,16 @@ public class DetailActivity extends AppCompatActivity {
         actionBar.setDisplayHomeAsUpEnabled(true);
 
         Intent intent = getIntent();
-        String id = intent.getStringExtra("id");
-        int caller = intent.getIntExtra("caller", 0);
+        id = intent.getStringExtra("id");
+        caller = intent.getIntExtra("caller", 0);
 
-        bottomAppBar = findViewById(R.id.bottomAppBar);
-        switch (caller){
-            case 1:
-                bottomAppBar.replaceMenu(R.menu.detail_available_bottom_menu);
-                break;
-            case 2:
-                bottomAppBar.replaceMenu(R.menu.detail_my_theses_bottom_menu);
-        }
+        createBottomAppBar();
 
+        fillActivity();
 
+    }
+
+    private void fillActivity() {
         txtTitle = findViewById(R.id.titleText);
         txtDescription = findViewById(R.id.descriptionText);
         txtOwner = findViewById(R.id.ownerText);
@@ -92,6 +99,69 @@ public class DetailActivity extends AppCompatActivity {
         });
     }
 
+    private void createBottomAppBar() {
+
+        bottomNavigationView = findViewById(R.id.bottomNavBar);
+        switch (caller) {
+            case 1:
+                bottomNavigationView.inflateMenu(R.menu.detail_available_bottom_menu);
+                break;
+            case 2:
+                bottomNavigationView.inflateMenu(R.menu.detail_my_theses_bottom_menu);
+        }
+       bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
+           @Override
+           public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+               if (item.getItemId() == R.id.req){
+                   //TODO
+               }
+               if (item.getItemId() == R.id.favorite){
+                   //TODO
+               }
+               if (item.getItemId() == R.id.share){
+                   sendMessage();
+               }
+               if (item.getItemId() == R.id.qr){
+                   generateQr();
+               }
+               if (item.getItemId() == R.id.chat){
+                   //TODO
+               }
+               if (item.getItemId() == R.id.modify){
+                   //TODO
+               }
+               return false;
+           }
+       });
+    }
+
+    private void generateQr() {
+        ImageView a = new ImageView(this);
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+        String text = getThesisText();
+
+        QRCodeWriter writer = new QRCodeWriter();
+        try {
+            BitMatrix bitMatrix = writer.encode(text, BarcodeFormat.QR_CODE, 512, 512);
+            int width = bitMatrix.getWidth();
+            int height = bitMatrix.getHeight();
+            Bitmap bmp = Bitmap.createBitmap(width, height, Bitmap.Config.RGB_565);
+            for (int x = 0; x < width; x++) {
+                for (int y = 0; y < height; y++) {
+                    bmp.setPixel(x, y, bitMatrix.get(x, y) ? Color.BLACK : Color.WHITE);
+                }
+            }
+            a.setImageBitmap(bmp);
+            builder.setTitle(R.string.thesisQr)
+                    .setPositiveButton("OK",null)
+                    .setView(a)
+                    .create().show();
+        } catch (WriterException e) {
+            e.printStackTrace();
+        }
+    }
+
     private void fillList(ArrayList<String> arrayList, ListView listView) {
         ArrayAdapter<String> listAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, arrayList);
         listView.setAdapter(listAdapter);
@@ -105,5 +175,26 @@ public class DetailActivity extends AppCompatActivity {
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    public String getThesisText(){
+        String s = getString(R.string.title) + " " + txtTitle.getText().toString() + "\n"
+                + txtOwner.getText().toString() + "\n"
+                +  getString(R.string.description) + " " + txtDescription.getText().toString() + "\n"
+                + getString(R.string.req) + "\n";
+        String s1;
+        for (int i = 0; i < reqListview.getCount(); i++){
+            s1 = reqListview.getItemAtPosition(i).toString() + "\n";
+            s = s + s1;
+        }
+        return s;
+    }
+
+    private void sendMessage(){
+        String message = getThesisText();
+        Intent intent = new Intent(Intent.ACTION_SEND);
+        intent.setType("text/plain");
+        intent.putExtra(Intent.EXTRA_TEXT, message);
+        startActivity(intent);
     }
 }

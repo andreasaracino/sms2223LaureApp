@@ -6,23 +6,29 @@
         android:icon="@drawable/baseline_chat_bubble_outline_24"
         android:title="@string/chat"
         android:tooltipText="@string/chat"
-        app:showAsAction="always" />
+        app:showAsAction="always|withText" />
+    <item
+        android:id="@+id/qr"
+        android:icon="@drawable/baseline_qr_code_24"
+        android:title="@string/qr"
+        android:tooltipText="@string/qr"
+        app:showAsAction="always|withText" />
     <item
         android:id="@+id/share"
         android:icon="@drawable/outline_share_24"
         android:title="@string/share"
         android:tooltipText="@string/share"
-        app:showAsAction="always" />
+        app:showAsAction="always|withText" />
     <item
         android:id="@+id/favorite"
         android:icon="@drawable/outline_favorite_border_24"
         android:title="@string/favorite"
         android:tooltipText="@string/favorite"
-        app:showAsAction="always" />
+        app:showAsAction="always|withText" />
     <item
         android:id="@+id/req"
         android:icon="@drawable/outline_file_open_24"
         android:title="@string/reqThesis"
         android:tooltipText="@string/reqThesis"
-        app:showAsAction="always" />
+        app:showAsAction="always|withText" />
 </menu>
