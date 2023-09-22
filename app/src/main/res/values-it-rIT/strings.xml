@@ -47,4 +47,5 @@
     <string name="favorite">Preferiti</string>
     <string name="share">Condividi</string>
     <string name="modify">Modifica tesi</string>
+    <string name="thesisQr">Scansiona per le info sulla tesi</string>
 </resources>

@@ -78,12 +78,16 @@
         android:layout_height="match_parent"
         android:orientation="horizontal">
 
-        <com.google.android.material.bottomappbar.BottomAppBar
-            android:id="@+id/bottomAppBar"
+        <com.google.android.material.bottomnavigation.BottomNavigationView
+            android:id="@+id/bottomNavBar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
-            app:backgroundTint="#007fff" />
+            app:backgroundTint="#007fff"
+            app:itemIconTint="@color/white"
+            app:itemTextAppearanceInactive="@style/Theme.Sms2223LaureApp"
+            app:itemTextColor="@color/white"
+            app:labelVisibilityMode="labeled"/>
 
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>

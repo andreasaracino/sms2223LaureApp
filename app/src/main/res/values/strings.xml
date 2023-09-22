@@ -55,7 +55,8 @@
     <string name="favorite">Favorite</string>
     <string name="share">Share</string>
     <string name="modify">Modify thesis</string>
-    <string name="chat">Chat</string>
-    <string name="qr">Qr</string>
+    <string name="chat" translatable="false">Chat</string>
+    <string name="qr" translatable="false">Qr</string>
+    <string name="thesisQr">Scan to view thesis</string>
 
 </resources>
