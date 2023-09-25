@@ -51,10 +51,20 @@
             android:textColor="#007fff"
             android:textSize="16sp" />
 
+        <TextView
+            android:id="@+id/textNoReq"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="16dp"
+            android:textColor="@color/black"
+            android:textSize="16sp"
+            android:visibility="gone" />
+
         <ListView
             android:id="@+id/reqList"
             android:layout_width="match_parent"
-            android:layout_height="190dp"
+            android:layout_height="wrap_content"
             android:layout_marginTop="16dp" />
 
         <TextView
@@ -66,10 +76,20 @@
             android:textColor="#007fff"
             android:textSize="16sp" />
 
+        <TextView
+            android:id="@+id/textNoFile"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="16dp"
+            android:textColor="@color/black"
+            android:textSize="16sp"
+            android:visibility="gone" />
+
         <ListView
             android:id="@+id/fileList"
             android:layout_width="match_parent"
-            android:layout_height="190dp"
+            android:layout_height="wrap_content"
             android:layout_marginTop="16dp" />
     </LinearLayout>
 

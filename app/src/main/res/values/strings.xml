@@ -58,5 +58,8 @@
     <string name="chat" translatable="false">Chat</string>
     <string name="qr" translatable="false">Qr</string>
     <string name="thesisQr">Scan to view thesis</string>
-
+    <string name="reqDialog">"Select your requirements"</string>
+    <string name="noReq">There are no requirements for this thesis</string>
+    <string name="noFile">There are no file for this thesis</string>
+    <string name="sent">Request sent</string>
 </resources>

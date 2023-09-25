@@ -6,6 +6,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
@@ -13,7 +14,9 @@ import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -25,6 +28,7 @@ import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import it.uniba.dib.sms22231.R;
 import it.uniba.dib.sms22231.model.Attachment;
@@ -33,7 +37,7 @@ import it.uniba.dib.sms22231.service.AttachmentService;
 import it.uniba.dib.sms22231.service.RequirementService;
 import it.uniba.dib.sms22231.service.ThesisService;
 
-public class DetailActivity extends AppCompatActivity{
+public class DetailActivity extends AppCompatActivity {
     private final ThesisService thesisService = ThesisService.getInstance();
     private TextView txtTitle;
     private TextView txtDescription;
@@ -47,6 +51,10 @@ public class DetailActivity extends AppCompatActivity{
     private BottomNavigationView bottomNavigationView;
     private int caller;
     private String id;
+    private ArrayList<String> examArrayList;
+    private TextView txtNoRequirement;
+    private TextView txtNoFile;
+    private boolean averageControl = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,6 +81,8 @@ public class DetailActivity extends AppCompatActivity{
         txtOwner = findViewById(R.id.ownerText);
         reqListview = findViewById(R.id.reqList);
         fileListView = findViewById(R.id.fileList);
+        txtNoRequirement = findViewById(R.id.textNoReq);
+        txtNoFile = findViewById(R.id.textNoFile);
 
         thesisService.getThesisById(id, thesis -> {
             txtTitle.setText(thesis.title);
@@ -82,11 +92,24 @@ public class DetailActivity extends AppCompatActivity{
 
             requirementService.getRequirementsByThesis(thesis).subscribe(requirements -> {
                 req = new ArrayList<>();
+                examArrayList = new ArrayList<>();
                 for (Requirement requirement : requirements) {
                     String reqtemp = requirement.description + ": " + requirement.value;
                     req.add(reqtemp);
+                    if (requirement.description.equals(getString(R.string.exam))) {
+                        String examtemp = requirement.description + ": " + requirement.value;
+                        examArrayList.add(examtemp);
+                    }
+                    if (requirement.description.equals(getString(R.string.average))) {
+                        averageControl = true;
+                    }
                 }
-                fillList(req, reqListview);
+                if (req.isEmpty()) {
+                    txtNoRequirement.setVisibility(View.VISIBLE);
+                    txtNoRequirement.setText(R.string.noReq);
+                } else {
+                    fillList(req, reqListview);
+                }
             });
             attachmentService.getAttachmentsByThesis(thesis).subscribe(attachments -> {
                 attach = new ArrayList<>();
@@ -94,7 +117,12 @@ public class DetailActivity extends AppCompatActivity{
                     String attachtemp = attachment.fileName;
                     attach.add(attachtemp);
                 }
-                fillList(attach, fileListView);
+                if (attach.isEmpty()) {
+                    txtNoFile.setVisibility(View.VISIBLE);
+                    txtNoFile.setText(R.string.noFile);
+                } else {
+                    fillList(attach, fileListView);
+                }
             });
         });
     }
@@ -109,30 +137,79 @@ public class DetailActivity extends AppCompatActivity{
             case 2:
                 bottomNavigationView.inflateMenu(R.menu.detail_my_theses_bottom_menu);
         }
-       bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
-           @Override
-           public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-               if (item.getItemId() == R.id.req){
-                   //TODO
-               }
-               if (item.getItemId() == R.id.favorite){
-                   //TODO
-               }
-               if (item.getItemId() == R.id.share){
-                   sendMessage();
-               }
-               if (item.getItemId() == R.id.qr){
-                   generateQr();
-               }
-               if (item.getItemId() == R.id.chat){
-                   //TODO
-               }
-               if (item.getItemId() == R.id.modify){
-                   //TODO
-               }
-               return false;
-           }
-       });
+        bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                if (item.getItemId() == R.id.req) {
+                    doRequest();
+                }
+                if (item.getItemId() == R.id.favorite) {
+                    //TODO
+                }
+                if (item.getItemId() == R.id.share) {
+                    sendMessage();
+                }
+                if (item.getItemId() == R.id.qr) {
+                    generateQr();
+                }
+                if (item.getItemId() == R.id.chat) {
+                    //TODO
+                }
+                if (item.getItemId() == R.id.modify) {
+                    //TODO
+                }
+                return false;
+            }
+        });
+    }
+
+    private void doRequest() {
+        if (!req.isEmpty()) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle(R.string.reqDialog);
+
+            if (!examArrayList.isEmpty()) {
+                String[] examArray = new String[examArrayList.size()];
+                examArray = examArrayList.toArray(examArray);
+                final boolean[] checked = new boolean[examArrayList.size()];
+                Arrays.fill(checked, false);
+                builder.setMultiChoiceItems(examArray, checked, new DialogInterface.OnMultiChoiceClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i, boolean b) {
+                        checked[i] = b;
+                    }
+                });
+            }
+
+            if (averageControl) {
+                EditText average = new EditText(this);
+                average.setHint(R.string.average);
+                LinearLayout parentla = new LinearLayout(this);
+                LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.MATCH_PARENT,
+                        LinearLayout.LayoutParams.MATCH_PARENT);
+                layoutParams.setMargins(50, 16, 50, 0);
+                average.setLayoutParams(layoutParams);
+                parentla.addView(average);
+                builder.setView(parentla);
+            }
+
+            builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            AlertDialog.Builder builder2 = new AlertDialog.Builder(DetailActivity.this);
+                            builder2.setMessage(R.string.sent)
+                                    .setPositiveButton("Ok", null)
+                                    .create().show();
+                        }
+                    })
+                    .create().show();
+        } else {
+        AlertDialog.Builder builder2 = new AlertDialog.Builder(this);
+        builder2.setMessage(R.string.sent)
+                .setPositiveButton("Ok", null)
+                .create().show();}
+
     }
 
     private void generateQr() {
@@ -154,7 +231,7 @@ public class DetailActivity extends AppCompatActivity{
             }
             a.setImageBitmap(bmp);
             builder.setTitle(R.string.thesisQr)
-                    .setPositiveButton("OK",null)
+                    .setPositiveButton("OK", null)
                     .setView(a)
                     .create().show();
         } catch (WriterException e) {
@@ -177,20 +254,20 @@ public class DetailActivity extends AppCompatActivity{
         return super.onOptionsItemSelected(item);
     }
 
-    public String getThesisText(){
+    public String getThesisText() {
         String s = getString(R.string.title) + " " + txtTitle.getText().toString() + "\n"
                 + txtOwner.getText().toString() + "\n"
-                +  getString(R.string.description) + " " + txtDescription.getText().toString() + "\n"
+                + getString(R.string.description) + " " + txtDescription.getText().toString() + "\n"
                 + getString(R.string.req) + "\n";
         String s1;
-        for (int i = 0; i < reqListview.getCount(); i++){
+        for (int i = 0; i < reqListview.getCount(); i++) {
             s1 = reqListview.getItemAtPosition(i).toString() + "\n";
             s = s + s1;
         }
         return s;
     }
 
-    private void sendMessage(){
+    private void sendMessage() {
         String message = getThesisText();
         Intent intent = new Intent(Intent.ACTION_SEND);
         intent.setType("text/plain");
