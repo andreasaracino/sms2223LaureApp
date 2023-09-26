@@ -197,19 +197,21 @@ public class DetailActivity extends AppCompatActivity {
             builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
-                            AlertDialog.Builder builder2 = new AlertDialog.Builder(DetailActivity.this);
-                            builder2.setMessage(R.string.sent)
-                                    .setPositiveButton("Ok", null)
-                                    .create().show();
+                            callSecondDialog();
                         }
                     })
                     .create().show();
         } else {
+            callSecondDialog();
+        }
+
+    }
+
+    private void callSecondDialog() {
         AlertDialog.Builder builder2 = new AlertDialog.Builder(this);
         builder2.setMessage(R.string.sent)
                 .setPositiveButton("Ok", null)
-                .create().show();}
-
+                .create().show();
     }
 
     private void generateQr() {
