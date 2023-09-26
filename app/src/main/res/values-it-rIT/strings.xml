@@ -52,4 +52,5 @@
     <string name="noReq">Non ci sono requisiti per questa tesi</string>
     <string name="noFile">Non ci sono file per questa tesi</string>
     <string name="sent">Richiesta inviata</string>
+
 </resources>

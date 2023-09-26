@@ -13,6 +13,7 @@ import com.google.android.material.tabs.TabLayoutMediator;
 
 import it.uniba.dib.sms22231.R;
 import it.uniba.dib.sms22231.adapters.VPAdapter;
+import it.uniba.dib.sms22231.fragments.MeetingFragment;
 import it.uniba.dib.sms22231.fragments.MyThesisFragment;
 import it.uniba.dib.sms22231.fragments.TaskFragment;
 
@@ -40,6 +41,7 @@ public class MyThesisActivity extends AppCompatActivity {
         viewPager2.setAdapter(vpAdapter);
         vpAdapter.addFragment(new MyThesisFragment());
         vpAdapter.addFragment(new TaskFragment());
+        vpAdapter.addFragment(new MeetingFragment());
 
         new TabLayoutMediator(tabLayout, viewPager2, (tab, position) -> {
             switch (position){
@@ -50,6 +52,10 @@ public class MyThesisActivity extends AppCompatActivity {
                 case 1:
                     tab.setText(getString(R.string.Task));
                     tab.setIcon(R.drawable.task);
+                    break;
+                case 2:
+                    tab.setText(R.string.meeting);
+                    tab.setIcon(R.drawable.meet);
             }
         }).attach();
     }

@@ -13,7 +13,9 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:tabInlineLabel="true" />
+        app:tabInlineLabel="true"
+        app:tabPaddingEnd="0dp"
+        app:tabPaddingStart="0dp" />
 
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/myThesisViewPager"
@@ -23,5 +25,16 @@
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/myThesisTab" />
+
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#007fff"
+        app:itemIconTint="@color/white"
+        app:itemTextColor="@color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:menu="@menu/my_thesis_menu" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

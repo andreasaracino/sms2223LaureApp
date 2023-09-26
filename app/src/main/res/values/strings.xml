@@ -62,4 +62,5 @@
     <string name="noReq">There are no requirements for this thesis</string>
     <string name="noFile">There are no file for this thesis</string>
     <string name="sent">Request sent</string>
+    <string name="meeting" translatable="false">Meeting</string>
 </resources>
