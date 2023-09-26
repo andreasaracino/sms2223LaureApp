@@ -167,6 +167,7 @@ public class DetailActivity extends AppCompatActivity {
         if (!req.isEmpty()) {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setTitle(R.string.reqDialog);
+            builder.setPositiveButton("Ok",null);
 
             if (!examArrayList.isEmpty()) {
                 String[] examArray = new String[examArrayList.size()];
@@ -180,9 +181,9 @@ public class DetailActivity extends AppCompatActivity {
                     }
                 });
             }
-
+            EditText average = new EditText(this);
             if (averageControl) {
-                EditText average = new EditText(this);
+
                 average.setHint(R.string.average);
                 LinearLayout parentla = new LinearLayout(this);
                 LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
@@ -194,13 +195,24 @@ public class DetailActivity extends AppCompatActivity {
                 builder.setView(parentla);
             }
 
-            builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-                            callSecondDialog();
-                        }
-                    })
-                    .create().show();
+            AlertDialog dialog = builder.create();
+            dialog.show();
+            dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (averageControl){
+                        String control = average.getText().toString();
+                        if (control.trim().isEmpty()){
+                            average.setError(getText(R.string.error));
+                            average.requestFocus();
+                        }else {
+                            dialog.dismiss();
+                            callSecondDialog();}
+                    } else{
+                        dialog.dismiss();
+                        callSecondDialog();}
+                }
+            });
         } else {
             callSecondDialog();
         }
