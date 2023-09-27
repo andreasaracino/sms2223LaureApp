@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Map;
 
 import it.uniba.dib.sms22231.model.Student;
+import it.uniba.dib.sms22231.model.Thesis;
 import it.uniba.dib.sms22231.model.User;
 import it.uniba.dib.sms22231.utility.CallbackFunction;
 import it.uniba.dib.sms22231.utility.Observable;
@@ -45,6 +46,11 @@ public class StudentService {
                 studentObservable.next(studentData);
             }
         });
+    }
+
+    public void addThesisToFavourites(Thesis thesis, CallbackFunction<Boolean> callback) {
+        studentData.savedThesesIds.add(thesis.id);
+        studentDocument.update("savedThesesIds", studentData.savedThesesIds).addOnCompleteListener(task -> callback.apply(task.isSuccessful()));
     }
 
     public void saveStudent(User user, CallbackFunction<Boolean> callback) {
