@@ -51,6 +51,13 @@ public class MyThesesActivity extends AppCompatActivity implements RecyclerViewI
 
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        thesisService.getUserOwnTheses();
+    }
+
     private void fillCard() {
 
         user = userService.getUserData();

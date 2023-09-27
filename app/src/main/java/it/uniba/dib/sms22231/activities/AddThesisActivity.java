@@ -342,7 +342,9 @@ public class AddThesisActivity extends AppCompatActivity {
         currentThesis.description = thesisDescription.getText().toString();
 
         thesisService.updateThesis(currentThesis, changedAttachments, changedRequirements, success -> {
-            Toast.makeText(this, "saved successfully", Toast.LENGTH_SHORT).show();
+            if (success) {
+                finish();
+            }
         });
     }
 

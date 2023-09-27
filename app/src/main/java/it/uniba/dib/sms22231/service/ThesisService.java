@@ -88,7 +88,7 @@ public class ThesisService {
                 DocumentReference savedThesis = task.getResult();
                 attachmentService.saveAttachments(attachments, fileNames, savedFiles -> {
                     savedThesis.update("attachmentIds", savedFiles);
-                    callback.apply(savedFiles.size() > 0);
+                    callback.apply(true);
                 });
 
                 requirementService.addRequirements(requirements, savedThesis.getId(), callback);
