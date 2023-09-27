@@ -28,9 +28,12 @@ import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicReference;
 
 import it.uniba.dib.sms22231.R;
+import it.uniba.dib.sms22231.model.Attachment;
 import it.uniba.dib.sms22231.model.Requirement;
 import it.uniba.dib.sms22231.model.Thesis;
 import it.uniba.dib.sms22231.model.User;
+import it.uniba.dib.sms22231.service.AttachmentService;
+import it.uniba.dib.sms22231.service.RequirementService;
 import it.uniba.dib.sms22231.service.ThesisService;
 import it.uniba.dib.sms22231.service.UserService;
 
@@ -49,14 +52,28 @@ public class AddThesisActivity extends AppCompatActivity {
     private ArrayList<String> reqString;
 
     private final UserService userService = UserService.getInstance();
-
+    private final RequirementService requirementService = RequirementService.getInstance();
+    private final AttachmentService attachmentService = AttachmentService.getInstance();
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_thesis);
 
+        Intent intent = getIntent();
+        int caller = intent.getIntExtra("caller", 0);
+
+        Button saveModifyButton = findViewById(R.id.saveThesisButton);
+
         ActionBar actionBar = getSupportActionBar();
-        actionBar.setTitle(R.string.addThesis);
+        if (caller == 3) {
+            actionBar.setTitle(R.string.modify);
+            saveModifyButton.setText(R.string.modify);
+            saveModifyButton.setOnClickListener(this::onModify);
+        } else {
+            actionBar.setTitle(R.string.addThesis);
+            saveModifyButton.setText(R.string.saveThesis);
+            saveModifyButton.setOnClickListener(this::onSave);
+        }
         actionBar.setDisplayHomeAsUpEnabled(true);
 
         thesisTitle = findViewById(R.id.titleEditText);
@@ -68,6 +85,33 @@ public class AddThesisActivity extends AppCompatActivity {
         filesList = new ArrayList<>();
         reqString = new ArrayList<>();
 
+        if (caller == 3){
+            String id = intent.getStringExtra("id");
+            thesisService.getThesisById(id, thesis -> {
+                thesisTitle.setText(thesis.title);
+                thesisDescription.setText(thesis.description);
+
+                requirementService.getRequirementsByThesis(thesis).subscribe(requirements -> {
+                    reqString = new ArrayList<>();
+                    for (Requirement requirement : requirements) {
+                        String reqtemp = requirement.description + ": " + requirement.value;
+                        reqString.add(reqtemp);
+                    }
+                        fillList(reqString, listViewReq);
+
+                });
+                attachmentService.getAttachmentsByThesis(thesis).subscribe(attachments -> {
+                    fileNames = new ArrayList<>();
+                    for (Attachment attachment : attachments) {
+                        String attachtemp = attachment.fileName;
+                        fileNames.add(attachtemp);
+                    }
+
+                        fillList(fileNames, listViewFile);
+
+                });
+            });
+        }
         resultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
             @Override
             public void onActivityResult(ActivityResult result) {
@@ -228,6 +272,10 @@ public class AddThesisActivity extends AppCompatActivity {
 
             success.set(isSuccessful);
         });
+    }
+
+    public void onModify(View view){
+
     }
 
 }

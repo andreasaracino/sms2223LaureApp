@@ -156,11 +156,18 @@ public class DetailActivity extends AppCompatActivity {
                     //TODO
                 }
                 if (item.getItemId() == R.id.modify) {
-                    //TODO
+                    thesisMod();
                 }
                 return false;
             }
         });
+    }
+
+    private void thesisMod() {
+        Intent intent = new Intent(this, AddThesisActivity.class);
+        intent.putExtra("caller",3);
+        intent.putExtra("id", id);
+        startActivity(intent);
     }
 
     private void doRequest() {
