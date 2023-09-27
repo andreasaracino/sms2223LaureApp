@@ -83,7 +83,7 @@ public class ThesisService {
     }
 
     public void saveNewThesis(Thesis thesis, List<Requirement> requirements, List<Uri> attachments, List<String> fileNames, CallbackFunction<Boolean> callback) {
-        thesesCollection.add(thesis).addOnCompleteListener(task -> {
+        thesesCollection.add(thesis.toMap()).addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 DocumentReference savedThesis = task.getResult();
                 attachmentService.saveAttachments(attachments, fileNames, savedFiles -> {
@@ -98,7 +98,7 @@ public class ThesisService {
 
     public void updateThesis(Thesis thesis, List<Change<Attachment>> changedAttachments, List<Change<Requirement>> changedRequirements, CallbackFunction<Boolean> callback) {
         DocumentReference thesisDocument = thesesCollection.document(thesis.id);
-        thesesCollection.document(thesis.id).set(thesis).addOnCompleteListener(task -> {
+        thesesCollection.document(thesis.id).set(thesis.toMap()).addOnCompleteListener(task -> {
             final boolean[] success = {false};
 
             updateAttachments(changedAttachments, thesis, thesisDocument, isSuccessful -> {
@@ -109,7 +109,7 @@ public class ThesisService {
                 }
             });
 
-            updateRequirements(changedRequirements, thesis, thesisDocument, isSuccessful -> {
+            updateRequirements(changedRequirements, thesis, isSuccessful -> {
                 if (success[0] && isSuccessful) {
                     callback.apply(true);
                 } else {
@@ -133,7 +133,7 @@ public class ThesisService {
         });
     }
 
-    private void updateRequirements(List<Change<Requirement>> changedRequirements, Thesis thesis, DocumentReference thesisDocument, CallbackFunction<Boolean> callbackFunction) {
+    private void updateRequirements(List<Change<Requirement>> changedRequirements, Thesis thesis, CallbackFunction<Boolean> callbackFunction) {
         List<Requirement> newRequirements = changedRequirements.stream().filter(requirementChange -> requirementChange.changeType == ChangeTypes.added).map(requirementChange -> requirementChange.value).collect(Collectors.toList());
         List<String> removedRequirements = changedRequirements.stream().filter(requirementChange -> requirementChange.changeType == ChangeTypes.removed).map(requirementChange -> requirementChange.value.id).collect(Collectors.toList());
 

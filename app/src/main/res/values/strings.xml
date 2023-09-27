@@ -63,4 +63,6 @@
     <string name="noFile">There are no file for this thesis</string>
     <string name="sent">Request sent</string>
     <string name="meeting" translatable="false">Meeting</string>
+    <string name="sureGoBack">Are you sure you want to discard changes?</string>
+    <string name="yes">Yes</string>
 </resources>

@@ -23,12 +23,16 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.PopupMenu;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
 import it.uniba.dib.sms22231.R;
+import it.uniba.dib.sms22231.config.ChangeTypes;
 import it.uniba.dib.sms22231.model.Attachment;
+import it.uniba.dib.sms22231.model.Change;
 import it.uniba.dib.sms22231.model.Requirement;
 import it.uniba.dib.sms22231.model.Thesis;
 import it.uniba.dib.sms22231.model.User;
@@ -46,7 +50,7 @@ public class AddThesisActivity extends AppCompatActivity {
     private ListView listViewFile;
     private ListView listViewReq;
     private ArrayList<String> fileNames;
-    private ArrayList<Requirement> requirements;
+    private ArrayList<Requirement> currentRequirements;
     private ArrayAdapter<String> listadapter;
     private ArrayList<Uri> filesList;
     private ArrayList<String> reqString;
@@ -54,6 +58,12 @@ public class AddThesisActivity extends AppCompatActivity {
     private final UserService userService = UserService.getInstance();
     private final RequirementService requirementService = RequirementService.getInstance();
     private final AttachmentService attachmentService = AttachmentService.getInstance();
+    private Thesis currentThesis;
+    private List<Attachment> currentAttachments;
+    private final List<Change<Requirement>> changedRequirements = new ArrayList<>();
+    private final List<Change<Attachment>> changedAttachments = new ArrayList<>();
+
+    private Boolean isEditing = false;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -81,34 +91,36 @@ public class AddThesisActivity extends AppCompatActivity {
         listViewFile = findViewById(R.id.fileListView);
         fileNames = new ArrayList<>();
         listViewReq = findViewById(R.id.reqListView);
-        requirements = new ArrayList<>();
+        currentRequirements = new ArrayList<>();
         filesList = new ArrayList<>();
         reqString = new ArrayList<>();
 
         if (caller == 3){
+            isEditing = true;
             String id = intent.getStringExtra("id");
             thesisService.getThesisById(id, thesis -> {
+                currentThesis = thesis;
                 thesisTitle.setText(thesis.title);
                 thesisDescription.setText(thesis.description);
 
                 requirementService.getRequirementsByThesis(thesis).subscribe(requirements -> {
+                    currentRequirements = (ArrayList<Requirement>) requirements;
                     reqString = new ArrayList<>();
                     for (Requirement requirement : requirements) {
                         String reqtemp = requirement.description + ": " + requirement.value;
                         reqString.add(reqtemp);
                     }
-                        fillList(reqString, listViewReq);
 
+                    fillList(reqString, listViewReq);
                 });
                 attachmentService.getAttachmentsByThesis(thesis).subscribe(attachments -> {
+                    currentAttachments = attachments;
                     fileNames = new ArrayList<>();
                     for (Attachment attachment : attachments) {
-                        String attachtemp = attachment.fileName;
-                        fileNames.add(attachtemp);
+                        fileNames.add(attachment.fileName);
                     }
 
-                        fillList(fileNames, listViewFile);
-
+                    fillList(fileNames, listViewFile);
                 });
             });
         }
@@ -121,6 +133,12 @@ public class AddThesisActivity extends AppCompatActivity {
                     String name = getNameFromUri(uri);
                     fileNames.add(name);
                     filesList.add(uri);
+                    if (isEditing) {
+                        Attachment attachment = new Attachment();
+                        attachment.path = uri;
+                        attachment.fileName = name;
+                        changedAttachments.add(new Change<>(attachment, ChangeTypes.added));
+                    }
                     fillList(fileNames, listViewFile);
                 }
             }
@@ -139,8 +157,12 @@ public class AddThesisActivity extends AppCompatActivity {
                             .show();
                     Button positiveButton = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
                     positiveButton.setOnClickListener(view1 -> {
+                        if (isEditing) {
+                            changedAttachments.add(new Change<>(currentAttachments.get(i), ChangeTypes.removed));
+                        } else {
+                            filesList.remove(i);
+                        }
                         fileNames.remove(i);
-                        filesList.remove(i);
                         fillList(fileNames, listViewFile);
                         dialog.dismiss();
                     });
@@ -163,8 +185,12 @@ public class AddThesisActivity extends AppCompatActivity {
                             .show();
                     Button positiveButton = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
                     positiveButton.setOnClickListener(view1 -> {
+                        if (isEditing) {
+                            changedRequirements.add(new Change<>(currentRequirements.get(i), ChangeTypes.removed));
+                        }
+
                         reqString.remove(i);
-                        requirements.remove(i);
+                        currentRequirements.remove(i);
                         fillList(reqString, listViewReq);
                         dialog.dismiss();
                     });
@@ -201,6 +227,40 @@ public class AddThesisActivity extends AppCompatActivity {
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (!isChanged()) {
+            super.onBackPressed();
+            return;
+        }
+
+        AlertDialog dialog = new AlertDialog.Builder(AddThesisActivity.this)
+                .setMessage(R.string.sureGoBack)
+                .setPositiveButton(R.string.yes, null)
+                .setNegativeButton("No", null)
+                .show();
+        Button positiveButton = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
+        positiveButton.setOnClickListener(view1 -> {
+            dialog.dismiss();
+            super.onBackPressed();
+        });
+    }
+
+    private boolean isChanged() {
+        return isEditing && (
+                changedAttachments.size() > 0 ||
+                changedRequirements.size() > 0 ||
+                !currentThesis.title.equals(thesisTitle.getText().toString()) ||
+                !currentThesis.description.equals(thesisDescription.getText().toString())
+        ) ||
+                !isEditing && (
+                fileNames.size() > 0 ||
+                reqString.size() > 0 ||
+                thesisTitle.getText().toString().length() > 0 ||
+                thesisDescription.getText().toString().length() > 0
+        );
     }
 
     public void addRequirement(View view) {
@@ -246,7 +306,10 @@ public class AddThesisActivity extends AppCompatActivity {
                         item = (getString(R.string.timelimit) + ": " + control);
 
                 }
-                requirements.add(req);
+                if (isEditing) {
+                    changedRequirements.add(new Change<>(req, ChangeTypes.added));
+                }
+                currentRequirements.add(req);
                 reqString.add(item);
                 fillList(reqString, listViewReq);
                 builder.dismiss();
@@ -265,7 +328,7 @@ public class AddThesisActivity extends AppCompatActivity {
 
         AtomicReference<Boolean> success = new AtomicReference<>(false);
 
-        thesisService.saveNewThesis(thesis, requirements, filesList, fileNames, isSuccessful -> {
+        thesisService.saveNewThesis(thesis, currentRequirements, filesList, fileNames, isSuccessful -> {
             if (success.get()) {
                 finish();
             }
@@ -274,8 +337,13 @@ public class AddThesisActivity extends AppCompatActivity {
         });
     }
 
-    public void onModify(View view){
+    public void onModify(View view) {
+        currentThesis.title = thesisTitle.getText().toString();
+        currentThesis.description = thesisDescription.getText().toString();
 
+        thesisService.updateThesis(currentThesis, changedAttachments, changedRequirements, success -> {
+            Toast.makeText(this, "saved successfully", Toast.LENGTH_SHORT).show();
+        });
     }
 
 }

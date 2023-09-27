@@ -28,6 +28,7 @@ public class RequirementService {
 
                 for (QueryDocumentSnapshot requirementDoc : querySnapshot) {
                     Requirement requirement = new Requirement(requirementDoc.getData());
+                    requirement.id = requirementDoc.getId();
                     requirements.add(requirement);
                 }
 
@@ -37,6 +38,10 @@ public class RequirementService {
     }
 
     public void addRequirements(List<Requirement> requirements, String thesisId, CallbackFunction<Boolean> callback) {
+        if (requirements.size() == 0) {
+            callback.apply(true);
+        }
+
         AtomicReference<Integer> addedRequirements = new AtomicReference<>(0);
 
         for (Requirement requirement : requirements) {

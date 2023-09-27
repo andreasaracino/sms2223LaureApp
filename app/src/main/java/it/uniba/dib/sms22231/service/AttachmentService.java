@@ -23,9 +23,14 @@ public class AttachmentService {
 
     public void saveAttachments(List<Uri> filesList, List<String> fileNames, CallbackFunction<List<String>> callback) {
         List<String> savedFilesPaths = new ArrayList<>();
-        AtomicReference<Integer> savedFiles = new AtomicReference<>(0);
 
+        if (filesList.size() == 0) {
+            callback.apply(savedFilesPaths);
+        }
+
+        AtomicReference<Integer> savedFiles = new AtomicReference<>(0);
         int index = 0;
+
         for (Uri file : filesList) {
             String uniqueFilePath = System.currentTimeMillis() + "_" + fileNames.get(index++);
             savedFilesPaths.add(uniqueFilePath);

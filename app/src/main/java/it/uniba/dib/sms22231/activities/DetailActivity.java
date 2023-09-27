@@ -72,7 +72,12 @@ public class DetailActivity extends AppCompatActivity {
         createBottomAppBar();
 
         fillActivity();
+    }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        fillActivity();
     }
 
     private void fillActivity() {
