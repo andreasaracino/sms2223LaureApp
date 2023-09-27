@@ -50,6 +50,17 @@ public class RequirementService {
         }
     }
 
+    public void removeRequirements(List<String> requirementsIds, CallbackFunction<Boolean> callback) {
+        if (requirementsIds.size() == 0) {
+            callback.apply(true);
+            return;
+        };
+
+        for (String requirementId : requirementsIds) {
+            requirementsCollection.document(requirementId).delete().addOnCompleteListener(task -> callback.apply(task.isSuccessful()));
+        }
+    }
+
     private RequirementService() {}
 
     public static RequirementService getInstance() {
