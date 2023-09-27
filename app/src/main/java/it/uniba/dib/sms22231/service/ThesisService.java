@@ -12,7 +12,11 @@ import com.google.firebase.firestore.QuerySnapshot;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
+import it.uniba.dib.sms22231.config.ChangeTypes;
+import it.uniba.dib.sms22231.model.Attachment;
+import it.uniba.dib.sms22231.model.Change;
 import it.uniba.dib.sms22231.model.Requirement;
 import it.uniba.dib.sms22231.model.Student;
 import it.uniba.dib.sms22231.model.Thesis;
@@ -92,8 +96,64 @@ public class ThesisService {
         });
     }
 
-    public void modifyThesis(Thesis thesis, CallbackFunction<Boolean> callback) {
-        thesesCollection.document(thesis.id).set(thesis).addOnCompleteListener(task -> callback.apply(task.isSuccessful()));
+    public void updateThesis(Thesis thesis, List<Change<Attachment>> changedAttachments, List<Change<Requirement>> changedRequirements, CallbackFunction<Boolean> callback) {
+        DocumentReference thesisDocument = thesesCollection.document(thesis.id);
+        thesesCollection.document(thesis.id).set(thesis).addOnCompleteListener(task -> {
+            final boolean[] success = {false};
+
+            updateAttachments(changedAttachments, thesis, thesisDocument, isSuccessful -> {
+                if (success[0] && isSuccessful) {
+                    callback.apply(true);
+                } else {
+                    success[0] = true;
+                }
+            });
+
+            updateRequirements(changedRequirements, thesis, thesisDocument, isSuccessful -> {
+                if (success[0] && isSuccessful) {
+                    callback.apply(true);
+                } else {
+                    success[0] = true;
+                }
+            });
+        });
+    }
+
+    private void updateAttachments(List<Change<Attachment>> changedAttachments, Thesis thesis, DocumentReference thesisDocument, CallbackFunction<Boolean> callbackFunction) {
+        List<Uri> newAttachments = changedAttachments.stream().filter(attachmentChange -> attachmentChange.changeType == ChangeTypes.added).map(attachmentChange -> attachmentChange.value.path).collect(Collectors.toList());
+        List<String> fileNames = changedAttachments.stream().filter(attachmentChange -> attachmentChange.changeType == ChangeTypes.added).map(attachmentChange -> attachmentChange.value.fileName).collect(Collectors.toList());
+        List<String> removedAttachments = changedAttachments.stream().filter(attachmentChange -> attachmentChange.changeType == ChangeTypes.removed).map(attachmentChange -> attachmentChange.value.id).collect(Collectors.toList());
+
+        attachmentService.saveAttachments(newAttachments, fileNames, savedFiles -> {
+            thesis.attachments.removeAll(removedAttachments);
+            thesis.attachments.addAll(savedFiles);
+            thesisDocument.update("attachmentIds", thesis.attachments).addOnCompleteListener(task -> {
+                callbackFunction.apply(task.isSuccessful());
+            });
+        });
+    }
+
+    private void updateRequirements(List<Change<Requirement>> changedRequirements, Thesis thesis, DocumentReference thesisDocument, CallbackFunction<Boolean> callbackFunction) {
+        List<Requirement> newRequirements = changedRequirements.stream().filter(requirementChange -> requirementChange.changeType == ChangeTypes.added).map(requirementChange -> requirementChange.value).collect(Collectors.toList());
+        List<String> removedRequirements = changedRequirements.stream().filter(requirementChange -> requirementChange.changeType == ChangeTypes.removed).map(requirementChange -> requirementChange.value.id).collect(Collectors.toList());
+
+        final boolean[] success = {false};
+
+        requirementService.removeRequirements(removedRequirements, isSuccessful -> {
+            if (success[0] && isSuccessful) {
+                callbackFunction.apply(true);
+            } else {
+                success[0] = true;
+            }
+        });
+
+        requirementService.addRequirements(newRequirements, thesis.id, isSuccessful -> {
+            if (success[0] && isSuccessful) {
+                callbackFunction.apply(true);
+            } else {
+                success[0] = true;
+            }
+        });
     }
 
     private void mapThesesResult(QuerySnapshot querySnapshot, CallbackFunction<List<Thesis>> callback) {
