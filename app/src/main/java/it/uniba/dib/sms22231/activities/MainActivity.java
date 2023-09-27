@@ -17,6 +17,11 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        showSplash();
+    }
+
+    //mostra per 2 secondi il logo del team e quello dell'app
+    private void showSplash() {
         timer = new Timer();
         timer.schedule(new TimerTask() {
             @Override
