@@ -24,15 +24,23 @@ import it.uniba.dib.sms22231.service.ThesisService;
 import it.uniba.dib.sms22231.utility.RecyclerViewInterface;
 
 public class AvailableFragment extends Fragment implements RecyclerViewInterface {
-    ThesisService thesisService = ThesisService.getInstance();
-    ArrayList<CardData> cardData;
+    private final ThesisService thesisService = ThesisService.getInstance();
+    private ArrayList<CardData> cardData;
+    private View view;
+    private boolean paused;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        View view = inflater.inflate(R.layout.fragment_available, container, false);
+        view = inflater.inflate(R.layout.fragment_available, container, false);
 
+        getTheses();
+
+        return view;
+    }
+
+    private void getTheses() {
         thesisService.getAllTheses().subscribe(theses -> {
             cardData = new ArrayList<>();
             for (Thesis t : theses) {
@@ -45,8 +53,6 @@ public class AvailableFragment extends Fragment implements RecyclerViewInterface
             rec.setLayoutManager(linearLayoutManager);
             rec.setAdapter(recad);
         });
-
-        return view;
     }
 
     @Override
@@ -56,5 +62,20 @@ public class AvailableFragment extends Fragment implements RecyclerViewInterface
         intent.putExtra("id",id);
         intent.putExtra("caller", 1);
         startActivity(intent);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        paused = true;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        if (paused) {
+            getTheses();
+        }
     }
 }

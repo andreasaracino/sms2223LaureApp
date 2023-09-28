@@ -26,18 +26,19 @@ public class RankingFragment extends Fragment implements RecyclerViewInterface {
     private ArrayList<CardData> cardData;
 
     private View view;
+    private boolean paused;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_ranking, container, false);
 
-        getTheses(view);
+        getTheses();
 
         return view;
     }
 
-    private void getTheses(View view) {
+    private void getTheses() {
         thesisService.getSavedTheses().subscribe(theses ->{
             cardData = new ArrayList<>();
             for (Thesis t : theses) {
@@ -62,9 +63,17 @@ public class RankingFragment extends Fragment implements RecyclerViewInterface {
     }
 
     @Override
+    public void onPause() {
+        super.onPause();
+        paused = true;
+    }
+
+    @Override
     public void onResume() {
         super.onResume();
-        getTheses(view);
 
+        if (paused) {
+            getTheses();
+        }
     }
 }

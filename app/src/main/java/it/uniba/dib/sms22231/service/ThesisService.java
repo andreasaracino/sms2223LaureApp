@@ -12,6 +12,8 @@ import com.google.firebase.firestore.QuerySnapshot;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import it.uniba.dib.sms22231.config.ChangeTypes;
@@ -59,13 +61,19 @@ public class ThesisService {
         Observable<List<Thesis>> savedTheses = new Observable<>();
         Student student = studentService.getStudentData();
 
-        thesesCollection.whereIn("id", student.savedThesesIds).get().addOnCompleteListener(task -> {
+        if (student.savedThesesIds.size() == 0) {
+            savedTheses.next(new ArrayList<>());
+            return savedTheses;
+        }
+
+        thesesCollection.get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 List<Thesis> theses = new ArrayList<>();
                 QuerySnapshot result = task.getResult();
 
-                for (QueryDocumentSnapshot rawThesis : result) {
-                    theses.add(new Thesis(rawThesis.getData()));
+                for (String thesisId : student.savedThesesIds) {
+                    Optional<DocumentSnapshot> thesisDoc = result.getDocuments().stream().filter(doc -> doc.getId().equals(thesisId)).findFirst();
+                    thesisDoc.ifPresent(documentSnapshot -> theses.add(new Thesis(Objects.requireNonNull(documentSnapshot.getData()))));
                 }
 
                 savedTheses.next(theses);
