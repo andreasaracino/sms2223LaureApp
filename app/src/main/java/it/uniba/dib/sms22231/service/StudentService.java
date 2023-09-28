@@ -57,6 +57,10 @@ public class StudentService {
         studentDocument.update("savedThesesIds", studentData.savedThesesIds).addOnCompleteListener(task -> callback.apply(task.isSuccessful()));
     }
 
+    public boolean isThesisFavorite(Thesis thesis) {
+        return studentData.savedThesesIds.contains(thesis.id);
+    }
+
     public void saveStudent(User user, CallbackFunction<Boolean> callback) {
         studentDocument.set(new Student(user.uid, new ArrayList<>())).addOnCompleteListener(task -> callback.apply(task.isSuccessful()));
     }
