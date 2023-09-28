@@ -49,12 +49,15 @@ public class StudentService {
     }
 
     public void addThesisToFavourites(Thesis thesis, CallbackFunction<Boolean> callback) {
-        if (studentData.savedThesesIds.contains(thesis.id)) {
+        boolean isFavorite = studentData.savedThesesIds.contains(thesis.id);
+
+        if (isFavorite) {
             studentData.savedThesesIds.remove(thesis.id);
         } else {
             studentData.savedThesesIds.add(thesis.id);
         }
-        studentDocument.update("savedThesesIds", studentData.savedThesesIds).addOnCompleteListener(task -> callback.apply(task.isSuccessful()));
+
+        studentDocument.update("savedThesesIds", studentData.savedThesesIds).addOnCompleteListener(task -> callback.apply(!isFavorite));
     }
 
     public boolean isThesisFavorite(Thesis thesis) {
