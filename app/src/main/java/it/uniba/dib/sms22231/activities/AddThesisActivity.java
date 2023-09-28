@@ -223,7 +223,7 @@ public class AddThesisActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                this.finish();
+                this.onBackPressed();
                 return true;
         }
         return super.onOptionsItemSelected(item);
