@@ -42,7 +42,7 @@ public class ThesisService {
     public Observable<List<Thesis>> getAllTheses() {
         return new Observable<>((next) -> {
             thesesCollection.get().addOnCompleteListener(task -> {
-                mapThesesResult(task.getResult(), next);
+                mapThesesResult(task.getResult().getDocuments(), next);
             });
         });
     }
@@ -52,7 +52,7 @@ public class ThesisService {
 
         thesesCollection.whereEqualTo("teacherId", uid).get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
-                mapThesesResult(task.getResult(), userOwnTheses::next);
+                mapThesesResult(task.getResult().getDocuments(), userOwnTheses::next);
             }
         });
     }
@@ -68,15 +68,15 @@ public class ThesisService {
 
         thesesCollection.get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
-                List<Thesis> theses = new ArrayList<>();
+                List<DocumentSnapshot> rawTheses = new ArrayList<>();
                 QuerySnapshot result = task.getResult();
 
                 for (String thesisId : student.savedThesesIds) {
                     Optional<DocumentSnapshot> thesisDoc = result.getDocuments().stream().filter(doc -> doc.getId().equals(thesisId)).findFirst();
-                    thesisDoc.ifPresent(documentSnapshot -> theses.add(new Thesis(Objects.requireNonNull(documentSnapshot.getData()))));
+                    thesisDoc.ifPresent(rawTheses::add);
                 }
 
-                savedTheses.next(theses);
+                mapThesesResult(rawTheses, savedTheses::next);
             }
         });
 
@@ -164,14 +164,14 @@ public class ThesisService {
         });
     }
 
-    private void mapThesesResult(QuerySnapshot querySnapshot, CallbackFunction<List<Thesis>> callback) {
+    private void mapThesesResult(List<DocumentSnapshot> documentSnapshots, CallbackFunction<List<Thesis>> callback) {
         ArrayList<Thesis> theses = new ArrayList<>();
 
-        for (QueryDocumentSnapshot thesisRaw : querySnapshot) {
+        for (DocumentSnapshot thesisRaw : documentSnapshots) {
             mapThesis(thesisRaw.getId(), thesisRaw.getData(), thesis -> {
                 theses.add(thesis);
 
-                if (theses.size() == querySnapshot.size()) {
+                if (theses.size() == documentSnapshots.size()) {
                     callback.apply(theses);
                 }
             });
