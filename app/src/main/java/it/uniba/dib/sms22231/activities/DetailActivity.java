@@ -19,6 +19,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
@@ -33,8 +34,10 @@ import java.util.Arrays;
 import it.uniba.dib.sms22231.R;
 import it.uniba.dib.sms22231.model.Attachment;
 import it.uniba.dib.sms22231.model.Requirement;
+import it.uniba.dib.sms22231.model.Thesis;
 import it.uniba.dib.sms22231.service.AttachmentService;
 import it.uniba.dib.sms22231.service.RequirementService;
+import it.uniba.dib.sms22231.service.StudentService;
 import it.uniba.dib.sms22231.service.ThesisService;
 
 public class DetailActivity extends AppCompatActivity {
@@ -43,6 +46,7 @@ public class DetailActivity extends AppCompatActivity {
     private TextView txtDescription;
     private TextView txtOwner;
     private final RequirementService requirementService = RequirementService.getInstance();
+    private final StudentService studentService = StudentService.getInstance();
     private ListView reqListview;
     private ArrayList<String> req;
     private final AttachmentService attachmentService = AttachmentService.getInstance();
@@ -55,6 +59,7 @@ public class DetailActivity extends AppCompatActivity {
     private TextView txtNoRequirement;
     private TextView txtNoFile;
     private boolean averageControl = false;
+    private Thesis thesis;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,6 +95,8 @@ public class DetailActivity extends AppCompatActivity {
         txtNoFile = findViewById(R.id.textNoFile);
 
         thesisService.getThesisById(id, thesis -> {
+            this.thesis = thesis;
+            checkFavorite();
             txtTitle.setText(thesis.title);
             String temp = getString(R.string.teacher) + ": " + thesis.teacherFullname;
             txtOwner.setText(temp);
@@ -149,7 +156,7 @@ public class DetailActivity extends AppCompatActivity {
                     doRequest();
                 }
                 if (item.getItemId() == R.id.favorite) {
-                    //TODO
+                    addFavorite();
                 }
                 if (item.getItemId() == R.id.share) {
                     sendMessage();
@@ -166,6 +173,22 @@ public class DetailActivity extends AppCompatActivity {
                 return false;
             }
         });
+    }
+
+    private void addFavorite() {
+        studentService.addThesisToFavourites(thesis, isFavorite ->{
+            Toast.makeText(this, isFavorite ? R.string.favThesis : R.string.remFavorite, Toast.LENGTH_SHORT).show();
+            checkFavorite();
+        });
+    }
+
+    private void checkFavorite(){
+        MenuItem item = bottomNavigationView.getMenu().findItem(R.id.favorite);
+        if (studentService.isThesisFavorite(thesis)){
+            item.setIcon(R.drawable.favorite_full);
+        } else {
+            item.setIcon(R.drawable.outline_favorite_border_24);
+        }
     }
 
     private void thesisMod() {

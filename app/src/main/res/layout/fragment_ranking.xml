@@ -5,13 +5,9 @@
     android:layout_height="match_parent"
     tools:context=".fragments.RankingFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rankRecycler"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="Fragment Rank"
-        android:textSize="60sp"
-        android:gravity="center"
-        android:textColor="#007fff"/>
-
+        android:layout_marginBottom="50dp" />
 </FrameLayout>

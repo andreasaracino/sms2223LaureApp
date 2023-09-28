@@ -54,5 +54,7 @@
     <string name="sent">Richiesta inviata</string>
     <string name="sureGoBack">Sei sicuro di voller annullare i cambiamenti?</string>
     <string name="yes">Sì</string>
+    <string name="favThesis">Aggiunto ai preferiti</string>
+    <string name="remFavorite">Rimosso dai preferiti</string>
 
 </resources>
