@@ -48,7 +48,7 @@ public class AttachmentService {
         return new Observable<>((next) -> {
             List<String> filesIds = thesis.attachments;
 
-            if (filesIds != null) {
+            if (filesIds != null && filesIds.size() > 0) {
                 List<Attachment> attachments = new ArrayList<>();
 
                 for (String fileId : filesIds) {

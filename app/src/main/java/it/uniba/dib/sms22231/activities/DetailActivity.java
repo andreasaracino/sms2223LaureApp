@@ -117,8 +117,8 @@ public class DetailActivity extends AppCompatActivity {
                     }
                 }
                 if (req.isEmpty()) {
+                    reqListview.setVisibility(View.GONE);
                     txtNoRequirement.setVisibility(View.VISIBLE);
-                    txtNoRequirement.setText(R.string.noReq);
                 } else {
                     fillList(req, reqListview);
                 }
@@ -130,8 +130,8 @@ public class DetailActivity extends AppCompatActivity {
                     attach.add(attachtemp);
                 }
                 if (attach.isEmpty()) {
+                    fileListView.setVisibility(View.GONE);
                     txtNoFile.setVisibility(View.VISIBLE);
-                    txtNoFile.setText(R.string.noFile);
                 } else {
                     fillList(attach, fileListView);
                 }
@@ -291,6 +291,7 @@ public class DetailActivity extends AppCompatActivity {
     private void fillList(ArrayList<String> arrayList, ListView listView) {
         ArrayAdapter<String> listAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, arrayList);
         listView.setAdapter(listAdapter);
+        listView.setVisibility(View.VISIBLE);
     }
 
     @Override
