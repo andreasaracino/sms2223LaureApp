@@ -67,4 +67,5 @@
     <string name="yes">Yes</string>
     <string name="favThesis">Added in favorites</string>
     <string name="remFavorite">Removed from favorites</string>
+    <string name="permission">Permission Denied</string>
 </resources>

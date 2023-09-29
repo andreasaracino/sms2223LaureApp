@@ -76,7 +76,7 @@
             android:layout_marginStart="80dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="80dp"
-            android:onClick="addFile"
+            android:onClick="addFilePermission"
             android:text="@string/addFile" />
 
         <ListView

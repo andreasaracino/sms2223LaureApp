@@ -56,5 +56,6 @@
     <string name="yes">Sì</string>
     <string name="favThesis">Aggiunto ai preferiti</string>
     <string name="remFavorite">Rimosso dai preferiti</string>
+    <string name="permission">Permesso negato</string>
 
 </resources>

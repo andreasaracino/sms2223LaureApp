@@ -8,8 +8,11 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -230,10 +233,32 @@ public class AddThesisActivity extends AppCompatActivity {
         return cursor.getString(nameIndex);
     }
 
-    public void addFile(View view) {
+    public void addFilePermission(View view){
+        if (ActivityCompat.checkSelfPermission(AddThesisActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(AddThesisActivity.this, new String[] {
+                            Manifest.permission.READ_EXTERNAL_STORAGE }, 1);
+        }
+        else {
+            addFile();
+        }
+    }
+
+    public void addFile() {
         Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
         intent.setType("*/*");
         resultLauncher.launch(intent);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == 1 && grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            addFile();
+        }
+        else {
+
+            Toast.makeText(getApplicationContext(), R.string.permission, Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override
