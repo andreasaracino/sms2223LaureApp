@@ -43,7 +43,9 @@ import it.uniba.dib.sms22231.service.UserService;
 
 public class AddThesisActivity extends AppCompatActivity {
     private final ThesisService thesisService = ThesisService.getInstance();
-
+    private final RequirementService requirementService = RequirementService.getInstance();
+    private final AttachmentService attachmentService = AttachmentService.getInstance();
+    private final UserService userService = UserService.getInstance();
     private ActivityResultLauncher<Intent> resultLauncher;
     private EditText thesisTitle;
     private EditText thesisDescription;
@@ -51,18 +53,13 @@ public class AddThesisActivity extends AppCompatActivity {
     private ListView listViewReq;
     private ArrayList<String> fileNames;
     private ArrayList<Requirement> currentRequirements;
-    private ArrayAdapter<String> listadapter;
     private ArrayList<Uri> filesList;
     private ArrayList<String> reqString;
-
-    private final UserService userService = UserService.getInstance();
-    private final RequirementService requirementService = RequirementService.getInstance();
-    private final AttachmentService attachmentService = AttachmentService.getInstance();
+    private ArrayAdapter<String> listadapter;
     private Thesis currentThesis;
     private List<Attachment> currentAttachments;
     private final List<Change<Requirement>> changedRequirements = new ArrayList<>();
     private final List<Change<Attachment>> changedAttachments = new ArrayList<>();
-
     private Boolean isEditing = false;
 
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,15 +72,7 @@ public class AddThesisActivity extends AppCompatActivity {
         Button saveModifyButton = findViewById(R.id.saveThesisButton);
 
         ActionBar actionBar = getSupportActionBar();
-        if (caller == 3) {
-            actionBar.setTitle(R.string.modify);
-            saveModifyButton.setText(R.string.modify);
-            saveModifyButton.setOnClickListener(this::onModify);
-        } else {
-            actionBar.setTitle(R.string.addThesis);
-            saveModifyButton.setText(R.string.saveThesis);
-            saveModifyButton.setOnClickListener(this::onSave);
-        }
+        setSaveorModify(caller, saveModifyButton, actionBar);
         actionBar.setDisplayHomeAsUpEnabled(true);
 
         thesisTitle = findViewById(R.id.titleEditText);
@@ -95,6 +84,97 @@ public class AddThesisActivity extends AppCompatActivity {
         filesList = new ArrayList<>();
         reqString = new ArrayList<>();
 
+        fillActivityForModify(intent, caller);
+
+        filePicker();
+
+        deleteAttachment();
+        deleteRequirement();
+    }
+
+    private void deleteRequirement() {
+        listViewReq.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                PopupMenu popupMenu = new PopupMenu(AddThesisActivity.this, view);
+                popupMenu.getMenuInflater().inflate(R.menu.popup_item_delete, popupMenu.getMenu());
+                popupMenu.setOnMenuItemClickListener(menuItem -> {
+                    AlertDialog dialog = new AlertDialog.Builder(AddThesisActivity.this)
+                            .setMessage(R.string.suredelete)
+                            .setPositiveButton("Ok", null)
+                            .setNegativeButton(R.string.cancel, null)
+                            .show();
+                    Button positiveButton = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
+                    positiveButton.setOnClickListener(view1 -> {
+                        if (isEditing) {
+                            changedRequirements.add(new Change<>(currentRequirements.get(i), ChangeTypes.removed));
+                        }
+
+                        reqString.remove(i);
+                        currentRequirements.remove(i);
+                        fillList(reqString, listViewReq);
+                        dialog.dismiss();
+                    });
+                    return false;
+                });
+                popupMenu.show();
+            }
+        });
+    }
+
+    private void deleteAttachment() {
+        listViewFile.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                PopupMenu popupMenu = new PopupMenu(AddThesisActivity.this, view);
+                popupMenu.getMenuInflater().inflate(R.menu.popup_item_delete, popupMenu.getMenu());
+                popupMenu.setOnMenuItemClickListener(menuItem -> {
+                    AlertDialog dialog = new AlertDialog.Builder(AddThesisActivity.this)
+                            .setMessage(R.string.suredelete)
+                            .setPositiveButton("Ok", null)
+                            .setNegativeButton(R.string.cancel, null)
+                            .show();
+                    Button positiveButton = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
+                    positiveButton.setOnClickListener(view1 -> {
+                        if (isEditing) {
+                            changedAttachments.add(new Change<>(currentAttachments.get(i), ChangeTypes.removed));
+                        } else {
+                            filesList.remove(i);
+                        }
+                        fileNames.remove(i);
+                        fillList(fileNames, listViewFile);
+                        dialog.dismiss();
+                    });
+                    return false;
+                });
+                popupMenu.show();
+            }
+        });
+    }
+
+    private void filePicker() {
+        resultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
+            @Override
+            public void onActivityResult(ActivityResult result) {
+                Intent data = result.getData();
+                if (data != null) {
+                    Uri uri = data.getData();
+                    String name = getNameFromUri(uri);
+                    fileNames.add(name);
+                    filesList.add(uri);
+                    if (isEditing) {
+                        Attachment attachment = new Attachment();
+                        attachment.path = uri;
+                        attachment.fileName = name;
+                        changedAttachments.add(new Change<>(attachment, ChangeTypes.added));
+                    }
+                    fillList(fileNames, listViewFile);
+                }
+            }
+        });
+    }
+
+    private void fillActivityForModify(Intent intent, int caller) {
         if (caller == 3){
             isEditing = true;
             String id = intent.getStringExtra("id");
@@ -124,81 +204,18 @@ public class AddThesisActivity extends AppCompatActivity {
                 });
             });
         }
-        resultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
-            @Override
-            public void onActivityResult(ActivityResult result) {
-                Intent data = result.getData();
-                if (data != null) {
-                    Uri uri = data.getData();
-                    String name = getNameFromUri(uri);
-                    fileNames.add(name);
-                    filesList.add(uri);
-                    if (isEditing) {
-                        Attachment attachment = new Attachment();
-                        attachment.path = uri;
-                        attachment.fileName = name;
-                        changedAttachments.add(new Change<>(attachment, ChangeTypes.added));
-                    }
-                    fillList(fileNames, listViewFile);
-                }
-            }
-        });
+    }
 
-        listViewFile.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                PopupMenu popupMenu = new PopupMenu(AddThesisActivity.this, view);
-                popupMenu.getMenuInflater().inflate(R.menu.popup_item_delete, popupMenu.getMenu());
-                popupMenu.setOnMenuItemClickListener(menuItem -> {
-                    AlertDialog dialog = new AlertDialog.Builder(AddThesisActivity.this)
-                            .setMessage(R.string.suredelete)
-                            .setPositiveButton("Ok", null)
-                            .setNegativeButton(R.string.cancel, null)
-                            .show();
-                    Button positiveButton = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
-                    positiveButton.setOnClickListener(view1 -> {
-                        if (isEditing) {
-                            changedAttachments.add(new Change<>(currentAttachments.get(i), ChangeTypes.removed));
-                        } else {
-                            filesList.remove(i);
-                        }
-                        fileNames.remove(i);
-                        fillList(fileNames, listViewFile);
-                        dialog.dismiss();
-                    });
-                    return false;
-                });
-                popupMenu.show();
-            }
-        });
-
-        listViewReq.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                PopupMenu popupMenu = new PopupMenu(AddThesisActivity.this, view);
-                popupMenu.getMenuInflater().inflate(R.menu.popup_item_delete, popupMenu.getMenu());
-                popupMenu.setOnMenuItemClickListener(menuItem -> {
-                    AlertDialog dialog = new AlertDialog.Builder(AddThesisActivity.this)
-                            .setMessage(R.string.suredelete)
-                            .setPositiveButton("Ok", null)
-                            .setNegativeButton(R.string.cancel, null)
-                            .show();
-                    Button positiveButton = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
-                    positiveButton.setOnClickListener(view1 -> {
-                        if (isEditing) {
-                            changedRequirements.add(new Change<>(currentRequirements.get(i), ChangeTypes.removed));
-                        }
-
-                        reqString.remove(i);
-                        currentRequirements.remove(i);
-                        fillList(reqString, listViewReq);
-                        dialog.dismiss();
-                    });
-                    return false;
-                });
-                popupMenu.show();
-            }
-        });
+    private void setSaveorModify(int caller, Button saveModifyButton, ActionBar actionBar) {
+        if (caller == 3) {
+            actionBar.setTitle(R.string.modify);
+            saveModifyButton.setText(R.string.modify);
+            saveModifyButton.setOnClickListener(this::onModify);
+        } else {
+            actionBar.setTitle(R.string.addThesis);
+            saveModifyButton.setText(R.string.saveThesis);
+            saveModifyButton.setOnClickListener(this::onSave);
+        }
     }
 
     private void fillList(ArrayList<String> arrayList, ListView listView) {
