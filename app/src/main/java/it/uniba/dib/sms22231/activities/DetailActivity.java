@@ -183,11 +183,13 @@ public class DetailActivity extends AppCompatActivity {
     }
 
     private void checkFavorite(){
-        MenuItem item = bottomNavigationView.getMenu().findItem(R.id.favorite);
-        if (studentService.isThesisFavorite(thesis)){
-            item.setIcon(R.drawable.favorite_full);
-        } else {
-            item.setIcon(R.drawable.outline_favorite_border_24);
+        if (caller == 1) {
+            MenuItem item = bottomNavigationView.getMenu().findItem(R.id.favorite);
+            if (studentService.isThesisFavorite(thesis)) {
+                item.setIcon(R.drawable.favorite_full);
+            } else {
+                item.setIcon(R.drawable.outline_favorite_border_24);
+            }
         }
     }
 
