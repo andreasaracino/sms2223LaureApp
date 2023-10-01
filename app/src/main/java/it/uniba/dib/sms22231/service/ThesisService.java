@@ -6,6 +6,7 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
@@ -41,7 +42,7 @@ public class ThesisService {
 
     public Observable<List<Thesis>> getAllTheses() {
         return new Observable<>((next) -> {
-            thesesCollection.get().addOnCompleteListener(task -> {
+            thesesCollection.orderBy("title", Query.Direction.ASCENDING).get().addOnCompleteListener(task -> {
                 mapThesesResult(task.getResult().getDocuments(), next);
             });
         });
