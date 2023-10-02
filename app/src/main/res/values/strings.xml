@@ -68,4 +68,6 @@
     <string name="favThesis">Added in favorites</string>
     <string name="remFavorite">Removed from favorites</string>
     <string name="permission">Permission Denied</string>
+    <string name="yourexams">Check your exams</string>
+    <string name="youraverage">Insert yuor average</string>
 </resources>
