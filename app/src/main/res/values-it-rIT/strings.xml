@@ -57,5 +57,7 @@
     <string name="favThesis">Aggiunto ai preferiti</string>
     <string name="remFavorite">Rimosso dai preferiti</string>
     <string name="permission">Permesso negato</string>
+    <string name="yourexams">Seleziona i tuoi esami</string>
+    <string name="youraverage">Inserisci la tua media</string>
 
 </resources>

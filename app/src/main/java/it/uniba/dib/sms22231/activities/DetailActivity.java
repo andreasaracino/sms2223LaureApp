@@ -4,7 +4,6 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -109,8 +108,7 @@ public class DetailActivity extends AppCompatActivity {
                     String reqtemp = requirement.description + ": " + requirement.value;
                     req.add(reqtemp);
                     if (requirement.description.equals(getString(R.string.exam))) {
-                        String examtemp = requirement.description + ": " + requirement.value;
-                        examArrayList.add(examtemp);
+                        examArrayList.add(requirement.value);
                     }
                     if (requirement.description.equals(getString(R.string.average))) {
                         averageControl = true;
@@ -176,13 +174,13 @@ public class DetailActivity extends AppCompatActivity {
     }
 
     private void addFavorite() {
-        studentService.addThesisToFavourites(thesis, isFavorite ->{
+        studentService.addThesisToFavourites(thesis, isFavorite -> {
             Toast.makeText(this, isFavorite ? R.string.favThesis : R.string.remFavorite, Toast.LENGTH_SHORT).show();
             checkFavorite();
         });
     }
 
-    private void checkFavorite(){
+    private void checkFavorite() {
         if (caller == 1) {
             MenuItem item = bottomNavigationView.getMenu().findItem(R.id.favorite);
             if (studentService.isThesisFavorite(thesis)) {
@@ -195,68 +193,88 @@ public class DetailActivity extends AppCompatActivity {
 
     private void thesisMod() {
         Intent intent = new Intent(this, AddThesisActivity.class);
-        intent.putExtra("caller",3);
+        intent.putExtra("caller", 3);
         intent.putExtra("id", id);
         startActivity(intent);
     }
 
     private void doRequest() {
-        if (!req.isEmpty()) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setTitle(R.string.reqDialog);
-            builder.setPositiveButton("Ok",null);
 
-            if (!examArrayList.isEmpty()) {
-                String[] examArray = new String[examArrayList.size()];
-                examArray = examArrayList.toArray(examArray);
-                final boolean[] checked = new boolean[examArrayList.size()];
-                Arrays.fill(checked, false);
-                builder.setMultiChoiceItems(examArray, checked, new DialogInterface.OnMultiChoiceClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i, boolean b) {
-                        checked[i] = b;
-                    }
-                });
-            }
-            EditText average = new EditText(this);
-            if (averageControl) {
-
-                average.setHint(R.string.average);
-                LinearLayout parentla = new LinearLayout(this);
-                LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
-                        LinearLayout.LayoutParams.MATCH_PARENT,
-                        LinearLayout.LayoutParams.MATCH_PARENT);
-                layoutParams.setMargins(50, 16, 50, 0);
-                average.setLayoutParams(layoutParams);
-                parentla.addView(average);
-                builder.setView(parentla);
-            }
-
-            AlertDialog dialog = builder.create();
-            dialog.show();
-            dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    if (averageControl){
-                        String control = average.getText().toString();
-                        if (control.trim().isEmpty()){
-                            average.setError(getText(R.string.error));
-                            average.requestFocus();
-                        }else {
-                            dialog.dismiss();
-                            callSecondDialog();}
-                    } else{
-                        dialog.dismiss();
-                        callSecondDialog();}
-                }
-            });
-        } else {
-            callSecondDialog();
+        if (!examArrayList.isEmpty()) {
+            callExamDialog();
+        } else if (averageControl) {
+            callAverageDialog();
         }
+        if (req.isEmpty()) {
+            callConfirmDialog();
+        }
+    }
+
+    private void callAverageDialog() {
+        EditText average = new EditText(this);
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(R.string.youraverage)
+                .setPositiveButton("Ok", null)
+                .setNegativeButton(R.string.cancel, null);
+        average.setHint(R.string.average);
+        LinearLayout parentla = new LinearLayout(this);
+        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.MATCH_PARENT);
+        layoutParams.setMargins(50, 16, 50, 0);
+        average.setLayoutParams(layoutParams);
+        parentla.addView(average);
+        builder.setView(parentla);
+        AlertDialog dialog = builder.create();
+        dialog.show();
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String control = average.getText().toString();
+                if (control.trim().isEmpty()) {
+                    average.setError(getText(R.string.error));
+                    average.requestFocus();
+                } else {
+                    dialog.dismiss();
+                    callConfirmDialog();
+                }
+            }
+        });
 
     }
 
-    private void callSecondDialog() {
+    private void callExamDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(R.string.yourexams)
+                .setPositiveButton("Ok", null)
+                .setNegativeButton(R.string.cancel, null);
+        String[] examArray = new String[examArrayList.size()];
+        examArray = examArrayList.toArray(examArray);
+        final boolean[] checked = new boolean[examArrayList.size()];
+        Arrays.fill(checked, false);
+        builder.setMultiChoiceItems(examArray, checked, new DialogInterface.OnMultiChoiceClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i, boolean b) {
+                checked[i] = b;
+            }
+        });
+        AlertDialog dialog = builder.create();
+        dialog.show();
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+                if (averageControl) {
+                    callAverageDialog();
+                } else {
+                    callConfirmDialog();
+                }
+            }
+
+        });
+    }
+
+    private void callConfirmDialog() {
         AlertDialog.Builder builder2 = new AlertDialog.Builder(this);
         builder2.setMessage(R.string.sent)
                 .setPositiveButton("Ok", null)
