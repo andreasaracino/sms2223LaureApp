@@ -101,6 +101,7 @@ public class RankingFragment extends Fragment implements RecyclerViewInterface {
         super.onResume();
 
         if (paused) {
+            paused = false;
             getTheses();
         }
     }
