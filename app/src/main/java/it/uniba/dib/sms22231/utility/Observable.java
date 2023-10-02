@@ -40,6 +40,10 @@ public class Observable<T> {
         }
     }
 
+    public void reset() {
+        data = null;
+    }
+
     public class Subscription {
         private final CallbackFunction<T> updateFunction;
 

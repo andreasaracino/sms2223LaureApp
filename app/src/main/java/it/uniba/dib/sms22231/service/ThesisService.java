@@ -11,10 +11,13 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import it.uniba.dib.sms22231.config.ChangeTypes;
@@ -43,7 +46,8 @@ public class ThesisService {
     public Observable<List<Thesis>> getAllTheses() {
         return new Observable<>((next) -> {
             thesesCollection.orderBy("title", Query.Direction.ASCENDING).get().addOnCompleteListener(task -> {
-                mapThesesResult(task.getResult().getDocuments(), next);
+                List<DocumentSnapshot> documents = task.getResult().getDocuments();
+                mapThesesResult(documents.stream().collect(Collectors.toMap(documents::indexOf, Function.identity())), next);
             });
         });
     }
@@ -53,32 +57,34 @@ public class ThesisService {
 
         thesesCollection.whereEqualTo("teacherId", uid).get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
-                mapThesesResult(task.getResult().getDocuments(), userOwnTheses::next);
+                List<DocumentSnapshot> documents = task.getResult().getDocuments();
+                mapThesesResult(documents.stream().collect(Collectors.toMap(documents::indexOf, Function.identity())), userOwnTheses::next);
             }
         });
     }
 
     public Observable<List<Thesis>> getSavedTheses() {
         Observable<List<Thesis>> savedTheses = new Observable<>();
-        Student student = studentService.getStudentData();
 
-        if (student.savedThesesIds.size() == 0) {
-            savedTheses.next(new ArrayList<>());
-            return savedTheses;
-        }
-
-        thesesCollection.get().addOnCompleteListener(task -> {
-            if (task.isSuccessful()) {
-                List<DocumentSnapshot> rawTheses = new ArrayList<>();
-                QuerySnapshot result = task.getResult();
-
-                for (String thesisId : student.savedThesesIds) {
-                    Optional<DocumentSnapshot> thesisDoc = result.getDocuments().stream().filter(doc -> doc.getId().equals(thesisId)).findFirst();
-                    thesisDoc.ifPresent(rawTheses::add);
-                }
-
-                mapThesesResult(rawTheses, savedTheses::next);
+        studentService.updateStudent().subscribe(student -> {
+            if (student.savedThesesIds.size() == 0) {
+                savedTheses.next(new ArrayList<>());
+                return;
             }
+
+            thesesCollection.get().addOnCompleteListener(task -> {
+                if (task.isSuccessful()) {
+                    Map<Integer, DocumentSnapshot> rawTheses = new HashMap<>();
+                    QuerySnapshot result = task.getResult();
+
+                    student.savedThesesIds.keySet().forEach(thesisIndex -> {
+                        Optional<DocumentSnapshot> thesisDoc = result.getDocuments().stream().filter(doc -> doc.getId().equals(student.savedThesesIds.get(thesisIndex))).findFirst();
+                        thesisDoc.ifPresent(doc -> rawTheses.put(Integer.parseInt(thesisIndex), doc));
+                    });
+
+                    mapThesesResult(rawTheses, savedTheses::next);
+                }
+            });
         });
 
         return savedTheses;
@@ -165,15 +171,17 @@ public class ThesisService {
         });
     }
 
-    private void mapThesesResult(List<DocumentSnapshot> documentSnapshots, CallbackFunction<List<Thesis>> callback) {
-        ArrayList<Thesis> theses = new ArrayList<>();
+    private void mapThesesResult(Map<Integer, DocumentSnapshot> documentSnapshots, CallbackFunction<List<Thesis>> callback) {
+        Map<Integer, Thesis> theses = new HashMap<>();
 
-        for (DocumentSnapshot thesisRaw : documentSnapshots) {
-            mapThesis(thesisRaw.getId(), thesisRaw.getData(), thesis -> {
-                theses.add(thesis);
+        for (Map.Entry<Integer, DocumentSnapshot> thesisRaw : documentSnapshots.entrySet()) {
+            Integer index = thesisRaw.getKey();
+            DocumentSnapshot data = thesisRaw.getValue();
+            mapThesis(data.getId(), data.getData(), thesis -> {
+                theses.put(index, thesis);
 
                 if (theses.size() == documentSnapshots.size()) {
-                    callback.apply(theses);
+                    callback.apply(theses.entrySet().stream().sorted(Comparator.comparingInt(Map.Entry::getKey)).map(Map.Entry::getValue).collect(Collectors.toList()));
                 }
             });
         }

@@ -15,18 +15,22 @@ import android.view.ViewGroup;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.stream.Collectors;
 
 import it.uniba.dib.sms22231.R;
 import it.uniba.dib.sms22231.activities.DetailActivity;
 import it.uniba.dib.sms22231.adapters.RecyclerAdapter;
 import it.uniba.dib.sms22231.model.CardData;
 import it.uniba.dib.sms22231.model.Thesis;
+import it.uniba.dib.sms22231.service.StudentService;
 import it.uniba.dib.sms22231.service.ThesisService;
 import it.uniba.dib.sms22231.utility.RecyclerViewInterface;
 
 public class RankingFragment extends Fragment implements RecyclerViewInterface {
     private final ThesisService thesisService = ThesisService.getInstance();
+    private final StudentService studentService = StudentService.getInstance();
     private ArrayList<CardData> cardData;
+    private RecyclerView rec;
 
     private View view;
     private boolean paused;
@@ -36,9 +40,18 @@ public class RankingFragment extends Fragment implements RecyclerViewInterface {
                              Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_ranking, container, false);
 
+        initRecyclerView();
         getTheses();
 
         return view;
+    }
+
+    private void initRecyclerView() {
+        rec = view.findViewById(R.id.rankRecycler);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
+        rec.setLayoutManager(linearLayoutManager);
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleCallback);
+        itemTouchHelper.attachToRecyclerView(rec);
     }
 
     private void getTheses() {
@@ -48,14 +61,8 @@ public class RankingFragment extends Fragment implements RecyclerViewInterface {
                 CardData thesis = new CardData(t.title, t.teacherFullname, t.id);
                 cardData.add(thesis);
             }
-            RecyclerView rec = view.findViewById(R.id.rankRecycler);
             RecyclerAdapter recad = new RecyclerAdapter(cardData, getContext(), this);
-            LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
-            rec.setLayoutManager(linearLayoutManager);
             rec.setAdapter(recad);
-            ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleCallback);
-            itemTouchHelper.attachToRecyclerView(rec);
-
         });
     }
 
@@ -66,13 +73,12 @@ public class RankingFragment extends Fragment implements RecyclerViewInterface {
             int toPosition = target.getAdapterPosition();
             Collections.swap(cardData, fromPosition, toPosition);
             recyclerView.getAdapter().notifyItemMoved(fromPosition, toPosition);
-            return false;
+            studentService.saveNewFavoritesOrder(cardData.stream().map(card -> card.getId()).collect(Collectors.toList()));
+            return true;
         }
 
         @Override
-        public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
-
-        }
+        public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {}
     };
 
     @Override
@@ -95,7 +101,7 @@ public class RankingFragment extends Fragment implements RecyclerViewInterface {
         super.onResume();
 
         if (paused) {
-            //getTheses();
+            getTheses();
         }
     }
 }

@@ -8,12 +8,12 @@ import java.util.Map;
 
 public class Student {
     public String uid;
-    public List<String> savedThesesIds;
+    public Map<String, String> savedThesesIds;
 
     public Student() {
     }
 
-    public Student(String uid, List<String> savedThesesIds) {
+    public Student(String uid, Map<String, String> savedThesesIds) {
         this.uid = uid;
         this.savedThesesIds = savedThesesIds;
     }
@@ -23,10 +23,11 @@ public class Student {
 
         uid = (String) data.get("uid");
 
-        Object thesesObject = data.get("savedThesesIds");
         try {
-            savedThesesIds = new ArrayList<>((Collection<String>) thesesObject);
-        } catch (Exception e) {}
+            savedThesesIds = (Map<String, String>) data.get("savedThesesIds");
+        } catch (Exception e) {
+            savedThesesIds = new HashMap<>();
+        }
     }
 
     public Map<String, Object> toMap() {

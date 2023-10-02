@@ -3,8 +3,10 @@ package it.uniba.dib.sms22231.service;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
-import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicReference;
 
 import it.uniba.dib.sms22231.model.Student;
 import it.uniba.dib.sms22231.model.Thesis;
@@ -39,6 +41,33 @@ public class StudentService {
 
     private void getStudentByUid(String uid) {
         studentDocument = db.collection(COLLECTION_NAME).document(uid);
+        updateStudent();
+    }
+
+    public void addThesisToFavourites(Thesis thesis, CallbackFunction<Boolean> callback) {
+        boolean isFavorite = isThesisFavorite(thesis);
+        if (isFavorite) {
+            studentData.savedThesesIds.entrySet().removeIf(entry -> entry.getValue().equals(thesis.id));
+        } else {
+            studentData.savedThesesIds.put(String.valueOf(studentData.savedThesesIds.values().size() - 1), thesis.id);
+        }
+
+        studentDocument.update("savedThesesIds", studentData.savedThesesIds).addOnCompleteListener(task -> callback.apply(!isFavorite));
+    }
+
+    public void saveNewFavoritesOrder(List<String> savedTheses) {
+        Map<String, String> thesesIdsMap = new HashMap<>();
+
+        AtomicReference<Integer> i = new AtomicReference<>(0);
+        savedTheses.forEach(thesisId -> {
+            thesesIdsMap.put(i.getAndSet(i.get() + 1).toString(), thesisId);
+        });
+        studentDocument.update("savedThesesIds", thesesIdsMap);
+    }
+
+    public Observable<Student> updateStudent() {
+        studentObservable.reset();
+
         studentDocument.get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 studentRawData = task.getResult().getData();
@@ -46,26 +75,16 @@ public class StudentService {
                 studentObservable.next(studentData);
             }
         });
-    }
 
-    public void addThesisToFavourites(Thesis thesis, CallbackFunction<Boolean> callback) {
-        boolean isFavorite = studentData.savedThesesIds.contains(thesis.id);
-
-        if (isFavorite) {
-            studentData.savedThesesIds.remove(thesis.id);
-        } else {
-            studentData.savedThesesIds.add(thesis.id);
-        }
-
-        studentDocument.update("savedThesesIds", studentData.savedThesesIds).addOnCompleteListener(task -> callback.apply(!isFavorite));
+        return studentObservable;
     }
 
     public boolean isThesisFavorite(Thesis thesis) {
-        return studentData.savedThesesIds.contains(thesis.id);
+        return studentData.savedThesesIds.containsValue(thesis.id);
     }
 
     public void saveStudent(User user, CallbackFunction<Boolean> callback) {
-        studentDocument.set(new Student(user.uid, new ArrayList<>())).addOnCompleteListener(task -> callback.apply(task.isSuccessful()));
+        studentDocument.set(new Student(user.uid, new HashMap<>())).addOnCompleteListener(task -> callback.apply(task.isSuccessful()));
     }
 
     public Student getStudentData() {
