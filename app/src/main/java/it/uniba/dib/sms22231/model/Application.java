@@ -1,6 +1,8 @@
 package it.uniba.dib.sms22231.model;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import it.uniba.dib.sms22231.config.ApplicationStatus;
@@ -11,14 +13,14 @@ public class Application {
     public ApplicationStatus status;
     public String thesisId;
     public String studentUid;
-    public Requirement[] requirement;
+    public List<Requirement> requirement;
     public String chatId;
     public String thesisTitle;
     public String studentName;
 
     public Application() {}
 
-    public Application(String id, ApplicationStatus status, String thesisId, String studentUid, Requirement[] requirement, String chatId) {
+    public Application(String id, ApplicationStatus status, String thesisId, String studentUid, List<Requirement> requirement, String chatId) {
         this.id = id;
         this.status = status;
         this.thesisId = thesisId;
@@ -34,6 +36,11 @@ public class Application {
             thesisId = (String) data.get("thesisId");
             studentUid = (String) data.get("studentUid");
             chatId = (String) data.get("chatId");
+            try {
+                requirement = (List<Requirement>) data.get("requirement");
+            } catch (Exception e) {
+                requirement = new ArrayList<>();
+            }
         }
     }
 
