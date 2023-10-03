@@ -180,6 +180,9 @@ public class DetailActivity extends AppCompatActivity {
                 if (item.getItemId() == R.id.modify) {
                     thesisMod();
                 }
+                if (item.getItemId() == R.id.deleteThesis) {
+                    //TODO
+                }
                 return false;
             }
         });

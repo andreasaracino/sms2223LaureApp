@@ -7,4 +7,11 @@
         android:title="@string/modify"
         android:tooltipText="@string/modify"
         app:showAsAction="always" />
+
+    <item
+        android:id="@+id/deleteThesis"
+        android:icon="@drawable/outline_delete_24"
+        android:title="@string/deleteThesis"
+        android:tooltipText="@string/deleteThesis"
+        app:showAsAction="always" />
 </menu>

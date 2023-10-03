@@ -61,5 +61,6 @@
     <string name="youraverage">Inserisci la tua media</string>
     <string name="requestConfirm">Confermi di voler richiedere la tesi?</string>
     <string name="next">Avanti</string>
+    <string name="deleteThesis">Elimina Tesi</string>
 
 </resources>
