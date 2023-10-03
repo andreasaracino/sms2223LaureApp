@@ -69,5 +69,7 @@
     <string name="remFavorite">Removed from favorites</string>
     <string name="permission">Permission Denied</string>
     <string name="yourexams">Check your exams</string>
-    <string name="youraverage">Insert yuor average</string>
+    <string name="youraverage">Insert your average</string>
+    <string name="requestSuccess">Confirm application?</string>
+    <string name="next">Next</string>
 </resources>
