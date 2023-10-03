@@ -1,5 +1,6 @@
 package it.uniba.dib.sms22231.fragments;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -9,7 +10,9 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.view.DragEvent;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -67,6 +70,7 @@ public class RankingFragment extends Fragment implements RecyclerViewInterface {
     }
 
     ItemTouchHelper.SimpleCallback simpleCallback = new ItemTouchHelper.SimpleCallback(ItemTouchHelper.UP | ItemTouchHelper.DOWN | ItemTouchHelper.START | ItemTouchHelper.END, 0) {
+        @SuppressLint("ClickableViewAccessibility")
         @Override
         public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
             int fromPosition = viewHolder.getAdapterPosition();
@@ -74,11 +78,25 @@ public class RankingFragment extends Fragment implements RecyclerViewInterface {
             Collections.swap(cardData, fromPosition, toPosition);
             recyclerView.getAdapter().notifyItemMoved(fromPosition, toPosition);
             studentService.saveNewFavoritesOrder(cardData.stream().map(card -> card.getId()).collect(Collectors.toList()));
+
+            recyclerView.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View view, MotionEvent motionEvent) {
+
+                    if (motionEvent.getAction()==MotionEvent.ACTION_UP){
+                        viewHolder.itemView.animate().scaleY(1f).setDuration(700).start();
+                        viewHolder.itemView.animate().scaleX(1f).setDuration(700).start();
+                    }
+                    return false;
+                }
+            });
+
             return true;
         }
 
         @Override
         public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {}
+
     };
 
     @Override

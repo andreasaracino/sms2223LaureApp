@@ -1,7 +1,9 @@
 package it.uniba.dib.sms22231.adapters;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -29,7 +31,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.Viewho
     @NonNull
     @Override
     public RecyclerAdapter.Viewholder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.card_layout, parent,false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.card_layout, parent, false);
         return new Viewholder(view, recyclerViewInterface);
     }
 
@@ -46,9 +48,10 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.Viewho
         return cardData.size();
     }
 
-    public static class Viewholder extends RecyclerView.ViewHolder{
+    public static class Viewholder extends RecyclerView.ViewHolder {
         private final TextView titleText;
         private final TextView subtitleText;
+
         public Viewholder(@NonNull View itemView, RecyclerViewInterface recyclerViewInterface) {
             super(itemView);
             titleText = itemView.findViewById(R.id.titleCardText);
@@ -57,13 +60,21 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.Viewho
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    if (recyclerViewInterface != null){
+                    if (recyclerViewInterface != null) {
                         int pos = getAdapterPosition();
 
-                        if (pos != RecyclerView.NO_POSITION){
+                        if (pos != RecyclerView.NO_POSITION) {
                             recyclerViewInterface.onItemClick(pos);
                         }
                     }
+                }
+            });
+            itemView.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View view) {
+                    view.animate().scaleY(1.1f).setDuration(700).start();
+                    view.animate().scaleX(1.1f).setDuration(700).start();
+                    return false;
                 }
             });
         }
