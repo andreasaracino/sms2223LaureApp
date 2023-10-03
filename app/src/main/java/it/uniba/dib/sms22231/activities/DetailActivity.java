@@ -306,7 +306,7 @@ public class DetailActivity extends AppCompatActivity {
 
     private void callConfirmDialog(ArrayList<Requirement> studentRequirements) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setMessage(R.string.sent)
+        builder.setMessage(R.string.requestConfirm)
                 .setPositiveButton("Ok", null)
                 .setNegativeButton(R.string.cancel, null);
         AlertDialog dialog = builder.create();
@@ -322,7 +322,7 @@ public class DetailActivity extends AppCompatActivity {
                 application.requirement = studentRequirements;
 
                 applicationService.createApplication(application, isSuccessful -> {
-                    Toast.makeText(getApplicationContext(), R.string.requestSuccess, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), R.string.sent, Toast.LENGTH_SHORT).show();
                 });
                 dialog.dismiss();
             }
