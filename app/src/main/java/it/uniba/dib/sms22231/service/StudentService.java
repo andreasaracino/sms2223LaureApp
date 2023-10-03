@@ -45,14 +45,19 @@ public class StudentService {
     }
 
     public void addThesisToFavourites(Thesis thesis, CallbackFunction<Boolean> callback) {
-        boolean isFavorite = isThesisFavorite(thesis);
-        if (isFavorite) {
-            studentData.savedThesesIds.entrySet().removeIf(entry -> entry.getValue().equals(thesis.id));
-        } else {
-            studentData.savedThesesIds.put(String.valueOf(studentData.savedThesesIds.values().size() - 1), thesis.id);
-        }
+        updateStudent().subscribe((student, unsubscribe) -> {
+            boolean isFavorite = isThesisFavorite(thesis);
+            if (isFavorite) {
+                student.savedThesesIds.entrySet().removeIf(entry -> entry.getValue().equals(thesis.id));
+            } else {
+                student.savedThesesIds.put(String.valueOf(student.savedThesesIds.values().size()), thesis.id);
+            }
 
-        studentDocument.update("savedThesesIds", studentData.savedThesesIds).addOnCompleteListener(task -> callback.apply(!isFavorite));
+            studentDocument.update("savedThesesIds", student.savedThesesIds).addOnCompleteListener(task -> {
+                callback.apply(!isFavorite);
+                unsubscribe.apply();
+            });
+        });
     }
 
     public void saveNewFavoritesOrder(List<String> savedTheses) {
