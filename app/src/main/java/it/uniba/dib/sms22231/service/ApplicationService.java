@@ -7,6 +7,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -37,12 +38,11 @@ public class ApplicationService {
         });
     }
 
-    public Observable<Application> getStudentApplication(String studentUid) {
+    public Observable<Application> getApplicationById(String id) {
         return new Observable<>((next) -> {
-            applicationsCollection.whereEqualTo("studentUid", studentUid).get().addOnCompleteListener(task -> {
+            applicationsCollection.document(id).get().addOnCompleteListener(task -> {
                 if (task.isSuccessful()) {
-                    Application application = new Application(task.getResult().getDocuments().get(0).getData());
-                    next.apply(application);
+                    mapApplication(task.getResult().getData(), next);
                 }
             });
         });
@@ -58,15 +58,7 @@ public class ApplicationService {
         List<Application> applications = new ArrayList<>();
 
         for (QueryDocumentSnapshot rawApplication : querySnapshot) {
-            Application application = new Application(rawApplication.getData());
-            Optional<Thesis> linkedThesisOptional = theses.stream().filter(thesis -> Objects.equals(thesis.id, application.thesisId)).findAny();
-            if (linkedThesisOptional.isPresent()) {
-                Thesis linkedThesis = linkedThesisOptional.get();
-                application.thesisTitle = linkedThesis.title;
-            }
-
-            userService.getUserByUid(application.studentUid, user -> {
-                application.studentName = user.fullName;
+            mapApplication(theses, rawApplication.getData(), application -> {
                 applications.add(application);
 
                 if (applications.size() == querySnapshot.size()) {
@@ -75,6 +67,43 @@ public class ApplicationService {
             });
         }
 
+    }
+
+    private void mapApplication(List<Thesis> theses, Map<String, Object> rawApplication, CallbackFunction<Application> callback) {
+        Application application = new Application(rawApplication);
+        Optional<Thesis> linkedThesisOptional = theses.stream().filter(thesis -> Objects.equals(thesis.id, application.thesisId)).findAny();
+        if (linkedThesisOptional.isPresent()) {
+            Thesis linkedThesis = linkedThesisOptional.get();
+            application.thesisTitle = linkedThesis.title;
+        }
+
+        userService.getUserByUid(application.studentUid, user -> {
+            application.studentName = user.fullName;
+            callback.apply(application);
+        });
+    }
+
+    private void mapApplication(Map<String, Object> rawApplication, CallbackFunction<Application> callback) {
+        Application application = new Application(rawApplication);
+        final Boolean[] completed = {false};
+
+        thesisService.getThesisById(application.thesisId, thesis -> {
+            application.thesisTitle = thesis.title;
+            if (completed[0]) {
+                callback.apply(application);
+            } else {
+                completed[0] = true;
+            }
+        });
+
+        userService.getUserByUid(application.studentUid, user -> {
+            application.studentName = user.fullName;
+            if (completed[0]) {
+                callback.apply(application);
+            } else {
+                completed[0] = true;
+            }
+        });
     }
 
     private ApplicationService() {
