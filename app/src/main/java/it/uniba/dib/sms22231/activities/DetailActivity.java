@@ -29,11 +29,15 @@ import com.google.zxing.qrcode.QRCodeWriter;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import it.uniba.dib.sms22231.R;
+import it.uniba.dib.sms22231.config.ApplicationStatus;
+import it.uniba.dib.sms22231.model.Application;
 import it.uniba.dib.sms22231.model.Attachment;
 import it.uniba.dib.sms22231.model.Requirement;
 import it.uniba.dib.sms22231.model.Thesis;
+import it.uniba.dib.sms22231.service.ApplicationService;
 import it.uniba.dib.sms22231.service.AttachmentService;
 import it.uniba.dib.sms22231.service.RequirementService;
 import it.uniba.dib.sms22231.service.StudentService;
@@ -46,6 +50,7 @@ public class DetailActivity extends AppCompatActivity {
     private TextView txtOwner;
     private final RequirementService requirementService = RequirementService.getInstance();
     private final StudentService studentService = StudentService.getInstance();
+    private final ApplicationService applicationService = ApplicationService.getInstance();
     private ListView reqListview;
     private ArrayList<String> req;
     private final AttachmentService attachmentService = AttachmentService.getInstance();
@@ -59,6 +64,9 @@ public class DetailActivity extends AppCompatActivity {
     private TextView txtNoFile;
     private boolean averageControl = false;
     private Thesis thesis;
+    private ArrayList<Requirement> studentRequirements;
+    private ArrayList<String> examsIds;
+    private String averageId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -104,14 +112,18 @@ public class DetailActivity extends AppCompatActivity {
             requirementService.getRequirementsByThesis(thesis).subscribe(requirements -> {
                 req = new ArrayList<>();
                 examArrayList = new ArrayList<>();
+                examsIds = new ArrayList<>();
+
                 for (Requirement requirement : requirements) {
                     String reqtemp = requirement.description + ": " + requirement.value;
                     req.add(reqtemp);
                     if (requirement.description.equals(getString(R.string.exam))) {
                         examArrayList.add(requirement.value);
+                        examsIds.add(requirement.id);
                     }
                     if (requirement.description.equals(getString(R.string.average))) {
                         averageControl = true;
+                        averageId = requirement.id;
                     }
                 }
                 if (req.isEmpty()) {
@@ -200,21 +212,22 @@ public class DetailActivity extends AppCompatActivity {
 
     private void doRequest() {
 
+        studentRequirements = new ArrayList<>();
         if (!examArrayList.isEmpty()) {
-            callExamDialog();
+            callExamDialog(studentRequirements);
         } else if (averageControl) {
-            callAverageDialog();
+            callAverageDialog(studentRequirements);
         }
         if (req.isEmpty()) {
-            callConfirmDialog();
+            callConfirmDialog(studentRequirements);
         }
     }
 
-    private void callAverageDialog() {
+    private void callAverageDialog(ArrayList<Requirement> studentRequirements) {
         EditText average = new EditText(this);
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(R.string.youraverage)
-                .setPositiveButton("Ok", null)
+                .setPositiveButton(R.string.next, null)
                 .setNegativeButton(R.string.cancel, null);
         average.setHint(R.string.average);
         LinearLayout parentla = new LinearLayout(this);
@@ -235,18 +248,24 @@ public class DetailActivity extends AppCompatActivity {
                     average.setError(getText(R.string.error));
                     average.requestFocus();
                 } else {
+                    Requirement requirement = new Requirement();
+                    requirement.thesisId = thesis.id;
+                    requirement.description = getString(R.string.average);
+                    requirement.value = average.getText().toString();
+                    requirement.id = averageId;
+                    studentRequirements.add(requirement);
                     dialog.dismiss();
-                    callConfirmDialog();
+                    callConfirmDialog(studentRequirements);
                 }
             }
         });
 
     }
 
-    private void callExamDialog() {
+    private void callExamDialog(ArrayList<Requirement> studentRequirements) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(R.string.yourexams)
-                .setPositiveButton("Ok", null)
+                .setPositiveButton(R.string.next, null)
                 .setNegativeButton(R.string.cancel, null);
         String[] examArray = new String[examArrayList.size()];
         examArray = examArrayList.toArray(examArray);
@@ -260,25 +279,54 @@ public class DetailActivity extends AppCompatActivity {
         });
         AlertDialog dialog = builder.create();
         dialog.show();
+        String[] finalExamArray = examArray;
         dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                for (int i = 0; i < checked.length; i++) {
+                    if (checked[i]) {
+                        Requirement requirement = new Requirement();
+                        requirement.thesisId = thesis.id;
+                        requirement.description = getString(R.string.exam);
+                        requirement.value = finalExamArray[i];
+                        requirement.id = examsIds.get(i);
+                        studentRequirements.add(requirement);
+                    }
+                }
                 dialog.dismiss();
                 if (averageControl) {
-                    callAverageDialog();
+                    callAverageDialog(studentRequirements);
                 } else {
-                    callConfirmDialog();
+                    callConfirmDialog(studentRequirements);
                 }
             }
 
         });
     }
 
-    private void callConfirmDialog() {
-        AlertDialog.Builder builder2 = new AlertDialog.Builder(this);
-        builder2.setMessage(R.string.sent)
+    private void callConfirmDialog(ArrayList<Requirement> studentRequirements) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage(R.string.sent)
                 .setPositiveButton("Ok", null)
-                .create().show();
+                .setNegativeButton(R.string.cancel, null);
+        AlertDialog dialog = builder.create();
+        dialog.show();
+
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Application application = new Application();
+                application.status = ApplicationStatus.pending;
+                application.thesisId = thesis.id;
+                application.studentUid = studentService.getStudentData().uid;
+                application.requirement = studentRequirements;
+
+                applicationService.createApplication(application, isSuccessful -> {
+                    Toast.makeText(getApplicationContext(), R.string.requestSuccess, Toast.LENGTH_SHORT).show();
+                });
+                dialog.dismiss();
+            }
+        });
     }
 
     private void generateQr() {
