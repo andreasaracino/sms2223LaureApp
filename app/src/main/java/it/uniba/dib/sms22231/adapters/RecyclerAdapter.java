@@ -17,12 +17,12 @@ import it.uniba.dib.sms22231.R;
 import it.uniba.dib.sms22231.model.CardData;
 import it.uniba.dib.sms22231.utility.RecyclerViewInterface;
 
-public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.Viewholder> {
-    private final ArrayList<CardData> cardData;
+public class RecyclerAdapter<T> extends RecyclerView.Adapter<RecyclerAdapter.Viewholder> {
+    private final ArrayList<CardData<T>> cardData;
     private final Context context;
     private final RecyclerViewInterface recyclerViewInterface;
 
-    public RecyclerAdapter(ArrayList<CardData> cardData, Context context, RecyclerViewInterface recyclerViewInterface) {
+    public RecyclerAdapter(ArrayList<CardData<T>> cardData, Context context, RecyclerViewInterface recyclerViewInterface) {
         this.cardData = cardData;
         this.context = context;
         this.recyclerViewInterface = recyclerViewInterface;

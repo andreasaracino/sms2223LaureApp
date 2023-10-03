@@ -42,7 +42,7 @@ public class ApplicationService {
         return new Observable<>((next) -> {
             applicationsCollection.document(id).get().addOnCompleteListener(task -> {
                 if (task.isSuccessful()) {
-                    mapApplication(task.getResult().getData(), next);
+                    mapApplication(task.getResult().getId(), task.getResult().getData(), next);
                 }
             });
         });
@@ -58,7 +58,7 @@ public class ApplicationService {
         List<Application> applications = new ArrayList<>();
 
         for (QueryDocumentSnapshot rawApplication : querySnapshot) {
-            mapApplication(theses, rawApplication.getData(), application -> {
+            mapApplication(theses, rawApplication.getId(), rawApplication.getData(), application -> {
                 applications.add(application);
 
                 if (applications.size() == querySnapshot.size()) {
@@ -69,8 +69,9 @@ public class ApplicationService {
 
     }
 
-    private void mapApplication(List<Thesis> theses, Map<String, Object> rawApplication, CallbackFunction<Application> callback) {
+    private void mapApplication(List<Thesis> theses, String documentId, Map<String, Object> rawApplication, CallbackFunction<Application> callback) {
         Application application = new Application(rawApplication);
+        application.id = documentId;
         Optional<Thesis> linkedThesisOptional = theses.stream().filter(thesis -> Objects.equals(thesis.id, application.thesisId)).findAny();
         if (linkedThesisOptional.isPresent()) {
             Thesis linkedThesis = linkedThesisOptional.get();
@@ -83,8 +84,9 @@ public class ApplicationService {
         });
     }
 
-    private void mapApplication(Map<String, Object> rawApplication, CallbackFunction<Application> callback) {
+    private void mapApplication(String documentId, Map<String, Object> rawApplication, CallbackFunction<Application> callback) {
         Application application = new Application(rawApplication);
+        application.id = documentId;
         final Boolean[] completed = {false};
 
         thesisService.getThesisById(application.thesisId, thesis -> {
