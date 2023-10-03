@@ -41,6 +41,10 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.Viewho
         String subtitle = (cardData.get(position)).getSubtitle();
         holder.titleText.setText(title);
         holder.subtitleText.setText(subtitle);
+        if (cardData.get(position).getRank()!= null){
+            holder.rankText.setText(cardData.get(position).getRank());
+            holder.rankText.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override
@@ -52,10 +56,13 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.Viewho
         private final TextView titleText;
         private final TextView subtitleText;
 
+        private final  TextView rankText;
+
         public Viewholder(@NonNull View itemView, RecyclerViewInterface recyclerViewInterface) {
             super(itemView);
             titleText = itemView.findViewById(R.id.titleCardText);
             subtitleText = itemView.findViewById(R.id.subtitleCardText);
+            rankText = itemView.findViewById(R.id.rankingText);
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override

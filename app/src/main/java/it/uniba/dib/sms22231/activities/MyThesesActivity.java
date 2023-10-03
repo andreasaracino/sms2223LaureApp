@@ -64,7 +64,7 @@ public class MyThesesActivity extends AppCompatActivity implements RecyclerViewI
         thesisService.userOwnTheses.subscribe(theses -> {
             cardData = new ArrayList<>();
             for (Thesis t : theses) {
-                CardData thesis = new CardData(t.title, user.fullName, t.id);
+                CardData thesis = new CardData(t.title, user.fullName, t.id, null);
                 cardData.add(thesis);
             }
             RecyclerView rec = findViewById(R.id.thesisRecycler);

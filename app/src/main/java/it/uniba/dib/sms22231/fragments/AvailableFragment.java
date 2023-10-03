@@ -44,7 +44,7 @@ public class AvailableFragment extends Fragment implements RecyclerViewInterface
         thesisService.getAllTheses().subscribe(theses -> {
             cardData = new ArrayList<>();
             for (Thesis t : theses) {
-                CardData thesis = new CardData(t.title, t.teacherFullname, t.id);
+                CardData thesis = new CardData(t.title, t.teacherFullname, t.id, null);
                 cardData.add(thesis);
             }
             RecyclerView rec = view.findViewById(R.id.availableRecycler);

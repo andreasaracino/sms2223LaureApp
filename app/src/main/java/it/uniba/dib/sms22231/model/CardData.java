@@ -4,11 +4,13 @@ public class CardData {
     private String title;
     private String subtitle;
     private String id;
+    private String rank;
 
-    public CardData(String title, String subtitle, String id) {
+    public CardData(String title, String subtitle, String id, String rank) {
         this.title = title;
         this.subtitle = subtitle;
         this.id = id;
+        this.rank = rank;
     }
 
     public String getTitle() {
@@ -21,5 +23,11 @@ public class CardData {
 
     public String getId() {
         return id;
+    }
+
+    public String getRank(){return rank;}
+
+    public void setRank(String rank) {
+        this.rank = rank;
     }
 }

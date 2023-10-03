@@ -58,10 +58,12 @@ public class RankingFragment extends Fragment implements RecyclerViewInterface {
     }
 
     private void getTheses() {
-        thesisService.getSavedTheses().subscribe(theses ->{
+        thesisService.getSavedTheses().subscribe(theses -> {
             cardData = new ArrayList<>();
+            int rank = 0;
             for (Thesis t : theses) {
-                CardData thesis = new CardData(t.title, t.teacherFullname, t.id);
+                rank++;
+                CardData thesis = new CardData(t.title, t.teacherFullname, t.id, String.valueOf(rank) + ".");
                 cardData.add(thesis);
             }
             RecyclerAdapter recad = new RecyclerAdapter(cardData, getContext(), this);
@@ -76,6 +78,11 @@ public class RankingFragment extends Fragment implements RecyclerViewInterface {
             int fromPosition = viewHolder.getAdapterPosition();
             int toPosition = target.getAdapterPosition();
             Collections.swap(cardData, fromPosition, toPosition);
+            for (int i = 0; i < cardData.size(); i++) {
+                cardData.get(i).setRank(i + 1 + ".");
+            }
+            recyclerView.getAdapter().notifyItemChanged(fromPosition);
+            recyclerView.getAdapter().notifyItemChanged(toPosition);
             recyclerView.getAdapter().notifyItemMoved(fromPosition, toPosition);
             studentService.saveNewFavoritesOrder(cardData.stream().map(card -> card.getId()).collect(Collectors.toList()));
 
@@ -83,7 +90,7 @@ public class RankingFragment extends Fragment implements RecyclerViewInterface {
                 @Override
                 public boolean onTouch(View view, MotionEvent motionEvent) {
 
-                    if (motionEvent.getAction()==MotionEvent.ACTION_UP){
+                    if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
                         viewHolder.itemView.animate().scaleY(1f).setDuration(700).start();
                         viewHolder.itemView.animate().scaleX(1f).setDuration(700).start();
                     }
@@ -95,7 +102,8 @@ public class RankingFragment extends Fragment implements RecyclerViewInterface {
         }
 
         @Override
-        public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {}
+        public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+        }
 
     };
 
@@ -103,7 +111,7 @@ public class RankingFragment extends Fragment implements RecyclerViewInterface {
     public void onItemClick(int position) {
         Intent intent = new Intent(getContext(), DetailActivity.class);
         String id = cardData.get(position).getId();
-        intent.putExtra("id",id);
+        intent.putExtra("id", id);
         intent.putExtra("caller", 1);
         startActivity(intent);
     }
