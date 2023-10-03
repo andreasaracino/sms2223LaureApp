@@ -11,10 +11,6 @@ public class Observable<T> {
 
     public Observable() {}
 
-    public Observable(T data) {
-        this.data = data;
-    }
-
     public Observable(CallbackFunction<CallbackFunction<T>> runnable) {
         this.runnable = runnable;
     }
@@ -23,7 +19,7 @@ public class Observable<T> {
         return data;
     }
 
-    public Subscription subscribe(CallbackFunction<T> updateFunction) {
+    public Subscription subscribe(SubscribeCallback<T> updateFunction) {
         Subscription subscription = new Subscription(updateFunction);
         subscribers.add(subscription);
 
@@ -31,6 +27,10 @@ public class Observable<T> {
             runnable.apply(this::next);
         }
         return subscription;
+    }
+
+    public Subscription subscribe(CallbackFunction<T> updateFunction) {
+        return subscribe((data1, unsubscribe) -> updateFunction.apply(data1));
     }
 
     public void next(T data) {
@@ -45,18 +45,18 @@ public class Observable<T> {
     }
 
     public class Subscription {
-        private final CallbackFunction<T> updateFunction;
+        private final SubscribeCallback<T> updateFunction;
 
-        public Subscription(CallbackFunction<T> updateFunction) {
+        public Subscription(SubscribeCallback<T> updateFunction) {
             this.updateFunction = updateFunction;
 
             if (data != null) {
-                updateFunction.apply(data);
+                updateFunction.apply(data, this::unsubscribe);
             }
         }
 
         public void update(T data) {
-            updateFunction.apply(data);
+            updateFunction.apply(data, this::unsubscribe);
         }
 
         public void unsubscribe() {
