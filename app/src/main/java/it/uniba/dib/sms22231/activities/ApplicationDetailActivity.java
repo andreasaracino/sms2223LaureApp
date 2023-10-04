@@ -33,7 +33,6 @@ public class ApplicationDetailActivity extends AppCompatActivity {
     private List<Requirement> teacherRequirements;
 
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,19 +53,20 @@ public class ApplicationDetailActivity extends AppCompatActivity {
         txtNoRequirement = findViewById(R.id.textNoReq);
 
         applicationService.getApplicationById(id).subscribe(application -> {
-           this.application = application;
-        });
+            this.application = application;
 
-        thesisService.getThesisById(application.thesisId, thesis -> {
-            txtTitle.setText(thesis.title);
-            String temp = getString(R.string.student) + ": " + application.studentName;
-            txtOwner.setText(temp);
-            txtDescription.setText(thesis.description);
+            thesisService.getThesisById(application.thesisId, thesis -> {
+                txtTitle.setText(thesis.title);
+                String temp = getString(R.string.student) + ": " + application.studentName;
+                txtOwner.setText(temp);
+                txtDescription.setText(thesis.description);
 
-            requirementService.getRequirementsByThesis(thesis).subscribe(requirements -> {
-                teacherRequirements = requirements;
+                requirementService.getRequirementsByThesis(thesis).subscribe(requirements -> {
+                    teacherRequirements = requirements;
+                });
             });
-
         });
+
+
     }
 }

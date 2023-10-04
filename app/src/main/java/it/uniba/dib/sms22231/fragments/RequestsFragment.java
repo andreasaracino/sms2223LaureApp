@@ -14,7 +14,7 @@ import android.view.ViewGroup;
 import java.util.ArrayList;
 
 import it.uniba.dib.sms22231.R;
-import it.uniba.dib.sms22231.activities.DetailActivity;
+import it.uniba.dib.sms22231.activities.ApplicationDetailActivity;
 import it.uniba.dib.sms22231.adapters.RecyclerAdapter;
 import it.uniba.dib.sms22231.model.Application;
 import it.uniba.dib.sms22231.model.CardData;
@@ -55,7 +55,7 @@ public class RequestsFragment extends Fragment implements RecyclerViewInterface 
 
     @Override
     public void onItemClick(int position) {
-        Intent intent = new Intent(getContext(), DetailActivity.class);
+        Intent intent = new Intent(getContext(), ApplicationDetailActivity.class);
         String id = cardDataArrayList.get(position).getData().id;
         intent.putExtra("id",id);
         startActivity(intent);
