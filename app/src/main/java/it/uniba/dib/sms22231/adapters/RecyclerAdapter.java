@@ -63,25 +63,21 @@ public class RecyclerAdapter<T> extends RecyclerView.Adapter<RecyclerAdapter.Vie
             subtitleText = itemView.findViewById(R.id.subtitleCardText);
             rankText = itemView.findViewById(R.id.rankingText);
 
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    if (recyclerViewInterface != null) {
-                        int pos = getAdapterPosition();
+            itemView.setOnClickListener(view -> {
+                if (recyclerViewInterface != null) {
+                    int pos = getAdapterPosition();
 
-                        if (pos != RecyclerView.NO_POSITION) {
-                            recyclerViewInterface.onItemClick(pos);
-                        }
+                    if (pos != RecyclerView.NO_POSITION) {
+                        recyclerViewInterface.onItemClick(pos);
                     }
                 }
             });
-            itemView.setOnLongClickListener(new View.OnLongClickListener() {
-                @Override
-                public boolean onLongClick(View view) {
-                    view.animate().scaleY(1.1f).setDuration(700).start();
-                    view.animate().scaleX(1.1f).setDuration(700).start();
-                    return false;
-                }
+
+            //animazione per il longclick
+            itemView.setOnLongClickListener(view -> {
+                view.animate().scaleY(1.1f).setDuration(700).start();
+                view.animate().scaleX(1.1f).setDuration(700).start();
+                return false;
             });
         }
     }
