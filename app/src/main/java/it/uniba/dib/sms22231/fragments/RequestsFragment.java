@@ -25,7 +25,6 @@ public class RequestsFragment extends Fragment implements RecyclerViewInterface 
     ApplicationService applicationService = ApplicationService.getInstance();
     View view;
     ArrayList<CardData<Application>> cardDataArrayList;
-    Application application;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -37,6 +36,7 @@ public class RequestsFragment extends Fragment implements RecyclerViewInterface 
         return view;
     }
 
+    //riempimento della RecyclerView con tutte le richieste di tesi
     private void getApplications() {
         applicationService.getAllApplications().subscribe(applications -> {
             cardDataArrayList = new ArrayList<>();
