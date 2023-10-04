@@ -34,6 +34,7 @@ public class AllThesesActivity extends AppCompatActivity {
        useViewPagerAdapter();
     }
 
+    //selezione attraverso TabLayout del fragment da visualizzare
     private void useViewPagerAdapter(){
         tabLayout = findViewById(R.id.studentTab);
         viewPager2 = findViewById(R.id.allThesesViewPager);
