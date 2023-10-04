@@ -44,7 +44,7 @@ import it.uniba.dib.sms22231.service.RequirementService;
 import it.uniba.dib.sms22231.service.ThesisService;
 import it.uniba.dib.sms22231.service.UserService;
 
-public class AddThesisActivity extends AppCompatActivity {
+public class AddModifyThesisActivity extends AppCompatActivity {
     private final ThesisService thesisService = ThesisService.getInstance();
     private final RequirementService requirementService = RequirementService.getInstance();
     private final AttachmentService attachmentService = AttachmentService.getInstance();
@@ -58,7 +58,6 @@ public class AddThesisActivity extends AppCompatActivity {
     private ArrayList<Requirement> currentRequirements;
     private ArrayList<Uri> filesList;
     private ArrayList<String> reqString;
-    private ArrayAdapter<String> listadapter;
     private Thesis currentThesis;
     private List<Attachment> currentAttachments;
     private final List<Change<Requirement>> changedRequirements = new ArrayList<>();
@@ -67,7 +66,7 @@ public class AddThesisActivity extends AppCompatActivity {
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_add_thesis);
+        setContentView(R.layout.activity_add_modify_thesis);
 
         Intent intent = getIntent();
         int caller = intent.getIntExtra("caller", 0);
@@ -75,7 +74,7 @@ public class AddThesisActivity extends AppCompatActivity {
         Button saveModifyButton = findViewById(R.id.saveThesisButton);
 
         ActionBar actionBar = getSupportActionBar();
-        setSaveorModify(caller, saveModifyButton, actionBar);
+        setSaveOrModify(caller, saveModifyButton, actionBar);
         actionBar.setDisplayHomeAsUpEnabled(true);
 
         thesisTitle = findViewById(R.id.titleEditText);
@@ -95,88 +94,84 @@ public class AddThesisActivity extends AppCompatActivity {
         deleteRequirement();
     }
 
+    //eliminazione di un requisito: cliccando su di esso appare un popup col comando elimina
+    //l'eliminazione avviene dopo aver dato conferma in una dialog
     private void deleteRequirement() {
-        listViewReq.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                PopupMenu popupMenu = new PopupMenu(AddThesisActivity.this, view);
-                popupMenu.getMenuInflater().inflate(R.menu.popup_item_delete, popupMenu.getMenu());
-                popupMenu.setOnMenuItemClickListener(menuItem -> {
-                    AlertDialog dialog = new AlertDialog.Builder(AddThesisActivity.this)
-                            .setMessage(R.string.suredelete)
-                            .setPositiveButton("Ok", null)
-                            .setNegativeButton(R.string.cancel, null)
-                            .show();
-                    Button positiveButton = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
-                    positiveButton.setOnClickListener(view1 -> {
-                        if (isEditing) {
-                            changedRequirements.add(new Change<>(currentRequirements.get(i), ChangeTypes.removed));
-                        }
-
-                        reqString.remove(i);
-                        currentRequirements.remove(i);
-                        fillList(reqString, listViewReq);
-                        dialog.dismiss();
-                    });
-                    return false;
-                });
-                popupMenu.show();
-            }
-        });
-    }
-
-    private void deleteAttachment() {
-        listViewFile.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                PopupMenu popupMenu = new PopupMenu(AddThesisActivity.this, view);
-                popupMenu.getMenuInflater().inflate(R.menu.popup_item_delete, popupMenu.getMenu());
-                popupMenu.setOnMenuItemClickListener(menuItem -> {
-                    AlertDialog dialog = new AlertDialog.Builder(AddThesisActivity.this)
-                            .setMessage(R.string.suredelete)
-                            .setPositiveButton("Ok", null)
-                            .setNegativeButton(R.string.cancel, null)
-                            .show();
-                    Button positiveButton = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
-                    positiveButton.setOnClickListener(view1 -> {
-                        if (isEditing) {
-                            changedAttachments.add(new Change<>(currentAttachments.get(i), ChangeTypes.removed));
-                        } else {
-                            filesList.remove(i);
-                        }
-                        fileNames.remove(i);
-                        fillList(fileNames, listViewFile);
-                        dialog.dismiss();
-                    });
-                    return false;
-                });
-                popupMenu.show();
-            }
-        });
-    }
-
-    private void filePicker() {
-        resultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
-            @Override
-            public void onActivityResult(ActivityResult result) {
-                Intent data = result.getData();
-                if (data != null) {
-                    Uri uri = data.getData();
-                    String name = getNameFromUri(uri);
-                    fileNames.add(name);
-                    filesList.add(uri);
+        listViewReq.setOnItemClickListener((adapterView, view, i, l) -> {
+            PopupMenu popupMenu = new PopupMenu(AddModifyThesisActivity.this, view);
+            popupMenu.getMenuInflater().inflate(R.menu.popup_item_delete, popupMenu.getMenu());
+            popupMenu.setOnMenuItemClickListener(menuItem -> {
+                AlertDialog dialog = new AlertDialog.Builder(AddModifyThesisActivity.this)
+                        .setMessage(R.string.suredelete)
+                        .setPositiveButton("Ok", null)
+                        .setNegativeButton(R.string.cancel, null)
+                        .show();
+                Button positiveButton = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
+                positiveButton.setOnClickListener(view1 -> {
                     if (isEditing) {
-                        Attachment attachment = new Attachment();
-                        attachment.path = uri;
-                        attachment.fileName = name;
-                        changedAttachments.add(new Change<>(attachment, ChangeTypes.added));
+                        changedRequirements.add(new Change<>(currentRequirements.get(i), ChangeTypes.removed));
                     }
+                    reqString.remove(i);
+                    currentRequirements.remove(i);
+                    fillList(reqString, listViewReq);
+                    dialog.dismiss();
+                });
+                return false;
+            });
+            popupMenu.show();
+        });
+    }
+
+    //eliminazione di un file allegato: cliccando su di esso appare un popup col comando elimina
+    //l'eliminazione avviene dopo aver dato conferma in una dialog
+    private void deleteAttachment() {
+        listViewFile.setOnItemClickListener((adapterView, view, i, l) -> {
+            PopupMenu popupMenu = new PopupMenu(AddModifyThesisActivity.this, view);
+            popupMenu.getMenuInflater().inflate(R.menu.popup_item_delete, popupMenu.getMenu());
+            popupMenu.setOnMenuItemClickListener(menuItem -> {
+                AlertDialog dialog = new AlertDialog.Builder(AddModifyThesisActivity.this)
+                        .setMessage(R.string.suredelete)
+                        .setPositiveButton("Ok", null)
+                        .setNegativeButton(R.string.cancel, null)
+                        .show();
+                Button positiveButton = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
+                positiveButton.setOnClickListener(view1 -> {
+                    if (isEditing) {
+                        changedAttachments.add(new Change<>(currentAttachments.get(i), ChangeTypes.removed));
+                    } else {
+                        filesList.remove(i);
+                    }
+                    fileNames.remove(i);
                     fillList(fileNames, listViewFile);
+                    dialog.dismiss();
+                });
+                return false;
+            });
+            popupMenu.show();
+        });
+    }
+
+    //aggiunta dei file alla tesi
+    private void filePicker() {
+        resultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
+            Intent data = result.getData();
+            if (data != null) {
+                Uri uri = data.getData();
+                String name = getNameFromUri(uri);
+                fileNames.add(name);
+                filesList.add(uri);
+                if (isEditing) {
+                    Attachment attachment = new Attachment();
+                    attachment.path = uri;
+                    attachment.fileName = name;
+                    changedAttachments.add(new Change<>(attachment, ChangeTypes.added));
                 }
+                fillList(fileNames, listViewFile);
             }
         });
     }
 
+    //se l'activity è aperta in modifica, i campi vengono riempiti con i dati della tesi
     private void fillActivityForModify(Intent intent, int caller) {
         if (caller == 3){
             isEditing = true;
@@ -190,10 +185,9 @@ public class AddThesisActivity extends AppCompatActivity {
                     currentRequirements = (ArrayList<Requirement>) requirements;
                     reqString = new ArrayList<>();
                     for (Requirement requirement : requirements) {
-                        String reqtemp = requirement.description + ": " + requirement.value;
-                        reqString.add(reqtemp);
+                        String reqTemp = requirement.description + ": " + requirement.value;
+                        reqString.add(reqTemp);
                     }
-
                     fillList(reqString, listViewReq);
                 });
                 attachmentService.getAttachmentsByThesis(thesis).subscribe(attachments -> {
@@ -202,14 +196,14 @@ public class AddThesisActivity extends AppCompatActivity {
                     for (Attachment attachment : attachments) {
                         fileNames.add(attachment.fileName);
                     }
-
                     fillList(fileNames, listViewFile);
                 });
             });
         }
     }
 
-    private void setSaveorModify(int caller, Button saveModifyButton, ActionBar actionBar) {
+    //adattamento dell'activity in base all'apertura per salvataggio o modifica
+    private void setSaveOrModify(int caller, Button saveModifyButton, ActionBar actionBar) {
         if (caller == 3) {
             actionBar.setTitle(R.string.modify);
             saveModifyButton.setText(R.string.modify);
@@ -221,11 +215,13 @@ public class AddThesisActivity extends AppCompatActivity {
         }
     }
 
+    //riempimento delle Listview
     private void fillList(ArrayList<String> arrayList, ListView listView) {
-        listadapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, arrayList);
-        listView.setAdapter(listadapter);
+        ArrayAdapter<String> listAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, arrayList);
+        listView.setAdapter(listAdapter);
     }
 
+    //ricava dall'uri il nome del file da mostrare poi nella lista
     private String getNameFromUri(Uri uri) {
         Cursor cursor = getContentResolver().query(uri, null, null, null);
         int nameIndex = cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME);
@@ -233,9 +229,10 @@ public class AddThesisActivity extends AppCompatActivity {
         return cursor.getString(nameIndex);
     }
 
+    //richiesta dei permessi per accedere ai file in memoria
     public void addFilePermission(View view){
-        if (ActivityCompat.checkSelfPermission(AddThesisActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(AddThesisActivity.this, new String[] {
+        if (ActivityCompat.checkSelfPermission(AddModifyThesisActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(AddModifyThesisActivity.this, new String[] {
                             Manifest.permission.READ_EXTERNAL_STORAGE }, 1);
         }
         else {
@@ -243,12 +240,14 @@ public class AddThesisActivity extends AppCompatActivity {
         }
     }
 
+    //aggiunta e selezione dei tipi di file
     public void addFile() {
         Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
         intent.setType("*/*");
         resultLauncher.launch(intent);
     }
 
+    //controllo dei permessi per accedere alla memoria
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
@@ -256,29 +255,27 @@ public class AddThesisActivity extends AppCompatActivity {
             addFile();
         }
         else {
-
             Toast.makeText(getApplicationContext(), R.string.permission, Toast.LENGTH_SHORT).show();
         }
     }
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                this.onBackPressed();
-                return true;
+        if (item.getItemId() == android.R.id.home) {
+            this.onBackPressed();
+            return true;
         }
         return super.onOptionsItemSelected(item);
     }
 
+    //se ci sono delle modifiche non salvate e si chiude l'activity, viene chiesta conferma della chiusura
     @Override
     public void onBackPressed() {
         if (!isChanged()) {
             super.onBackPressed();
             return;
         }
-
-        AlertDialog dialog = new AlertDialog.Builder(AddThesisActivity.this)
+        AlertDialog dialog = new AlertDialog.Builder(AddModifyThesisActivity.this)
                 .setMessage(R.string.sureGoBack)
                 .setPositiveButton(R.string.yes, null)
                 .setNegativeButton("No", null)
@@ -290,6 +287,7 @@ public class AddThesisActivity extends AppCompatActivity {
         });
     }
 
+    //controlla se ci sono modifiche da comunicare a onBackPressed()
     private boolean isChanged() {
         return isEditing && (
                 changedAttachments.size() > 0 ||
@@ -305,6 +303,7 @@ public class AddThesisActivity extends AppCompatActivity {
         );
     }
 
+    //aggiunta di requisiti alla tesi
     public void addRequirement(View view) {
 
         final View customLayout = getLayoutInflater().inflate(R.layout.custom_alert, null);
@@ -359,6 +358,7 @@ public class AddThesisActivity extends AppCompatActivity {
         });
     }
 
+    //salvataggio della nuova tesi
     public void onSave(View view) {
         Thesis thesis = new Thesis();
         User user = userService.getUserData();
@@ -379,6 +379,7 @@ public class AddThesisActivity extends AppCompatActivity {
         });
     }
 
+    //salvataggio delle modifiche della tesi
     public void onModify(View view) {
         currentThesis.title = thesisTitle.getText().toString();
         currentThesis.description = thesisDescription.getText().toString();

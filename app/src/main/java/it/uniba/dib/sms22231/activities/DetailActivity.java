@@ -29,7 +29,6 @@ import com.google.zxing.qrcode.QRCodeWriter;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 import it.uniba.dib.sms22231.R;
 import it.uniba.dib.sms22231.config.ApplicationStatus;
@@ -207,7 +206,7 @@ public class DetailActivity extends AppCompatActivity {
     }
 
     private void thesisMod() {
-        Intent intent = new Intent(this, AddThesisActivity.class);
+        Intent intent = new Intent(this, AddModifyThesisActivity.class);
         intent.putExtra("caller", 3);
         intent.putExtra("id", id);
         startActivity(intent);

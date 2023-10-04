@@ -2,7 +2,6 @@ package it.uniba.dib.sms22231.activities;
 
 import static android.content.ContentValues.TAG;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -13,8 +12,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.LinearLayout;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -26,7 +23,6 @@ import it.uniba.dib.sms22231.model.Thesis;
 import it.uniba.dib.sms22231.model.User;
 import it.uniba.dib.sms22231.service.ThesisService;
 import it.uniba.dib.sms22231.service.UserService;
-import it.uniba.dib.sms22231.utility.CallbackFunction;
 import it.uniba.dib.sms22231.utility.RecyclerViewInterface;
 
 public class MyThesesActivity extends AppCompatActivity implements RecyclerViewInterface {
@@ -80,7 +76,7 @@ public class MyThesesActivity extends AppCompatActivity implements RecyclerViewI
 
 
     public void goToAddThesis(){
-        Intent intent = new Intent(this, AddThesisActivity.class);
+        Intent intent = new Intent(this, AddModifyThesisActivity.class);
         startActivity(intent);
     }
 
