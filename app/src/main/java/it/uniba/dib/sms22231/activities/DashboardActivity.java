@@ -23,7 +23,6 @@ import it.uniba.dib.sms22231.service.UserService;
 public class DashboardActivity extends AppCompatActivity {
     private final UserService userService = UserService.getInstance();
     private User user;
-
     private MaterialButton dash1;
     private MaterialButton dash2;
 
@@ -51,6 +50,7 @@ public class DashboardActivity extends AppCompatActivity {
         });
     }
 
+    //inizializzazione della dashboard in base all'utente
     private void initDashboard() {
         if (user.userType == null) {
             return;
@@ -66,6 +66,7 @@ public class DashboardActivity extends AppCompatActivity {
         }
     }
 
+    //inizializzazione dei MateriaButton
     public void setDash(MaterialButton dash, int iconId, int textId) {
         dash.setText(textId);
         dash.setIconSize(200);
@@ -75,6 +76,7 @@ public class DashboardActivity extends AppCompatActivity {
 
     }
 
+    //onClick del primo MaterialButton in base all'utente
     public void dash1OnClick(View view) {
         Intent intent = null;
         if (user.userType == null) {
@@ -92,6 +94,7 @@ public class DashboardActivity extends AppCompatActivity {
         }
     }
 
+    //onClick del secondo MaterialButton in base all'utente
     public void dash2OnClick(View view) {
         Intent intent = null;
         if (user.userType == null) {
@@ -109,22 +112,26 @@ public class DashboardActivity extends AppCompatActivity {
         }
     }
 
+    //click sull'item logout del menu
     public void doLogout(View view) {
         userService.signOut();
         goToLogin();
     }
 
+    //ritorno all'activity di login dopo il logout
     private void goToLogin() {
         Intent intent = new Intent(this, SignInActivity.class);
         startActivity(intent);
         finish();
     }
 
+    //click sull'item account del menu
     private void goToUserInformation() {
         Intent intent = new Intent(this, UserInformationActivity.class);
         startActivity(intent);
     }
 
+    //creazione del menu
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.dashboard_menu, menu);
@@ -144,6 +151,7 @@ public class DashboardActivity extends AppCompatActivity {
         return true;
     }
 
+    //scelta degli item del menu
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
