@@ -34,7 +34,6 @@ public class RankingFragment extends Fragment implements RecyclerViewInterface {
     private final StudentService studentService = StudentService.getInstance();
     private ArrayList<CardData> cardData;
     private RecyclerView rec;
-
     private View view;
     private boolean paused;
 
@@ -49,6 +48,7 @@ public class RankingFragment extends Fragment implements RecyclerViewInterface {
         return view;
     }
 
+    //inizializzazione della RecyclerView
     private void initRecyclerView() {
         rec = view.findViewById(R.id.rankRecycler);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
@@ -57,6 +57,7 @@ public class RankingFragment extends Fragment implements RecyclerViewInterface {
         itemTouchHelper.attachToRecyclerView(rec);
     }
 
+    //riempimento della RecyclerView con le tesi preferite
     private void getTheses() {
         thesisService.getSavedTheses().subscribe(theses -> {
             cardData = new ArrayList<>();
@@ -71,6 +72,7 @@ public class RankingFragment extends Fragment implements RecyclerViewInterface {
         });
     }
 
+    //drag and drop delle tesi per ordinarle in base alla classifica
     ItemTouchHelper.SimpleCallback simpleCallback = new ItemTouchHelper.SimpleCallback(ItemTouchHelper.UP | ItemTouchHelper.DOWN | ItemTouchHelper.START | ItemTouchHelper.END, 0) {
         @SuppressLint("ClickableViewAccessibility")
         @Override
@@ -86,16 +88,13 @@ public class RankingFragment extends Fragment implements RecyclerViewInterface {
             recyclerView.getAdapter().notifyItemMoved(fromPosition, toPosition);
             studentService.saveNewFavoritesOrder(cardData.stream().map(card -> card.getId()).collect(Collectors.toList()));
 
-            recyclerView.setOnTouchListener(new View.OnTouchListener() {
-                @Override
-                public boolean onTouch(View view, MotionEvent motionEvent) {
-
-                    if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
-                        viewHolder.itemView.animate().scaleY(1f).setDuration(700).start();
-                        viewHolder.itemView.animate().scaleX(1f).setDuration(700).start();
-                    }
-                    return false;
+            //annullamento dell'animazione del longClick (vedi RecyclerViewAdapter)
+            recyclerView.setOnTouchListener((view, motionEvent) -> {
+                if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
+                    viewHolder.itemView.animate().scaleY(1f).setDuration(700).start();
+                    viewHolder.itemView.animate().scaleX(1f).setDuration(700).start();
                 }
+                return false;
             });
 
             return true;
@@ -107,6 +106,7 @@ public class RankingFragment extends Fragment implements RecyclerViewInterface {
 
     };
 
+    //click sulla card per mostrare il dettaglio
     @Override
     public void onItemClick(int position) {
         Intent intent = new Intent(getContext(), DetailActivity.class);
