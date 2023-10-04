@@ -31,7 +31,6 @@ public class MyThesesActivity extends AppCompatActivity implements RecyclerViewI
     private final UserService userService = UserService.getInstance();
     private User user;
     private ArrayList<CardData> cardData;
-
     private MenuItem menuItem;
 
     @Override
@@ -54,6 +53,7 @@ public class MyThesesActivity extends AppCompatActivity implements RecyclerViewI
         thesisService.getUserOwnTheses();
     }
 
+    //riempimento dell RecyclerView con i dati delle tesi del professore
     private void fillCard() {
 
         user = userService.getUserData();
@@ -73,13 +73,13 @@ public class MyThesesActivity extends AppCompatActivity implements RecyclerViewI
         thesisService.getUserOwnTheses();
     }
 
-
-
+    //click sull'item del menu per aggiungere una nuova tesi
     public void goToAddThesis(){
         Intent intent = new Intent(this, AddModifyThesisActivity.class);
         startActivity(intent);
     }
 
+    //click sulla card per visualizzare il dettaglio della tesi
     @Override
     public void onItemClick(int position) {
         Intent intent = new Intent(this, DetailActivity.class);
@@ -89,6 +89,7 @@ public class MyThesesActivity extends AppCompatActivity implements RecyclerViewI
         startActivity(intent);
     }
 
+    //creazione del menu
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.my_theses_menu, menu);
@@ -108,6 +109,7 @@ public class MyThesesActivity extends AppCompatActivity implements RecyclerViewI
         return true;
     }
 
+    //click sugli items del menu
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
