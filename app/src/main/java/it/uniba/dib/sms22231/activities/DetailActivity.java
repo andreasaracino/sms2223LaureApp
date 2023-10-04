@@ -44,28 +44,27 @@ import it.uniba.dib.sms22231.service.ThesisService;
 
 public class DetailActivity extends AppCompatActivity {
     private final ThesisService thesisService = ThesisService.getInstance();
-    private TextView txtTitle;
-    private TextView txtDescription;
-    private TextView txtOwner;
     private final RequirementService requirementService = RequirementService.getInstance();
     private final StudentService studentService = StudentService.getInstance();
     private final ApplicationService applicationService = ApplicationService.getInstance();
-    private ListView reqListview;
-    private ArrayList<String> req;
     private final AttachmentService attachmentService = AttachmentService.getInstance();
-    private ListView fileListView;
-    private ArrayList<String> attach;
-    private BottomNavigationView bottomNavigationView;
-    private int caller;
-    private String id;
-    private ArrayList<String> examArrayList;
+    private TextView txtTitle;
+    private TextView txtDescription;
+    private TextView txtOwner;
     private TextView txtNoRequirement;
     private TextView txtNoFile;
-    private boolean averageControl = false;
-    private Thesis thesis;
-    private ArrayList<Requirement> studentRequirements;
+    private ListView reqListview;
+    private ListView fileListView;
+    private ArrayList<String> req;
+    private ArrayList<String> attach;
+    private ArrayList<String> examArrayList;
     private ArrayList<String> examsIds;
+    private BottomNavigationView bottomNavigationView;
+    private String id;
     private String averageId;
+    private Thesis thesis;
+    private int caller;
+    private boolean averageControl = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,6 +90,7 @@ public class DetailActivity extends AppCompatActivity {
         fillActivity();
     }
 
+    //l'activity viene riempita con tutti i dati della tesi
     private void fillActivity() {
         txtTitle = findViewById(R.id.titleText);
         txtDescription = findViewById(R.id.descriptionText);
@@ -116,10 +116,12 @@ public class DetailActivity extends AppCompatActivity {
                 for (Requirement requirement : requirements) {
                     String reqtemp = requirement.description + ": " + requirement.value;
                     req.add(reqtemp);
+                    //arraylist degli esami da utilizzare per la creazione dell'application
                     if (requirement.description.equals(getString(R.string.exam))) {
                         examArrayList.add(requirement.value);
                         examsIds.add(requirement.id);
                     }
+                    //controllo della presenza della media e id da utilizzare per la creazione dell'application
                     if (requirement.description.equals(getString(R.string.average))) {
                         averageControl = true;
                         averageId = requirement.id;
@@ -148,6 +150,7 @@ public class DetailActivity extends AppCompatActivity {
         });
     }
 
+    //creazione della BottomAppBar e inserimento dei menu in base all'utente
     private void createBottomAppBar() {
 
         bottomNavigationView = findViewById(R.id.bottomNavBar);
@@ -159,6 +162,8 @@ public class DetailActivity extends AppCompatActivity {
                 bottomNavigationView.inflateMenu(R.menu.detail_my_theses_bottom_menu);
         }
         bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
+
+           //click sugli item del menu
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 if (item.getItemId() == R.id.req) {
@@ -174,19 +179,30 @@ public class DetailActivity extends AppCompatActivity {
                     generateQr();
                 }
                 if (item.getItemId() == R.id.chat) {
-                    //TODO
+                    goToChat();
                 }
                 if (item.getItemId() == R.id.modify) {
                     thesisMod();
                 }
                 if (item.getItemId() == R.id.deleteThesis) {
-                    //TODO
+                    deleteThesis();
                 }
                 return false;
             }
         });
     }
 
+    //eliminazione della tesi
+    private void deleteThesis() {
+        //TODO
+    }
+
+    //apertura della chat
+    private void goToChat() {
+        //TODO
+    }
+
+    //aggiunta o rimozione della della tesi dalla classifica dei preferiti
     private void addFavorite() {
         studentService.addThesisToFavourites(thesis, isFavorite -> {
             Toast.makeText(this, isFavorite ? R.string.favThesis : R.string.remFavorite, Toast.LENGTH_SHORT).show();
@@ -194,6 +210,7 @@ public class DetailActivity extends AppCompatActivity {
         });
     }
 
+    //modifica dell'icona dei preferiti
     private void checkFavorite() {
         if (caller == 1) {
             MenuItem item = bottomNavigationView.getMenu().findItem(R.id.favorite);
@@ -205,6 +222,7 @@ public class DetailActivity extends AppCompatActivity {
         }
     }
 
+    //apertura della modifica della tesi
     private void thesisMod() {
         Intent intent = new Intent(this, AddModifyThesisActivity.class);
         intent.putExtra("caller", 3);
@@ -212,9 +230,10 @@ public class DetailActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
+    //richiesta della tesi
     private void doRequest() {
 
-        studentRequirements = new ArrayList<>();
+        ArrayList<Requirement> studentRequirements = new ArrayList<>();
         if (!examArrayList.isEmpty()) {
             callExamDialog(studentRequirements);
         } else if (averageControl) {
@@ -225,6 +244,7 @@ public class DetailActivity extends AppCompatActivity {
         }
     }
 
+    //inserimento della media dello studente per richiedere la tesi
     private void callAverageDialog(ArrayList<Requirement> studentRequirements) {
         EditText average = new EditText(this);
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -242,28 +262,26 @@ public class DetailActivity extends AppCompatActivity {
         builder.setView(parentla);
         AlertDialog dialog = builder.create();
         dialog.show();
-        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String control = average.getText().toString();
-                if (control.trim().isEmpty()) {
-                    average.setError(getText(R.string.error));
-                    average.requestFocus();
-                } else {
-                    Requirement requirement = new Requirement();
-                    requirement.thesisId = thesis.id;
-                    requirement.description = getString(R.string.average);
-                    requirement.value = average.getText().toString();
-                    requirement.id = averageId;
-                    studentRequirements.add(requirement);
-                    dialog.dismiss();
-                    callConfirmDialog(studentRequirements);
-                }
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(view -> {
+            String control = average.getText().toString();
+            if (control.trim().isEmpty()) {
+                average.setError(getText(R.string.error));
+                average.requestFocus();
+            } else {
+                Requirement requirement = new Requirement();
+                requirement.thesisId = thesis.id;
+                requirement.description = getString(R.string.average);
+                requirement.value = average.getText().toString();
+                requirement.id = averageId;
+                studentRequirements.add(requirement);
+                dialog.dismiss();
+                callConfirmDialog(studentRequirements);
             }
         });
 
     }
 
+    //scelta degli esami dati per richiedere la tesi
     private void callExamDialog(ArrayList<Requirement> studentRequirements) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(R.string.yourexams)
@@ -273,39 +291,31 @@ public class DetailActivity extends AppCompatActivity {
         examArray = examArrayList.toArray(examArray);
         final boolean[] checked = new boolean[examArrayList.size()];
         Arrays.fill(checked, false);
-        builder.setMultiChoiceItems(examArray, checked, new DialogInterface.OnMultiChoiceClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i, boolean b) {
-                checked[i] = b;
-            }
-        });
+        builder.setMultiChoiceItems(examArray, checked, (dialogInterface, i, b) -> checked[i] = b);
         AlertDialog dialog = builder.create();
         dialog.show();
         String[] finalExamArray = examArray;
-        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                for (int i = 0; i < checked.length; i++) {
-                    if (checked[i]) {
-                        Requirement requirement = new Requirement();
-                        requirement.thesisId = thesis.id;
-                        requirement.description = getString(R.string.exam);
-                        requirement.value = finalExamArray[i];
-                        requirement.id = examsIds.get(i);
-                        studentRequirements.add(requirement);
-                    }
-                }
-                dialog.dismiss();
-                if (averageControl) {
-                    callAverageDialog(studentRequirements);
-                } else {
-                    callConfirmDialog(studentRequirements);
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(view -> {
+            for (int i = 0; i < checked.length; i++) {
+                if (checked[i]) {
+                    Requirement requirement = new Requirement();
+                    requirement.thesisId = thesis.id;
+                    requirement.description = getString(R.string.exam);
+                    requirement.value = finalExamArray[i];
+                    requirement.id = examsIds.get(i);
+                    studentRequirements.add(requirement);
                 }
             }
-
+            dialog.dismiss();
+            if (averageControl) {
+                callAverageDialog(studentRequirements);
+            } else {
+                callConfirmDialog(studentRequirements);
+            }
         });
     }
 
+    //conferma della richiesta e creazione dell'application
     private void callConfirmDialog(ArrayList<Requirement> studentRequirements) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage(R.string.requestConfirm)
@@ -314,23 +324,21 @@ public class DetailActivity extends AppCompatActivity {
         AlertDialog dialog = builder.create();
         dialog.show();
 
-        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Application application = new Application();
-                application.status = ApplicationStatus.pending;
-                application.thesisId = thesis.id;
-                application.studentUid = studentService.getStudentData().uid;
-                application.requirement = studentRequirements;
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(view -> {
+            Application application = new Application();
+            application.status = ApplicationStatus.pending;
+            application.thesisId = thesis.id;
+            application.studentUid = studentService.getStudentData().uid;
+            application.requirement = studentRequirements;
 
-                applicationService.createApplication(application, isSuccessful -> {
-                    Toast.makeText(getApplicationContext(), R.string.sent, Toast.LENGTH_SHORT).show();
-                });
-                dialog.dismiss();
-            }
+            applicationService.createApplication(application, isSuccessful -> {
+                Toast.makeText(getApplicationContext(), R.string.sent, Toast.LENGTH_SHORT).show();
+            });
+            dialog.dismiss();
         });
     }
 
+    //creazione di un codice QR per condividere i dati della tesi
     private void generateQr() {
         ImageView a = new ImageView(this);
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -358,6 +366,7 @@ public class DetailActivity extends AppCompatActivity {
         }
     }
 
+    //riempimento delle liste
     private void fillList(ArrayList<String> arrayList, ListView listView) {
         ArrayAdapter<String> listAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, arrayList);
         listView.setAdapter(listAdapter);
@@ -374,6 +383,7 @@ public class DetailActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    //creazione del testo da utilizzare per la creazione del QR o per la condivisione
     public String getThesisText() {
         String s = getString(R.string.title) + " " + txtTitle.getText().toString() + "\n"
                 + txtOwner.getText().toString() + "\n"
@@ -387,6 +397,7 @@ public class DetailActivity extends AppCompatActivity {
         return s;
     }
 
+    //condivisione della tesi tramite App esterne
     private void sendMessage() {
         String message = getThesisText();
         Intent intent = new Intent(Intent.ACTION_SEND);
