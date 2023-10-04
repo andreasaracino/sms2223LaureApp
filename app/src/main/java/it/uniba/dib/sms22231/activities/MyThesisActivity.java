@@ -33,6 +33,7 @@ public class MyThesisActivity extends AppCompatActivity {
         useViewPagerAdapter();
     }
 
+    //selezione attraverso TabLayout del fragment da visualizzare
     private void useViewPagerAdapter(){
         tabLayout = findViewById(R.id.myThesisTab);
         viewPager2 = findViewById(R.id.myThesisViewPager);
