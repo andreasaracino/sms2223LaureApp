@@ -35,6 +35,7 @@ public class MyStudentsActivity extends AppCompatActivity {
 
     }
 
+    //selezione attraverso TabLayout del fragment da visualizzare
     private void useViewPagerAdapter(){
         tabLayout = findViewById(R.id.myStudentsTab);
         viewPager2 = findViewById(R.id.myStudentsViewPager);
