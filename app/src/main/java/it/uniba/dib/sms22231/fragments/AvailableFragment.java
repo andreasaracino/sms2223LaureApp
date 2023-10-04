@@ -40,6 +40,7 @@ public class AvailableFragment extends Fragment implements RecyclerViewInterface
         return view;
     }
 
+    //riempimento della Recycler con tutte le tesi disponibili
     private void getTheses() {
         thesisService.getAllTheses().subscribe(theses -> {
             cardData = new ArrayList<>();
@@ -55,6 +56,7 @@ public class AvailableFragment extends Fragment implements RecyclerViewInterface
         });
     }
 
+    //click sulla card per visualizzare il dettaglio tesi
     @Override
     public void onItemClick(int position) {
         Intent intent = new Intent(getContext(), DetailActivity.class);
