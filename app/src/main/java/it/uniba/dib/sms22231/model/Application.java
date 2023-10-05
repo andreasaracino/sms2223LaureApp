@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import it.uniba.dib.sms22231.config.ApplicationStatus;
 
@@ -13,19 +14,19 @@ public class Application {
     public ApplicationStatus status;
     public String thesisId;
     public String studentUid;
-    public List<Requirement> requirement;
+    public List<Requirement> requirements;
     public String chatId;
     public String thesisTitle;
     public String studentName;
 
     public Application() {}
 
-    public Application(String id, ApplicationStatus status, String thesisId, String studentUid, List<Requirement> requirement, String chatId) {
+    public Application(String id, ApplicationStatus status, String thesisId, String studentUid, List<Requirement> requirements, String chatId) {
         this.id = id;
         this.status = status;
         this.thesisId = thesisId;
         this.studentUid = studentUid;
-        this.requirement = requirement;
+        this.requirements = requirements;
         this.chatId = chatId;
     }
 
@@ -37,9 +38,10 @@ public class Application {
             studentUid = (String) data.get("studentUid");
             chatId = (String) data.get("chatId");
             try {
-                requirement = (List<Requirement>) data.get("requirement");
+                List<Map<String, Object>> requirements = (List<Map<String, Object>>) data.get("requirement");
+                this.requirements = requirements.stream().map(Requirement::new).collect(Collectors.toList());
             } catch (Exception e) {
-                requirement = new ArrayList<>();
+                requirements = new ArrayList<>();
             }
         }
     }
