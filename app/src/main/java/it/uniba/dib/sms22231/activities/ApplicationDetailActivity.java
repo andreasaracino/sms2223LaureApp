@@ -70,8 +70,8 @@ public class ApplicationDetailActivity extends AppCompatActivity {
 
                     ArrayList<ListData> listDataArrayList = new ArrayList<>();
                     boolean averageControl = false;
-                    Integer teacherAverage = 0;
-                    Integer studentAverage = 0;
+                    int teacherAverage = 0;
+                    int studentAverage = 0;
 
                     for (Requirement r : teacherRequirements){
                         if (r.description.equals(getString(R.string.average))){
@@ -88,6 +88,24 @@ public class ApplicationDetailActivity extends AppCompatActivity {
                         String averageText = getString(R.string.average) + ": " + studentAverage + "/" + teacherAverage;
                         ListData average = new ListData(studentAverage < teacherAverage ? R.drawable.clear : R. drawable.check, averageText);
                         listDataArrayList.add(average);
+                    }
+
+                    boolean givenExam;
+
+                    for (Requirement teacherReq : teacherRequirements){
+                        givenExam = false;
+                        if (teacherReq.description.equals(getString(R.string.exam))){
+                            for (Requirement studentReq : studentRequirements){
+                                if (studentReq.description.equals(getString(R.string.exam))){
+                                    if (teacherReq.id.equals(studentReq.id)) {
+                                        givenExam = true;
+                                    }
+                                }
+                            }
+                            String examText = teacherReq.description + ": " + teacherReq.value;
+                            ListData exam = new ListData(givenExam ? R.drawable.check : R.drawable.clear, examText);
+                            listDataArrayList.add(exam);
+                        }
                     }
 
                     ListAdapter listAdapter = new ListAdapter(this, listDataArrayList);
