@@ -12,6 +12,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import it.uniba.dib.sms22231.config.ApplicationStatus;
 import it.uniba.dib.sms22231.model.Application;
 import it.uniba.dib.sms22231.model.Thesis;
 import it.uniba.dib.sms22231.utility.CallbackFunction;
@@ -53,6 +54,10 @@ public class ApplicationService {
         applicationsCollection.document().set(application).addOnCompleteListener(task -> {
             callback.apply(task.isSuccessful());
         });
+    }
+
+    public void setNewApplicationStatus(String applicationId, ApplicationStatus status, CallbackFunction<Boolean> callback) {
+        applicationsCollection.document(applicationId).update("status", status).addOnCompleteListener(task -> callback.apply(task.isSuccessful()));
     }
 
     private void mapApplications(QuerySnapshot querySnapshot, List<Thesis> theses, CallbackFunction<List<Application>> callback) {
