@@ -1,9 +1,12 @@
 package it.uniba.dib.sms22231.activities;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -40,6 +43,10 @@ public class ApplicationDetailActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_application_detail);
+
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setTitle(R.string.appdetail);
+        actionBar.setDisplayHomeAsUpEnabled(true);
 
         Intent intent = getIntent();
         id = intent.getStringExtra("id");
@@ -114,7 +121,15 @@ public class ApplicationDetailActivity extends AppCompatActivity {
                 });
             });
         });
+    }
 
-
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                this.finish();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

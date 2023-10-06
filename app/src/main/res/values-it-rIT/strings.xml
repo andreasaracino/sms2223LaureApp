@@ -62,5 +62,8 @@
     <string name="requestConfirm">Confermi di voler richiedere la tesi?</string>
     <string name="next">Avanti</string>
     <string name="deleteThesis">Elimina Tesi</string>
+    <string name="appdetail">Dettaglio Richiesta</string>
+    <string name="reject">Rifiuta</string>
+    <string name="accept">Accetta</string>
 
 </resources>
