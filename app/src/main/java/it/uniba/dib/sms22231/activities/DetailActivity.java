@@ -329,7 +329,7 @@ public class DetailActivity extends AppCompatActivity {
             application.status = ApplicationStatus.pending;
             application.thesisId = thesis.id;
             application.studentUid = studentService.getStudentData().uid;
-            application.requirement = studentRequirements;
+            application.requirements = studentRequirements;
 
             applicationService.createApplication(application, isSuccessful -> {
                 Toast.makeText(getApplicationContext(), R.string.sent, Toast.LENGTH_SHORT).show();

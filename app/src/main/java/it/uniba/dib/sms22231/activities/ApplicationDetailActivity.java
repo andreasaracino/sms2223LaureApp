@@ -12,7 +12,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import it.uniba.dib.sms22231.R;
+import it.uniba.dib.sms22231.adapters.ListAdapter;
 import it.uniba.dib.sms22231.model.Application;
+import it.uniba.dib.sms22231.model.ListData;
 import it.uniba.dib.sms22231.model.Requirement;
 import it.uniba.dib.sms22231.service.ApplicationService;
 import it.uniba.dib.sms22231.service.RequirementService;
@@ -31,6 +33,7 @@ public class ApplicationDetailActivity extends AppCompatActivity {
     private Application application;
     private final RequirementService requirementService = RequirementService.getInstance();
     private List<Requirement> teacherRequirements;
+    private List<Requirement> studentRequirements;
 
 
     @Override
@@ -54,6 +57,7 @@ public class ApplicationDetailActivity extends AppCompatActivity {
 
         applicationService.getApplicationById(id).subscribe(application -> {
             this.application = application;
+            studentRequirements = application.requirements;
 
             thesisService.getThesisById(application.thesisId, thesis -> {
                 txtTitle.setText(thesis.title);
@@ -63,6 +67,32 @@ public class ApplicationDetailActivity extends AppCompatActivity {
 
                 requirementService.getRequirementsByThesis(thesis).subscribe(requirements -> {
                     teacherRequirements = requirements;
+
+                    ArrayList<ListData> listDataArrayList = new ArrayList<>();
+                    boolean averageControl = false;
+                    Integer teacherAverage = 0;
+                    Integer studentAverage = 0;
+
+                    for (Requirement r : teacherRequirements){
+                        if (r.description.equals(getString(R.string.average))){
+                            teacherAverage = Integer.parseInt(r.value);
+                            averageControl = true;
+                        }
+                    }
+                    for (Requirement r : studentRequirements){
+                        if (r.description.equals(getString(R.string.average)) ){
+                            studentAverage = Integer.parseInt(r.value);
+                        }
+                    }
+                    if (averageControl){
+                        String averageText = getString(R.string.average) + ": " + studentAverage + "/" + teacherAverage;
+                        ListData average = new ListData(studentAverage < teacherAverage ? R.drawable.clear : R. drawable.check, averageText);
+                        listDataArrayList.add(average);
+                    }
+
+                    ListAdapter listAdapter = new ListAdapter(this, listDataArrayList);
+                    reqListview.setAdapter(listAdapter);
+                    reqListview.setVisibility(View.VISIBLE);
                 });
             });
         });
