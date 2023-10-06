@@ -73,4 +73,7 @@
     <string name="requestConfirm">Confirm application?</string>
     <string name="next">Next</string>
     <string name="deleteThesis">Delete Thesis</string>
+    <string name="appdetail">Application Detail</string>
+    <string name="reject">Reject</string>
+    <string name="accept">Accept</string>
 </resources>

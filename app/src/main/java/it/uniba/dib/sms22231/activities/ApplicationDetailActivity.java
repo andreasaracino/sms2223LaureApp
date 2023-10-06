@@ -1,9 +1,12 @@
 package it.uniba.dib.sms22231.activities;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -41,6 +44,10 @@ public class ApplicationDetailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_application_detail);
 
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setTitle(R.string.appdetail);
+        actionBar.setDisplayHomeAsUpEnabled(true);
+
         Intent intent = getIntent();
         id = intent.getStringExtra("id");
 
@@ -70,8 +77,8 @@ public class ApplicationDetailActivity extends AppCompatActivity {
 
                     ArrayList<ListData> listDataArrayList = new ArrayList<>();
                     boolean averageControl = false;
-                    Integer teacherAverage = 0;
-                    Integer studentAverage = 0;
+                    int teacherAverage = 0;
+                    int studentAverage = 0;
 
                     for (Requirement r : teacherRequirements){
                         if (r.description.equals(getString(R.string.average))){
@@ -90,13 +97,39 @@ public class ApplicationDetailActivity extends AppCompatActivity {
                         listDataArrayList.add(average);
                     }
 
+                    boolean givenExam;
+
+                    for (Requirement teacherReq : teacherRequirements){
+                        givenExam = false;
+                        if (teacherReq.description.equals(getString(R.string.exam))){
+                            for (Requirement studentReq : studentRequirements){
+                                if (studentReq.description.equals(getString(R.string.exam))){
+                                    if (teacherReq.id.equals(studentReq.id)) {
+                                        givenExam = true;
+                                    }
+                                }
+                            }
+                            String examText = teacherReq.description + ": " + teacherReq.value;
+                            ListData exam = new ListData(givenExam ? R.drawable.check : R.drawable.clear, examText);
+                            listDataArrayList.add(exam);
+                        }
+                    }
+
                     ListAdapter listAdapter = new ListAdapter(this, listDataArrayList);
                     reqListview.setAdapter(listAdapter);
                     reqListview.setVisibility(View.VISIBLE);
                 });
             });
         });
+    }
 
-
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                this.finish();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }
