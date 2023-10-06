@@ -27,6 +27,7 @@ public class ApplicationService {
 
     public Observable<List<Application>> getAllApplications() {
         return new Observable<>(next -> {
+            thesisService.userOwnTheses.reset();
             thesisService.userOwnTheses.subscribe(theses -> {
                 List<String> thesesIds = theses.stream().map(thesis -> thesis.id).collect(Collectors.toList());
                 applicationsCollection.whereIn("thesisId", thesesIds).get().addOnCompleteListener(task -> {
