@@ -15,6 +15,7 @@ public class Thesis {
     public String teacherFullname;
     public List<String> attachments;
     public List<Requirement> requirements;
+    public Integer averageRequirement;
 
     public Thesis() {
     }

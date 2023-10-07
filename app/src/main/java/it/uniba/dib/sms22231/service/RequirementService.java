@@ -1,6 +1,7 @@
 package it.uniba.dib.sms22231.service;
 
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -27,14 +28,27 @@ public class RequirementService {
                 QuerySnapshot querySnapshot = task.getResult();
 
                 for (QueryDocumentSnapshot requirementDoc : querySnapshot) {
-                    Requirement requirement = new Requirement(requirementDoc.getData());
-                    requirement.id = requirementDoc.getId();
-                    requirements.add(requirement);
+                    Requirement requirement = mapRequirement(requirementDoc);
+
+                    if (requirement != null) {
+                        requirements.add(requirement);
+                    }
                 }
 
                 next.apply(requirements);
             });
         });
+    }
+
+    private static Requirement mapRequirement(DocumentSnapshot requirementDoc) {
+        Requirement requirement = null;
+
+        if (requirementDoc.exists() && requirementDoc.getData() != null) {
+            requirement = new Requirement(requirementDoc.getData());
+            requirement.id = requirementDoc.getId();
+        }
+
+        return requirement;
     }
 
     public void addRequirements(List<Requirement> requirements, String thesisId, CallbackFunction<Boolean> callback) {
@@ -64,6 +78,17 @@ public class RequirementService {
         for (String requirementId : requirementsIds) {
             requirementsCollection.document(requirementId).delete().addOnCompleteListener(task -> callback.apply(task.isSuccessful()));
         }
+    }
+
+    public void getAverageRequirementByThesis(String thesisId, CallbackFunction<Integer> callback) {
+        requirementsCollection.whereEqualTo("thesisId", thesisId).whereEqualTo("description", "Media").get().addOnCompleteListener(task -> {
+            if (task.isSuccessful() && !task.getResult().isEmpty()) {
+                Requirement requirement = mapRequirement(task.getResult().getDocuments().get(0));
+                callback.apply(Integer.parseInt(requirement.value));
+            } else {
+                callback.apply(-1);
+            }
+        });
     }
 
     private RequirementService() {}

@@ -192,10 +192,26 @@ public class ThesisService {
         Thesis thesis = new Thesis(data);
         thesis.id = id;
 
+        final boolean[] successful = {false};
+
         userService.getUserByUid(thesis.teacherId, user -> {
             thesis.teacherFullname = user.fullName;
 
-            callback.apply(thesis);
+            if (successful[0]) {
+                callback.apply(thesis);
+            } else {
+                successful[0] = true;
+            }
+        });
+
+        requirementService.getAverageRequirementByThesis(id, averageRequirement -> {
+            thesis.averageRequirement = averageRequirement;
+
+            if (successful[0]) {
+                callback.apply(thesis);
+            } else {
+                successful[0] = true;
+            }
         });
     }
 
