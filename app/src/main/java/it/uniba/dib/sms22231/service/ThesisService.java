@@ -136,7 +136,7 @@ public class ThesisService {
 
     private void updateAttachments(List<Change<Attachment>> changedAttachments, Thesis thesis, DocumentReference thesisDocument, CallbackFunction<Boolean> callbackFunction) {
         List<Uri> newAttachments = changedAttachments.stream().filter(attachmentChange -> attachmentChange.changeType == ChangeTypes.added).map(attachmentChange -> attachmentChange.value.path).collect(Collectors.toList());
-        List<String> fileNames = changedAttachments.stream().filter(attachmentChange -> attachmentChange.changeType == ChangeTypes.added).map(attachmentChange -> attachmentChange.value.fileName).collect(Collectors.toList());
+        List<String> fileNames = changedAttachments.stream().filter(attachmentChange -> attachmentChange.changeType == ChangeTypes.added).map(attachmentChange -> attachmentChange.value.getFileName()).collect(Collectors.toList());
         List<String> removedAttachments = changedAttachments.stream().filter(attachmentChange -> attachmentChange.changeType == ChangeTypes.removed).map(attachmentChange -> attachmentChange.value.id).collect(Collectors.toList());
 
         attachmentService.saveAttachments(newAttachments, fileNames, savedFiles -> {
