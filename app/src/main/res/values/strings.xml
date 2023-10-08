@@ -76,4 +76,14 @@
     <string name="appdetail">Application Detail</string>
     <string name="reject">Reject</string>
     <string name="accept">Accept</string>
+    <string name="filTitle">Filter by Title</string>
+    <string name="filTeacher">Filter by Teacher</string>
+    <string name="filAverage">Filter by Average</string>
+    <string name="chooseFil">Choose filter -></string>
+    <string name="insTeacher">Insert Teacher\'s name</string>
+    <string name="insAverage">Insert max Average</string>
+    <string name="insTitle">Insert Title</string>
+    <string name="searchThesis">Search Thesis</string>
+    <string name="filThesis">Filter by Average</string>
+    <string name="searchTeacher">Filter by Teacher</string>
 </resources>

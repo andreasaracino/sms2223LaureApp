@@ -65,5 +65,15 @@
     <string name="appdetail">Dettaglio Richiesta</string>
     <string name="reject">Rifiuta</string>
     <string name="accept">Accetta</string>
+    <string name="filTitle">Cerca per Titolo</string>
+    <string name="filTeacher">Cerca per Professore</string>
+    <string name="filAverage">Cerca per Media</string>
+    <string name="chooseFil">Scegli il filtro -></string>
+    <string name="insTeacher">Inserisci nome del professore</string>
+    <string name="insAverage">Inserisci la media massima</string>
+    <string name="insTitle">Inserisci titolo della tesi</string>
+    <string name="searchThesis">Cerca Tesi</string>
+    <string name="filThesis">Filtra per media</string>
+    <string name="searchTeacher">Filtra per professore</string>
 
 </resources>
