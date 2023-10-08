@@ -218,12 +218,13 @@ public class AddModifyThesisActivity extends AppCompatActivity {
         }
     }
 
-    //riempimento delle Listview
+    //riempimento della Listview dei requisiti
     private void fillRequirementsList(ArrayList<String> arrayList, ListView listView) {
         ArrayAdapter<String> listAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, arrayList);
         listView.setAdapter(listAdapter);
     }
 
+    //riempimento della listview degli attachments con icone
     private void fillAttachmentsList() {
         ArrayList<ListData> attachmentsListData = new ArrayList<>();
         attachments.forEach(attachment -> {
