@@ -20,7 +20,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.android.material.navigation.NavigationBarView;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.WriterException;
 import com.google.zxing.common.BitMatrix;
@@ -28,17 +27,19 @@ import com.google.zxing.qrcode.QRCodeWriter;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import it.uniba.dib.sms22231.R;
+import it.uniba.dib.sms22231.adapters.ListAdapter;
 import it.uniba.dib.sms22231.config.ApplicationStatus;
 import it.uniba.dib.sms22231.config.RequirementTypes;
 import it.uniba.dib.sms22231.model.Application;
 import it.uniba.dib.sms22231.model.Attachment;
+import it.uniba.dib.sms22231.model.ListData;
 import it.uniba.dib.sms22231.model.Requirement;
 import it.uniba.dib.sms22231.model.Thesis;
 import it.uniba.dib.sms22231.service.ApplicationService;
 import it.uniba.dib.sms22231.service.AttachmentService;
-import it.uniba.dib.sms22231.service.ChatService;
 import it.uniba.dib.sms22231.service.RequirementService;
 import it.uniba.dib.sms22231.service.StudentService;
 import it.uniba.dib.sms22231.service.ThesisService;
@@ -60,6 +61,7 @@ public class DetailActivity extends AppCompatActivity {
     private ArrayList<String> attach;
     private ArrayList<String> examArrayList;
     private ArrayList<String> examsIds;
+    private List<Attachment> attachments = new ArrayList<>();
     private BottomNavigationView bottomNavigationView;
     private String id;
     private String averageId;
@@ -132,20 +134,22 @@ public class DetailActivity extends AppCompatActivity {
                     reqListview.setVisibility(View.GONE);
                     txtNoRequirement.setVisibility(View.VISIBLE);
                 } else {
-                    fillList(req, reqListview);
+                    fillRequirementList(req, reqListview);
                 }
             });
             attachmentService.getAttachmentsByThesis(thesis).subscribe(attachments -> {
+                this.attachments.clear();
                 attach = new ArrayList<>();
                 for (Attachment attachment : attachments) {
                     String attachtemp = attachment.getFileName();
                     attach.add(attachtemp);
+                    this.attachments.add(attachment);
                 }
                 if (attach.isEmpty()) {
                     fileListView.setVisibility(View.GONE);
                     txtNoFile.setVisibility(View.VISIBLE);
                 } else {
-                    fillList(attach, fileListView);
+                    fillAttachmentsList();
                 }
             });
         });
@@ -370,12 +374,42 @@ public class DetailActivity extends AppCompatActivity {
         }
     }
 
-    //riempimento delle liste
-    private void fillList(ArrayList<String> arrayList, ListView listView) {
+    //riempimento della lista dei requisiti
+    private void fillRequirementList(ArrayList<String> arrayList, ListView listView) {
         ArrayAdapter<String> listAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, arrayList);
         listView.setAdapter(listAdapter);
         listView.setVisibility(View.VISIBLE);
     }
+
+    //riempimento della listview degli attachments con icone
+    private void fillAttachmentsList() {
+        ArrayList<ListData> attachmentsListData = new ArrayList<>();
+        attachments.forEach(attachment -> {
+            ListData listData = new ListData();
+            listData.setText(attachment.getFileName());
+            switch (attachment.fileType) {
+                case image:
+                    listData.setImageId(R.drawable.image);
+                    break;
+                case video:
+                    listData.setImageId(R.drawable.outline_video_file_24);
+                    break;
+                case archive:
+                    listData.setImageId(R.drawable.zip);
+                    break;
+                case generic:
+                    listData.setImageId(R.drawable.file);
+                    break;
+                case document:
+                    listData.setImageId(R.drawable.pdf);
+            }
+            attachmentsListData.add(listData);
+        });
+        ListAdapter listAdapter = new ListAdapter(this, attachmentsListData);
+        fileListView.setAdapter(listAdapter);
+        fileListView.setVisibility(View.VISIBLE);
+    }
+
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
