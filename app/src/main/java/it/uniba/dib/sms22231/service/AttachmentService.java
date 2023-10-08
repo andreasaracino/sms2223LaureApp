@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
+import it.uniba.dib.sms22231.config.FileType;
 import it.uniba.dib.sms22231.model.Attachment;
 import it.uniba.dib.sms22231.model.Thesis;
 import it.uniba.dib.sms22231.utility.CallbackFunction;
@@ -59,6 +60,7 @@ public class AttachmentService {
                         Attachment attachment = new Attachment();
                         attachment.id = fileId;
                         attachment.fileName = fileName.substring(fileName.indexOf("_") + 1);
+                        attachment.fileType = FileType.getFileTypeByExtension(fileName.substring(fileName.indexOf(".") + 1));
                         attachment.path = task.getResult();
 
                         attachments.add(attachment);
