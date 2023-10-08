@@ -59,13 +59,7 @@ public class AttachmentService {
                         String fileName = storedFile.getName();
                         Attachment attachment = new Attachment();
                         attachment.id = fileId;
-                        attachment.fileName = fileName.substring(fileName.indexOf("_") + 1);
-                        int pointIndex = fileName.indexOf(".");
-                        if (pointIndex != -1) {
-                            attachment.fileType = FileType.getFileTypeByExtension(fileName.substring(pointIndex + 1));
-                        } else {
-                            attachment.fileType = FileType.generic;
-                        }
+                        attachment.setFileName(fileName.substring(fileName.indexOf("_") + 1));
                         attachment.path = task.getResult();
 
                         attachments.add(attachment);
