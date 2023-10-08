@@ -15,7 +15,7 @@ public class Attachment {
 
         int pointIndex = fileName.indexOf(".");
         if (pointIndex != -1) {
-            fileType = FileType.getFileTypeByExtension(fileName.substring(pointIndex + 1));
+            fileType = FileType.getFileTypeByExtension(fileName.substring(pointIndex + 1).toLowerCase());
         } else {
             fileType = FileType.generic;
         }
