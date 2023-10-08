@@ -137,7 +137,7 @@ public class DetailActivity extends AppCompatActivity {
             attachmentService.getAttachmentsByThesis(thesis).subscribe(attachments -> {
                 attach = new ArrayList<>();
                 for (Attachment attachment : attachments) {
-                    String attachtemp = attachment.fileName;
+                    String attachtemp = attachment.getFileName();
                     attach.add(attachtemp);
                 }
                 if (attach.isEmpty()) {

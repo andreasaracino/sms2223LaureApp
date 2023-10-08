@@ -1,10 +1,9 @@
 package it.uniba.dib.sms22231.activities;
 
-import androidx.activity.result.ActivityResult;
-import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -15,11 +14,11 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.OpenableColumns;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -33,9 +32,11 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
 import it.uniba.dib.sms22231.R;
+import it.uniba.dib.sms22231.adapters.ListAdapter;
 import it.uniba.dib.sms22231.config.ChangeTypes;
 import it.uniba.dib.sms22231.model.Attachment;
 import it.uniba.dib.sms22231.model.Change;
+import it.uniba.dib.sms22231.model.ListData;
 import it.uniba.dib.sms22231.model.Requirement;
 import it.uniba.dib.sms22231.model.Thesis;
 import it.uniba.dib.sms22231.model.User;
@@ -57,9 +58,9 @@ public class AddModifyThesisActivity extends AppCompatActivity {
     private ArrayList<String> fileNames;
     private ArrayList<Requirement> currentRequirements;
     private ArrayList<Uri> filesList;
+    private List<Attachment> attachments = new ArrayList<>();
     private ArrayList<String> reqString;
     private Thesis currentThesis;
-    private List<Attachment> currentAttachments;
     private final List<Change<Requirement>> changedRequirements = new ArrayList<>();
     private final List<Change<Attachment>> changedAttachments = new ArrayList<>();
     private Boolean isEditing = false;
@@ -113,7 +114,7 @@ public class AddModifyThesisActivity extends AppCompatActivity {
                     }
                     reqString.remove(i);
                     currentRequirements.remove(i);
-                    fillList(reqString, listViewReq);
+                    fillRequirementsList(reqString, listViewReq);
                     dialog.dismiss();
                 });
                 return false;
@@ -137,12 +138,13 @@ public class AddModifyThesisActivity extends AppCompatActivity {
                 Button positiveButton = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
                 positiveButton.setOnClickListener(view1 -> {
                     if (isEditing) {
-                        changedAttachments.add(new Change<>(currentAttachments.get(i), ChangeTypes.removed));
+                        changedAttachments.add(new Change<>(attachments.get(i), ChangeTypes.removed));
                     } else {
                         filesList.remove(i);
                     }
                     fileNames.remove(i);
-                    fillList(fileNames, listViewFile);
+                    attachments.remove(i);
+                    fillAttachmentsList();
                     dialog.dismiss();
                 });
                 return false;
@@ -160,20 +162,21 @@ public class AddModifyThesisActivity extends AppCompatActivity {
                 String name = getNameFromUri(uri);
                 fileNames.add(name);
                 filesList.add(uri);
+                Attachment attachment = new Attachment();
+                attachment.path = uri;
+                attachment.setFileName(name);
+                attachments.add(attachment);
                 if (isEditing) {
-                    Attachment attachment = new Attachment();
-                    attachment.path = uri;
-                    attachment.fileName = name;
                     changedAttachments.add(new Change<>(attachment, ChangeTypes.added));
                 }
-                fillList(fileNames, listViewFile);
+                fillAttachmentsList();
             }
         });
     }
 
     //se l'activity è aperta in modifica, i campi vengono riempiti con i dati della tesi
     private void fillActivityForModify(Intent intent, int caller) {
-        if (caller == 3){
+        if (caller == 3) {
             isEditing = true;
             String id = intent.getStringExtra("id");
             thesisService.getThesisById(id, thesis -> {
@@ -188,15 +191,15 @@ public class AddModifyThesisActivity extends AppCompatActivity {
                         String reqTemp = requirement.description + ": " + requirement.value;
                         reqString.add(reqTemp);
                     }
-                    fillList(reqString, listViewReq);
+                    fillRequirementsList(reqString, listViewReq);
                 });
                 attachmentService.getAttachmentsByThesis(thesis).subscribe(attachments -> {
-                    currentAttachments = attachments;
+                    this.attachments = attachments;
                     fileNames = new ArrayList<>();
                     for (Attachment attachment : attachments) {
-                        fileNames.add(attachment.fileName);
+                        fileNames.add(attachment.getFileName());
                     }
-                    fillList(fileNames, listViewFile);
+                    fillAttachmentsList();
                 });
             });
         }
@@ -216,9 +219,37 @@ public class AddModifyThesisActivity extends AppCompatActivity {
     }
 
     //riempimento delle Listview
-    private void fillList(ArrayList<String> arrayList, ListView listView) {
+    private void fillRequirementsList(ArrayList<String> arrayList, ListView listView) {
         ArrayAdapter<String> listAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, arrayList);
         listView.setAdapter(listAdapter);
+    }
+
+    private void fillAttachmentsList() {
+        ArrayList<ListData> attachmentsListData = new ArrayList<>();
+        attachments.forEach(attachment -> {
+            ListData listData = new ListData();
+            listData.setText(attachment.getFileName());
+            switch (attachment.fileType) {
+                case image:
+                    listData.setImageId(R.drawable.image);
+                    break;
+                case video:
+                    listData.setImageId(R.drawable.outline_video_file_24);
+                    break;
+                case archive:
+                    listData.setImageId(R.drawable.zip);
+                    break;
+                case generic:
+                    listData.setImageId(R.drawable.file);
+                    break;
+                case document:
+                    listData.setImageId(R.drawable.pdf);
+            }
+            attachmentsListData.add(listData);
+        });
+        ListAdapter listAdapter = new ListAdapter(this, attachmentsListData);
+        listViewFile.setAdapter(listAdapter);
+        listViewFile.setVisibility(View.VISIBLE);
     }
 
     //ricava dall'uri il nome del file da mostrare poi nella lista
@@ -230,12 +261,23 @@ public class AddModifyThesisActivity extends AppCompatActivity {
     }
 
     //richiesta dei permessi per accedere ai file in memoria
-    public void addFilePermission(View view){
-        if (ActivityCompat.checkSelfPermission(AddModifyThesisActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(AddModifyThesisActivity.this, new String[] {
-                            Manifest.permission.READ_EXTERNAL_STORAGE }, 1);
-        }
-        else {
+    public void addFilePermission(View view) {
+        if (android.os.Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU &&
+                ActivityCompat.checkSelfPermission(AddModifyThesisActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
+        ) {
+            ActivityCompat.requestPermissions(AddModifyThesisActivity.this, new String[]{
+                    Manifest.permission.READ_EXTERNAL_STORAGE
+            }, 1);
+        } else if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && (
+                ActivityCompat.checkSelfPermission(AddModifyThesisActivity.this, Manifest.permission.READ_MEDIA_IMAGES) != PackageManager.PERMISSION_GRANTED ||
+                        ActivityCompat.checkSelfPermission(AddModifyThesisActivity.this, Manifest.permission.READ_MEDIA_VIDEO) != PackageManager.PERMISSION_GRANTED ||
+                        ActivityCompat.checkSelfPermission(AddModifyThesisActivity.this, Manifest.permission.READ_MEDIA_AUDIO) != PackageManager.PERMISSION_GRANTED)) {
+            ActivityCompat.requestPermissions(AddModifyThesisActivity.this, new String[]{
+                    Manifest.permission.READ_MEDIA_IMAGES,
+                    Manifest.permission.READ_MEDIA_VIDEO,
+                    Manifest.permission.READ_MEDIA_AUDIO,
+            }, 1);
+        } else {
             addFile();
         }
     }
@@ -253,8 +295,7 @@ public class AddModifyThesisActivity extends AppCompatActivity {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == 1 && grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
             addFile();
-        }
-        else {
+        } else {
             Toast.makeText(getApplicationContext(), R.string.permission, Toast.LENGTH_SHORT).show();
         }
     }
@@ -291,16 +332,16 @@ public class AddModifyThesisActivity extends AppCompatActivity {
     private boolean isChanged() {
         return isEditing && (
                 changedAttachments.size() > 0 ||
-                changedRequirements.size() > 0 ||
-                !currentThesis.title.equals(thesisTitle.getText().toString()) ||
-                !currentThesis.description.equals(thesisDescription.getText().toString())
+                        changedRequirements.size() > 0 ||
+                        !currentThesis.title.equals(thesisTitle.getText().toString()) ||
+                        !currentThesis.description.equals(thesisDescription.getText().toString())
         ) ||
                 !isEditing && (
-                fileNames.size() > 0 ||
-                reqString.size() > 0 ||
-                thesisTitle.getText().toString().length() > 0 ||
-                thesisDescription.getText().toString().length() > 0
-        );
+                        fileNames.size() > 0 ||
+                                reqString.size() > 0 ||
+                                thesisTitle.getText().toString().length() > 0 ||
+                                thesisDescription.getText().toString().length() > 0
+                );
     }
 
     //aggiunta di requisiti alla tesi
@@ -352,7 +393,7 @@ public class AddModifyThesisActivity extends AppCompatActivity {
                 }
                 currentRequirements.add(req);
                 reqString.add(item);
-                fillList(reqString, listViewReq);
+                fillRequirementsList(reqString, listViewReq);
                 builder.dismiss();
             }
         });
