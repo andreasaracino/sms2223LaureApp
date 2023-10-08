@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/searchThesis"
+        android:icon="@drawable/baseline_content_paste_search_24"
+        android:iconTint="@color/white"
+        android:title="@string/searchThesis"
+        app:showAsAction="always|withText" />
+    <item
+        android:id="@+id/searchTeacher"
+        android:icon="@drawable/baseline_person_search_24"
+        android:iconTint="@color/white"
+        android:title="@string/searchTeacher"
+        app:showAsAction="always|withText" />
+
+    <item
+        android:id="@+id/filter"
+        android:icon="@drawable/outline_filter_list_24"
+        android:iconTint="@color/white"
+        android:title="@string/filThesis"
+        app:showAsAction="always|withText" />
+
+</menu>

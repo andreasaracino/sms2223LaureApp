@@ -1,12 +1,63 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".fragments.AvailableFragment">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/availableRecycler"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:id="@+id/searchThesisLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginBottom="5dp"
+            android:orientation="horizontal"
+            android:visibility="gone">
+
+            <SearchView
+                android:id="@+id/searchViewThesis"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:background="@drawable/search_shape"
+                android:queryBackground="@null"
+                android:searchIcon="@drawable/baseline_search_24" />
+
+            <Button
+                android:id="@+id/closebutton"
+                style="@style/borderless_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                app:icon="@drawable/clear"
+                app:iconTint="#007fff" />
+        </LinearLayout>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/availableRecycler"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="3" />
+
+        <com.google.android.material.bottomnavigation.BottomNavigationView
+            android:id="@+id/availableBottom"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            app:backgroundTint="#007fff"
+            app:itemIconTint="@color/white"
+            app:itemTextAppearanceInactive="@style/Theme.Sms2223LaureApp"
+            app:itemTextColor="@color/white"
+            app:labelVisibilityMode="labeled"
+            app:menu="@menu/filters_menu" />
+    </LinearLayout>
+
 </FrameLayout>

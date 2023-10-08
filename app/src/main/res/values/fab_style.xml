@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-
-    <style name="fab" parent="Widget.MaterialComponents.FloatingActionButton">
-        <item name="android:foreground">@drawable/my_fab</item>
-        <item name = "backgroundTint">@color/white</item>
-    </style>
-</resources>

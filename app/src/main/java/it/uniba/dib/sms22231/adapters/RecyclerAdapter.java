@@ -18,7 +18,7 @@ import it.uniba.dib.sms22231.model.CardData;
 import it.uniba.dib.sms22231.utility.RecyclerViewInterface;
 
 public class RecyclerAdapter<T> extends RecyclerView.Adapter<RecyclerAdapter.Viewholder> {
-    private final ArrayList<CardData<T>> cardData;
+    private ArrayList<CardData<T>> cardData;
     private final Context context;
     private final RecyclerViewInterface recyclerViewInterface;
 
@@ -50,6 +50,12 @@ public class RecyclerAdapter<T> extends RecyclerView.Adapter<RecyclerAdapter.Vie
     @Override
     public int getItemCount() {
         return cardData.size();
+    }
+
+    public void filterList(ArrayList<CardData<T>> filteredList) {
+        cardData = filteredList;
+        notifyDataSetChanged();
+
     }
 
     public static class Viewholder extends RecyclerView.ViewHolder {
