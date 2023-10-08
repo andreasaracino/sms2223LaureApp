@@ -28,7 +28,7 @@ public enum FileType {
     }
 
     public static FileType getFileTypeByExtension(String extension) {
-        if(image.getExtensions().contains(extension)) {
+        if(image.getExtensions().contains(extension.toLowerCase())) {
             return image;
         } else if(video.getExtensions().contains(extension)) {
             return video;
