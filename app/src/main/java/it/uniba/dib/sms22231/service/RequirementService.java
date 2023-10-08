@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
+import it.uniba.dib.sms22231.config.RequirementTypes;
 import it.uniba.dib.sms22231.model.Requirement;
 import it.uniba.dib.sms22231.model.Thesis;
 import it.uniba.dib.sms22231.utility.CallbackFunction;
@@ -81,7 +82,7 @@ public class RequirementService {
     }
 
     public void getAverageRequirementByThesis(String thesisId, CallbackFunction<Integer> callback) {
-        requirementsCollection.whereEqualTo("thesisId", thesisId).whereEqualTo("description", "Media").get().addOnCompleteListener(task -> {
+        requirementsCollection.whereEqualTo("thesisId", thesisId).whereEqualTo("description", RequirementTypes.average).get().addOnCompleteListener(task -> {
             if (task.isSuccessful() && !task.getResult().isEmpty()) {
                 Requirement requirement = mapRequirement(task.getResult().getDocuments().get(0));
                 callback.apply(Integer.parseInt(requirement.value));

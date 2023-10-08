@@ -34,6 +34,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import it.uniba.dib.sms22231.R;
 import it.uniba.dib.sms22231.config.ChangeTypes;
+import it.uniba.dib.sms22231.config.RequirementTypes;
 import it.uniba.dib.sms22231.model.Attachment;
 import it.uniba.dib.sms22231.model.Change;
 import it.uniba.dib.sms22231.model.Requirement;
@@ -185,7 +186,7 @@ public class AddModifyThesisActivity extends AppCompatActivity {
                     currentRequirements = (ArrayList<Requirement>) requirements;
                     reqString = new ArrayList<>();
                     for (Requirement requirement : requirements) {
-                        String reqTemp = requirement.description + ": " + requirement.value;
+                        String reqTemp = getResources().getStringArray(R.array.requirements)[requirement.description.ordinal()] + ": " + requirement.value;
                         reqString.add(reqTemp);
                     }
                     fillList(reqString, listViewReq);
@@ -329,24 +330,9 @@ public class AddModifyThesisActivity extends AppCompatActivity {
                 editText.requestFocus();
             } else {
                 int position = spinner.getSelectedItemPosition();
-                switch (position) {
-                    case 0:
-                        req = new Requirement(null, null, getString(R.string.average), control);
-                        item = (getString(R.string.average) + ": " + control);
-                        break;
-                    case 1:
-                        req = new Requirement(null, null, getString(R.string.exam), control);
-                        item = (getString(R.string.exam) + ": " + control);
-                        break;
-                    case 2:
-                        req = new Requirement(null, null, getString(R.string.skill), control);
-                        item = (getString(R.string.skill) + ": " + control);
-                        break;
-                    case 3:
-                        req = new Requirement(null, null, getString(R.string.timelimit), control);
-                        item = (getString(R.string.timelimit) + ": " + control);
+                req = new Requirement(null, null, RequirementTypes.values()[position], control);
+                item = getResources().getStringArray(R.array.requirements)[position] + ": " + control;
 
-                }
                 if (isEditing) {
                     changedRequirements.add(new Change<>(req, ChangeTypes.added));
                 }

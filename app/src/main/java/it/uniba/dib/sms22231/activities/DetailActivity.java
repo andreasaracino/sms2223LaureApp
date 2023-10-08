@@ -5,7 +5,6 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
@@ -32,12 +31,14 @@ import java.util.Arrays;
 
 import it.uniba.dib.sms22231.R;
 import it.uniba.dib.sms22231.config.ApplicationStatus;
+import it.uniba.dib.sms22231.config.RequirementTypes;
 import it.uniba.dib.sms22231.model.Application;
 import it.uniba.dib.sms22231.model.Attachment;
 import it.uniba.dib.sms22231.model.Requirement;
 import it.uniba.dib.sms22231.model.Thesis;
 import it.uniba.dib.sms22231.service.ApplicationService;
 import it.uniba.dib.sms22231.service.AttachmentService;
+import it.uniba.dib.sms22231.service.ChatService;
 import it.uniba.dib.sms22231.service.RequirementService;
 import it.uniba.dib.sms22231.service.StudentService;
 import it.uniba.dib.sms22231.service.ThesisService;
@@ -114,15 +115,15 @@ public class DetailActivity extends AppCompatActivity {
                 examsIds = new ArrayList<>();
 
                 for (Requirement requirement : requirements) {
-                    String reqtemp = requirement.description + ": " + requirement.value;
+                    String reqtemp = getResources().getStringArray(R.array.requirements)[requirement.description.ordinal()] + ": " + requirement.value;
                     req.add(reqtemp);
                     //arraylist degli esami da utilizzare per la creazione dell'application
-                    if (requirement.description.equals(getString(R.string.exam))) {
+                    if (requirement.description == RequirementTypes.exam) {
                         examArrayList.add(requirement.value);
                         examsIds.add(requirement.id);
                     }
                     //controllo della presenza della media e id da utilizzare per la creazione dell'application
-                    if (requirement.description.equals(getString(R.string.average))) {
+                    if (requirement.description == RequirementTypes.average) {
                         averageControl = true;
                         averageId = requirement.id;
                     }
@@ -161,45 +162,48 @@ public class DetailActivity extends AppCompatActivity {
             case 2:
                 bottomNavigationView.inflateMenu(R.menu.detail_my_theses_bottom_menu);
         }
-        bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
-
-           //click sugli item del menu
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                if (item.getItemId() == R.id.req) {
-                    doRequest();
-                }
-                if (item.getItemId() == R.id.favorite) {
-                    addFavorite();
-                }
-                if (item.getItemId() == R.id.share) {
-                    sendMessage();
-                }
-                if (item.getItemId() == R.id.qr) {
-                    generateQr();
-                }
-                if (item.getItemId() == R.id.chat) {
-                    goToChat();
-                }
-                if (item.getItemId() == R.id.modify) {
-                    thesisMod();
-                }
-                if (item.getItemId() == R.id.deleteThesis) {
-                    deleteThesis();
-                }
-                return false;
-            }
-        });
+        //click sugli item del menu
+        bottomNavigationView.setOnItemSelectedListener(item -> {
+             if (item.getItemId() == R.id.req) {
+                 doRequest();
+             } else if (item.getItemId() == R.id.favorite) {
+                 addFavorite();
+             } else if (item.getItemId() == R.id.share) {
+                 sendMessage();
+             } else if (item.getItemId() == R.id.qr) {
+                 generateQr();
+             } else if (item.getItemId() == R.id.chat) {
+                 goToChat();
+             } else if (item.getItemId() == R.id.modify) {
+                 thesisMod();
+             } else if (item.getItemId() == R.id.deleteThesis) {
+                 deleteThesis();
+             }
+             return false;
+         });
     }
 
     //eliminazione della tesi
     private void deleteThesis() {
-        //TODO
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(R.string.sureDeleteThesis)
+                .setPositiveButton(R.string.action_confirm, (dialog, which) -> {
+                    thesisService.removeThesis(thesis.id, (success) -> {
+                        if (success) {
+                            finish();
+                        }
+                    });
+                })
+                .setNegativeButton(R.string.cancel, null).show();
     }
 
     //apertura della chat
     private void goToChat() {
-        //TODO
+        Intent intent = new Intent(this, ChatActivity.class);
+        ChatService.getInstance().getChatByTeacherId(thesis.teacherId).subscribe(chat -> {
+            intent.putExtra("chat", chat);
+            startActivity(intent);
+        });
     }
 
     //aggiunta o rimozione della della tesi dalla classifica dei preferiti
@@ -270,7 +274,7 @@ public class DetailActivity extends AppCompatActivity {
             } else {
                 Requirement requirement = new Requirement();
                 requirement.thesisId = thesis.id;
-                requirement.description = getString(R.string.average);
+                requirement.description = RequirementTypes.average;
                 requirement.value = average.getText().toString();
                 requirement.id = averageId;
                 studentRequirements.add(requirement);
@@ -300,7 +304,7 @@ public class DetailActivity extends AppCompatActivity {
                 if (checked[i]) {
                     Requirement requirement = new Requirement();
                     requirement.thesisId = thesis.id;
-                    requirement.description = getString(R.string.exam);
+                    requirement.description = RequirementTypes.exam;
                     requirement.value = finalExamArray[i];
                     requirement.id = examsIds.get(i);
                     studentRequirements.add(requirement);
