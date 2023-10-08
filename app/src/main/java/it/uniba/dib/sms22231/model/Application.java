@@ -38,7 +38,7 @@ public class Application {
             studentUid = (String) data.get("studentUid");
             chatId = (String) data.get("chatId");
             try {
-                List<Map<String, Object>> requirements = (List<Map<String, Object>>) data.get("requirement");
+                List<Map<String, Object>> requirements = (List<Map<String, Object>>) data.get("requirements");
                 this.requirements = requirements.stream().map(Requirement::new).collect(Collectors.toList());
             } catch (Exception e) {
                 requirements = new ArrayList<>();

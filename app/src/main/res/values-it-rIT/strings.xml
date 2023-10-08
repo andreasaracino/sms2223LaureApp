@@ -76,5 +76,6 @@
     <string name="filThesis">Filtra per media</string>
     <string name="searchTeacher">Filtra per professore</string>
     <string name="sureDeleteThesis">Sei sicuro di voler eliminare questa tesi?</string>
+    <string name="success">Operazione effetuata con successo</string>
 
 </resources>

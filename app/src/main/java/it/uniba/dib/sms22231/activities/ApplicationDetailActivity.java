@@ -10,12 +10,14 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import it.uniba.dib.sms22231.R;
 import it.uniba.dib.sms22231.adapters.ListAdapter;
+import it.uniba.dib.sms22231.config.ApplicationStatus;
 import it.uniba.dib.sms22231.config.RequirementTypes;
 import it.uniba.dib.sms22231.model.Application;
 import it.uniba.dib.sms22231.model.ListData;
@@ -29,6 +31,7 @@ public class ApplicationDetailActivity extends AppCompatActivity {
     private final ThesisService thesisService = ThesisService.getInstance();
     private final ApplicationService applicationService = ApplicationService.getInstance();
     private final RequirementService requirementService = RequirementService.getInstance();
+    private Application application;
     private TextView txtTitle;
     private TextView txtDescription;
     private TextView txtOwner;
@@ -62,6 +65,7 @@ public class ApplicationDetailActivity extends AppCompatActivity {
         reqListview = findViewById(R.id.reqAppList);
 
         applicationService.getApplicationById(id).subscribe(application -> {
+            this.application = application;
             studentRequirements = application.requirements;
 
             thesisService.getThesisById(application.thesisId, thesis -> {
@@ -119,6 +123,24 @@ public class ApplicationDetailActivity extends AppCompatActivity {
                 });
             });
         });
+    }
+
+    public void rejectApplication(View view){
+        ApplicationStatus newStatus = ApplicationStatus.rejected;
+        setStatus(newStatus);
+    }
+
+    private void setStatus(ApplicationStatus newStatus) {
+        applicationService.setNewApplicationStatus(application.id, newStatus, success -> {
+            if (success){
+                Toast.makeText(this,R.string.success,Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    public void acceptApplication(View view){
+        ApplicationStatus newStatus = ApplicationStatus.approved;
+        setStatus(newStatus);
     }
 
     @Override

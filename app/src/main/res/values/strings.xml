@@ -87,4 +87,5 @@
     <string name="searchThesis">Search Thesis</string>
     <string name="filThesis">Filter by Average</string>
     <string name="searchTeacher">Filter by Teacher</string>
+    <string name="success">Updated succesfully</string>
 </resources>
