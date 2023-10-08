@@ -222,4 +222,8 @@ public class ThesisService {
 
         return instance;
     }
+
+    public void removeThesis(String thesisId, CallbackFunction<Boolean> callback) {
+        thesesCollection.document(thesisId).delete().addOnCompleteListener(task -> callback.apply(task.isSuccessful()));
+    }
 }
