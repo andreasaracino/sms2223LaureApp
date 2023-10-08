@@ -16,6 +16,7 @@ import java.util.List;
 
 import it.uniba.dib.sms22231.R;
 import it.uniba.dib.sms22231.adapters.ListAdapter;
+import it.uniba.dib.sms22231.config.RequirementTypes;
 import it.uniba.dib.sms22231.model.Application;
 import it.uniba.dib.sms22231.model.ListData;
 import it.uniba.dib.sms22231.model.Requirement;
@@ -25,16 +26,14 @@ import it.uniba.dib.sms22231.service.ThesisService;
 
 public class ApplicationDetailActivity extends AppCompatActivity {
 
-    private String id;
+    private final ThesisService thesisService = ThesisService.getInstance();
+    private final ApplicationService applicationService = ApplicationService.getInstance();
+    private final RequirementService requirementService = RequirementService.getInstance();
     private TextView txtTitle;
     private TextView txtDescription;
     private TextView txtOwner;
     private ListView reqListview;
-    private TextView txtNoRequirement;
-    private final ThesisService thesisService = ThesisService.getInstance();
-    private final ApplicationService applicationService = ApplicationService.getInstance();
-    private Application application;
-    private final RequirementService requirementService = RequirementService.getInstance();
+    private String id;
     private List<Requirement> teacherRequirements;
     private List<Requirement> studentRequirements;
 
@@ -55,15 +54,14 @@ public class ApplicationDetailActivity extends AppCompatActivity {
 
     }
 
+    //riempimento dei campi dell'activity
     private void fillActivity() {
         txtTitle = findViewById(R.id.titleAppText);
         txtDescription = findViewById(R.id.descriptionAppText);
         txtOwner = findViewById(R.id.ownerAppText);
         reqListview = findViewById(R.id.reqAppList);
-        txtNoRequirement = findViewById(R.id.textNoReq);
 
         applicationService.getApplicationById(id).subscribe(application -> {
-            this.application = application;
             studentRequirements = application.requirements;
 
             thesisService.getThesisById(application.thesisId, thesis -> {
@@ -81,13 +79,13 @@ public class ApplicationDetailActivity extends AppCompatActivity {
                     int studentAverage = 0;
 
                     for (Requirement r : teacherRequirements){
-                        if (r.description.equals(getString(R.string.average))){
+                        if (r.description == RequirementTypes.average){
                             teacherAverage = Integer.parseInt(r.value);
                             averageControl = true;
                         }
                     }
                     for (Requirement r : studentRequirements){
-                        if (r.description.equals(getString(R.string.average)) ){
+                        if (r.description == RequirementTypes.average){
                             studentAverage = Integer.parseInt(r.value);
                         }
                     }
@@ -101,15 +99,15 @@ public class ApplicationDetailActivity extends AppCompatActivity {
 
                     for (Requirement teacherReq : teacherRequirements){
                         givenExam = false;
-                        if (teacherReq.description.equals(getString(R.string.exam))){
+                        if (teacherReq.description == RequirementTypes.exam){
                             for (Requirement studentReq : studentRequirements){
-                                if (studentReq.description.equals(getString(R.string.exam))){
+                                if (studentReq.description == RequirementTypes.exam){
                                     if (teacherReq.id.equals(studentReq.id)) {
                                         givenExam = true;
                                     }
                                 }
                             }
-                            String examText = teacherReq.description + ": " + teacherReq.value;
+                            String examText = getResources().getStringArray(R.array.requirements)[teacherReq.description.ordinal()] + ": " + teacherReq.value;
                             ListData exam = new ListData(givenExam ? R.drawable.check : R.drawable.clear, examText);
                             listDataArrayList.add(exam);
                         }
