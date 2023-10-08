@@ -125,19 +125,23 @@ public class ApplicationDetailActivity extends AppCompatActivity {
         });
     }
 
+    //rifiuto della richiesta di tesi
     public void rejectApplication(View view){
         ApplicationStatus newStatus = ApplicationStatus.rejected;
         setStatus(newStatus);
     }
 
+    //modifica dello stato della tesi
     private void setStatus(ApplicationStatus newStatus) {
         applicationService.setNewApplicationStatus(application.id, newStatus, success -> {
             if (success){
                 Toast.makeText(this,R.string.success,Toast.LENGTH_SHORT).show();
             }
+            finish();
         });
     }
 
+    //accetazione della richiesta di tesi
     public void acceptApplication(View view){
         ApplicationStatus newStatus = ApplicationStatus.approved;
         setStatus(newStatus);
