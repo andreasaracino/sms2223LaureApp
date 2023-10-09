@@ -17,6 +17,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.SearchView;
+import android.widget.Spinner;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
@@ -83,16 +84,16 @@ public class AvailableFragment extends Fragment implements RecyclerViewInterface
         searchThesisLayout.setVisibility(View.GONE);
         searchAverageLayout.setVisibility(View.VISIBLE);
         isOpen = true;
-        EditText editFrom = view.findViewById(R.id.editFrom);
-        EditText editTo = view.findViewById(R.id.editTo);
+        Spinner spinnerFrom = view.findViewById(R.id.spinnerFrom);
+        Spinner spinnerTo = view.findViewById(R.id.spinnerTo);
         Button filter = view.findViewById(R.id.filterButton);
         Button close2 = view.findViewById(R.id.closebutton2);
 
         filter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Integer min = Integer.parseInt(editFrom.getText().toString());
-                Integer max = Integer.parseInt(editTo.getText().toString());
+                Integer min = Integer.parseInt(spinnerFrom.getSelectedItem().toString());
+                Integer max = Integer.parseInt(spinnerTo.getSelectedItem().toString());
                 filteredList = new ArrayList<>();
                 for (CardData c : cardData){
                     Integer reqAverage = (Integer) c.getData();
@@ -110,8 +111,7 @@ public class AvailableFragment extends Fragment implements RecyclerViewInterface
             public void onClick(View view) {
                 searchAverageLayout.setVisibility(View.GONE);
                 isOpen =false;
-                editFrom.setText("");
-                editTo.setText("");
+
             }
         });
     }
