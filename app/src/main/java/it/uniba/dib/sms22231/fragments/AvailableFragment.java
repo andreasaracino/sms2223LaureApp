@@ -13,6 +13,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.SearchView;
 
@@ -36,6 +38,7 @@ public class AvailableFragment extends Fragment implements RecyclerViewInterface
     private boolean paused;
     private BottomNavigationView bottomNavigationView;
     private LinearLayout searchThesisLayout;
+    private LinearLayout searchAverageLayout;
     private RecyclerAdapter recad;
 
     @Override
@@ -60,22 +63,66 @@ public class AvailableFragment extends Fragment implements RecyclerViewInterface
                 if (item.getItemId() == R.id.searchThesis){
                     caller = 1;
                     searchThesis(caller);
-                }
-                if (item.getItemId() == R.id.searchTeacher){
+                } else if (item.getItemId() == R.id.searchTeacher){
                     caller = 2;
                     searchThesis(caller);
+                } else if (item.getItemId() == R.id.filter){
+                    filterThesis();
                 }
                 return true;
             }
         });
     }
 
+    private void filterThesis() {
+        searchAverageLayout = view.findViewById(R.id.searchAverageLayout);
+        searchAverageLayout.setVisibility(View.VISIBLE);
+        EditText editFrom = view.findViewById(R.id.editFrom);
+        EditText editTo = view.findViewById(R.id.editTo);
+        Button filter = view.findViewById(R.id.filterButton);
+        Button close2 = view.findViewById(R.id.closebutton2);
+
+        filter.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Integer min = Integer.parseInt(editFrom.getText().toString());
+                Integer max = Integer.parseInt(editTo.getText().toString());
+                ArrayList<CardData> filteredList = new ArrayList<>();
+                for (CardData c : cardData){
+                    Integer reqAverage = (Integer) c.getData();
+                    if (reqAverage >= min && reqAverage <= max) {
+                        filteredList.add(c);
+                    }
+                    }
+                recad.filterList(filteredList);
+                }
+
+        });
+
+        close2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                searchAverageLayout.setVisibility(View.GONE);
+                editFrom.setText("");
+                editTo.setText("");
+            }
+        });
+    }
+
+
+
     private void searchThesis(int caller) {
         searchThesisLayout = view.findViewById(R.id.searchThesisLayout);
         searchThesisLayout.setVisibility(View.VISIBLE);
-
         SearchView searchView = view.findViewById(R.id.searchViewThesis);
         searchView.setQuery("",false);
+        searchView.setIconifiedByDefault(false);
+        searchView.requestFocus();
+        if (caller == 1) {
+            searchView.setQueryHint(getString(R.string.insTitle));
+        } else if (caller == 2) {
+            searchView.setQueryHint(getString(R.string.insTeacher));;
+        }
 
         Button close = view.findViewById(R.id.closebutton);
         close.setOnClickListener(new View.OnClickListener() {
