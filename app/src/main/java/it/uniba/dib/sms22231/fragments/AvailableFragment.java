@@ -34,18 +34,23 @@ import it.uniba.dib.sms22231.utility.RecyclerViewInterface;
 public class AvailableFragment extends Fragment implements RecyclerViewInterface {
     private final ThesisService thesisService = ThesisService.getInstance();
     private ArrayList<CardData> cardData;
+    private ArrayList<CardData> filteredList;
     private View view;
     private boolean paused;
     private BottomNavigationView bottomNavigationView;
     private LinearLayout searchThesisLayout;
     private LinearLayout searchAverageLayout;
     private RecyclerAdapter recad;
+    private boolean isOpen = false;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
         view = inflater.inflate(R.layout.fragment_available, container, false);
+
+        searchThesisLayout = view.findViewById(R.id.searchThesisLayout);
+        searchAverageLayout = view.findViewById(R.id.searchAverageLayout);
 
         getTheses();
 
@@ -75,8 +80,9 @@ public class AvailableFragment extends Fragment implements RecyclerViewInterface
     }
 
     private void filterThesis() {
-        searchAverageLayout = view.findViewById(R.id.searchAverageLayout);
+        searchThesisLayout.setVisibility(View.GONE);
         searchAverageLayout.setVisibility(View.VISIBLE);
+        isOpen = true;
         EditText editFrom = view.findViewById(R.id.editFrom);
         EditText editTo = view.findViewById(R.id.editTo);
         Button filter = view.findViewById(R.id.filterButton);
@@ -87,7 +93,7 @@ public class AvailableFragment extends Fragment implements RecyclerViewInterface
             public void onClick(View view) {
                 Integer min = Integer.parseInt(editFrom.getText().toString());
                 Integer max = Integer.parseInt(editTo.getText().toString());
-                ArrayList<CardData> filteredList = new ArrayList<>();
+                filteredList = new ArrayList<>();
                 for (CardData c : cardData){
                     Integer reqAverage = (Integer) c.getData();
                     if (reqAverage >= min && reqAverage <= max) {
@@ -103,6 +109,7 @@ public class AvailableFragment extends Fragment implements RecyclerViewInterface
             @Override
             public void onClick(View view) {
                 searchAverageLayout.setVisibility(View.GONE);
+                isOpen =false;
                 editFrom.setText("");
                 editTo.setText("");
             }
@@ -112,8 +119,9 @@ public class AvailableFragment extends Fragment implements RecyclerViewInterface
 
 
     private void searchThesis(int caller) {
-        searchThesisLayout = view.findViewById(R.id.searchThesisLayout);
+        searchAverageLayout.setVisibility(View.GONE);
         searchThesisLayout.setVisibility(View.VISIBLE);
+        isOpen = true;
         SearchView searchView = view.findViewById(R.id.searchViewThesis);
         searchView.setQuery("",false);
         searchView.setIconifiedByDefault(false);
@@ -129,6 +137,7 @@ public class AvailableFragment extends Fragment implements RecyclerViewInterface
             @Override
             public void onClick(View view) {
                 searchView.setQuery("",false);
+                isOpen = false;
                 searchThesisLayout.setVisibility(View.GONE);
             }
         });
@@ -152,7 +161,7 @@ public class AvailableFragment extends Fragment implements RecyclerViewInterface
     }
 
     private void filterTeacher(String s) {
-        ArrayList<CardData> filteredList = new ArrayList<>();
+        filteredList = new ArrayList<>();
         for (CardData c : cardData){
             if (c.getSubtitle().toLowerCase().contains(s.toLowerCase())){
                 filteredList.add(c);
@@ -162,7 +171,7 @@ public class AvailableFragment extends Fragment implements RecyclerViewInterface
     }
 
     private void filterTitle(String s) {
-        ArrayList<CardData> filteredList = new ArrayList<>();
+        filteredList = new ArrayList<>();
         for (CardData c : cardData){
             if (c.getTitle().toLowerCase().contains(s.toLowerCase())){
                 filteredList.add(c);
@@ -191,7 +200,12 @@ public class AvailableFragment extends Fragment implements RecyclerViewInterface
     @Override
     public void onItemClick(int position) {
         Intent intent = new Intent(getContext(), DetailActivity.class);
-        String id = cardData.get(position).getId();
+        String id;
+        if (isOpen){
+            id = filteredList.get(position).getId();
+        }else {
+            id = cardData.get(position).getId();
+        }
         intent.putExtra("id",id);
         intent.putExtra("caller", 1);
         startActivity(intent);
