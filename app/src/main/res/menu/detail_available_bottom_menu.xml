@@ -3,31 +3,31 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/chat"
-        android:icon="@drawable/baseline_chat_bubble_outline_24"
+        android:icon="@drawable/chat_bubble"
         android:title="@string/chat"
         android:tooltipText="@string/chat"
         app:showAsAction="always|withText" />
     <item
         android:id="@+id/qr"
-        android:icon="@drawable/baseline_qr_code_24"
+        android:icon="@drawable/qr_code"
         android:title="@string/qr"
         android:tooltipText="@string/qr"
         app:showAsAction="always|withText" />
     <item
         android:id="@+id/share"
-        android:icon="@drawable/outline_share_24"
+        android:icon="@drawable/share"
         android:title="@string/share"
         android:tooltipText="@string/share"
         app:showAsAction="always|withText" />
     <item
         android:id="@+id/favorite"
-        android:icon="@drawable/outline_favorite_border_24"
+        android:icon="@drawable/favorite_empty"
         android:title="@string/favorite"
         android:tooltipText="@string/favorite"
         app:showAsAction="always|withText" />
     <item
         android:id="@+id/req"
-        android:icon="@drawable/outline_file_open_24"
+        android:icon="@drawable/do_request"
         android:title="@string/reqThesis"
         android:tooltipText="@string/reqThesis"
         app:showAsAction="always|withText" />

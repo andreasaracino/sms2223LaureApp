@@ -48,7 +48,7 @@ public class MyThesisActivity extends AppCompatActivity {
             switch (position){
                 case 0:
                     tab.setText(getString(R.string.my_thesis));
-                    tab.setIcon(R.drawable.miatesi);
+                    tab.setIcon(R.drawable.my_thesis);
                     break;
                 case 1:
                     tab.setText(getString(R.string.Task));
@@ -56,7 +56,7 @@ public class MyThesisActivity extends AppCompatActivity {
                     break;
                 case 2:
                     tab.setText(R.string.meeting);
-                    tab.setIcon(R.drawable.meet);
+                    tab.setIcon(R.drawable.meeting);
             }
         }).attach();
     }

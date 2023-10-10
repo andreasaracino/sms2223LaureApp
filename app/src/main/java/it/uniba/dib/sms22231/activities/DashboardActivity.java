@@ -5,7 +5,6 @@ import static android.content.ContentValues.TAG;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -57,12 +56,12 @@ public class DashboardActivity extends AppCompatActivity {
         }
         switch (user.userType) {
             case STUDENT:
-                setDash(dash1, R.drawable.eletesi, R.string.all_theses);
-                setDash(dash2, R.drawable.miatesi, R.string.my_thesis);
+                setDash(dash1, R.drawable.all_theses, R.string.all_theses);
+                setDash(dash2, R.drawable.my_thesis, R.string.my_thesis);
                 break;
             case TEACHER:
-                setDash(dash1, R.drawable.mietesi, R.string.my_theses);
-                setDash(dash2, R.drawable.geststud, R.string.my_students);
+                setDash(dash1, R.drawable.mt_theses, R.string.my_theses);
+                setDash(dash2, R.drawable.my_students, R.string.my_students);
         }
     }
 

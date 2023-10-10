@@ -235,7 +235,7 @@ public class AddModifyThesisActivity extends AppCompatActivity {
                     customListData.setImageId(R.drawable.image);
                     break;
                 case video:
-                    customListData.setImageId(R.drawable.outline_video_file_24);
+                    customListData.setImageId(R.drawable.video);
                     break;
                 case archive:
                     customListData.setImageId(R.drawable.zip);

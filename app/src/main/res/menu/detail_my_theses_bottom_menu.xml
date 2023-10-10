@@ -3,14 +3,14 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:id="@+id/modify"
-        android:icon="@drawable/baseline_edit_note_24"
+        android:icon="@drawable/modify"
         android:title="@string/modify"
         android:tooltipText="@string/modify"
         app:showAsAction="always" />
 
     <item
         android:id="@+id/deleteThesis"
-        android:icon="@drawable/outline_delete_24"
+        android:icon="@drawable/delete"
         android:title="@string/deleteThesis"
         android:tooltipText="@string/deleteThesis"
         app:showAsAction="always" />
