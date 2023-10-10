@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AnimationUtils;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -44,6 +45,9 @@ public class RecyclerAdapter<T> extends RecyclerView.Adapter<RecyclerAdapter.Vie
         if (cardData.get(position).getRank() != null){
             holder.rankText.setText(cardData.get(position).getRank());
             holder.rankText.setVisibility(View.VISIBLE);
+        }
+        if (cardData.get(position).getRank() == null) {
+            holder.itemView.setAnimation(AnimationUtils.loadAnimation(holder.itemView.getContext(), R.anim.recycler_item_animaton));
         }
     }
 

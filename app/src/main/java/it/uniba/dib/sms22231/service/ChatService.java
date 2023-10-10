@@ -131,7 +131,7 @@ public class ChatService {
                         chats.add(chat);
 
                         if (chats.size() == chatsRaw.size()) {
-                            next.apply(chats.stream().filter(c -> c.lastMessage != null).sorted(Comparator.comparing(a -> a.lastMessage.dateSent)).collect(Collectors.toList()));
+                            next.apply(chats.stream().filter(c -> c.lastMessage != null).sorted(Comparator.comparing(a -> a.lastMessage.dateSent, Comparator.reverseOrder())).collect(Collectors.toList()));
                         }
                     });
                 });

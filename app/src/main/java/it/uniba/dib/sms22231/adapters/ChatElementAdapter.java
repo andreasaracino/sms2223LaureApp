@@ -9,14 +9,11 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import it.uniba.dib.sms22231.R;
-import it.uniba.dib.sms22231.model.CardData;
 import it.uniba.dib.sms22231.model.Chat;
 import it.uniba.dib.sms22231.utility.RecyclerViewInterface;
 import it.uniba.dib.sms22231.utility.TimeUtils;
@@ -24,10 +21,12 @@ import it.uniba.dib.sms22231.utility.TimeUtils;
 public class ChatElementAdapter extends RecyclerView.Adapter<ChatElementAdapter.ViewHolder> {
     private final Context context;
     private final List<Chat> chatList;
+    RecyclerViewInterface recyclerViewInterface;
 
-    public ChatElementAdapter(List<Chat> chatList, Context context) {
+    public ChatElementAdapter(List<Chat> chatList, Context context, RecyclerViewInterface recyclerViewInterface) {
         this.chatList = chatList;
         this.context = context;
+        this.recyclerViewInterface = recyclerViewInterface;
     }
 
     @NonNull
@@ -37,7 +36,7 @@ public class ChatElementAdapter extends RecyclerView.Adapter<ChatElementAdapter.
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.chat_list_element, parent, false);
 
-        return new ChatElementAdapter.ViewHolder(view);
+        return new ChatElementAdapter.ViewHolder(view, recyclerViewInterface);
     }
 
     @Override
@@ -90,7 +89,7 @@ public class ChatElementAdapter extends RecyclerView.Adapter<ChatElementAdapter.
         private final TextView chatUnreadNumber;
         private final TextView chatTimeAgo;
 
-        public ViewHolder(@NonNull View itemView) {
+        public ViewHolder(@NonNull View itemView, RecyclerViewInterface recyclerViewInterface) {
             super(itemView);
 
             chatUserIcon = itemView.findViewById(R.id.chatUserIcon);
@@ -98,6 +97,16 @@ public class ChatElementAdapter extends RecyclerView.Adapter<ChatElementAdapter.
             chatLastMessage = itemView.findViewById(R.id.chatLastMessage);
             chatUnreadNumber = itemView.findViewById(R.id.chatUnreadNumber);
             chatTimeAgo = itemView.findViewById(R.id.chatTimeAgo);
+
+            itemView.setOnClickListener(view -> {
+                if (recyclerViewInterface != null) {
+                    int pos = getAdapterPosition();
+
+                    if (pos != RecyclerView.NO_POSITION) {
+                        recyclerViewInterface.onItemClick(pos);
+                    }
+                }
+            });
         }
     }
 }
