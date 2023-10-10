@@ -16,6 +16,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -254,37 +255,28 @@ public class DetailActivity extends AppCompatActivity {
 
     //inserimento della media dello studente per richiedere la tesi
     private void callAverageDialog(ArrayList<Requirement> studentRequirements) {
-        EditText average = new EditText(this);
+        Spinner averageSpinner = new Spinner(this);
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(R.string.youraverage)
                 .setPositiveButton(R.string.next, null)
                 .setNegativeButton(R.string.cancel, null);
-        average.setHint(R.string.average);
-        LinearLayout parentla = new LinearLayout(this);
-        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.MATCH_PARENT);
-        layoutParams.setMargins(50, 16, 50, 0);
-        average.setLayoutParams(layoutParams);
-        parentla.addView(average);
-        builder.setView(parentla);
+
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.average, android.R.layout.simple_spinner_dropdown_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+averageSpinner.setAdapter(adapter);
+        builder.setView(averageSpinner);
         AlertDialog dialog = builder.create();
         dialog.show();
         dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(view -> {
-            String control = average.getText().toString();
-            if (control.trim().isEmpty()) {
-                average.setError(getText(R.string.error));
-                average.requestFocus();
-            } else {
-                Requirement requirement = new Requirement();
-                requirement.thesisId = thesis.id;
-                requirement.description = RequirementTypes.average;
-                requirement.value = average.getText().toString();
-                requirement.id = averageId;
-                studentRequirements.add(requirement);
-                dialog.dismiss();
-                callConfirmDialog(studentRequirements);
-            }
+
+            Requirement requirement = new Requirement();
+            requirement.thesisId = thesis.id;
+            requirement.description = RequirementTypes.average;
+            requirement.value = averageSpinner.getSelectedItem().toString();
+            requirement.id = averageId;
+            studentRequirements.add(requirement);
+            dialog.dismiss();
+            callConfirmDialog(studentRequirements);
         });
 
     }
