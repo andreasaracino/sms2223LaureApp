@@ -30,12 +30,12 @@ import java.util.Arrays;
 import java.util.List;
 
 import it.uniba.dib.sms22231.R;
-import it.uniba.dib.sms22231.adapters.ListAdapter;
+import it.uniba.dib.sms22231.adapters.CustomListAdapter;
 import it.uniba.dib.sms22231.config.ApplicationStatus;
 import it.uniba.dib.sms22231.config.RequirementTypes;
 import it.uniba.dib.sms22231.model.Application;
 import it.uniba.dib.sms22231.model.Attachment;
-import it.uniba.dib.sms22231.model.ListData;
+import it.uniba.dib.sms22231.model.CustomListData;
 import it.uniba.dib.sms22231.model.Requirement;
 import it.uniba.dib.sms22231.model.Thesis;
 import it.uniba.dib.sms22231.service.ApplicationService;
@@ -383,30 +383,30 @@ public class DetailActivity extends AppCompatActivity {
 
     //riempimento della listview degli attachments con icone
     private void fillAttachmentsList() {
-        ArrayList<ListData> attachmentsListData = new ArrayList<>();
+        ArrayList<CustomListData> attachmentsCustomListData = new ArrayList<>();
         attachments.forEach(attachment -> {
-            ListData listData = new ListData();
-            listData.setText(attachment.getFileName());
+            CustomListData customListData = new CustomListData();
+            customListData.setText(attachment.getFileName());
             switch (attachment.fileType) {
                 case image:
-                    listData.setImageId(R.drawable.image);
+                    customListData.setImageId(R.drawable.image);
                     break;
                 case video:
-                    listData.setImageId(R.drawable.outline_video_file_24);
+                    customListData.setImageId(R.drawable.outline_video_file_24);
                     break;
                 case archive:
-                    listData.setImageId(R.drawable.zip);
+                    customListData.setImageId(R.drawable.zip);
                     break;
                 case generic:
-                    listData.setImageId(R.drawable.file);
+                    customListData.setImageId(R.drawable.file);
                     break;
                 case document:
-                    listData.setImageId(R.drawable.pdf);
+                    customListData.setImageId(R.drawable.pdf);
             }
-            attachmentsListData.add(listData);
+            attachmentsCustomListData.add(customListData);
         });
-        ListAdapter listAdapter = new ListAdapter(this, attachmentsListData);
-        fileListView.setAdapter(listAdapter);
+        CustomListAdapter customListAdapter = new CustomListAdapter(this, attachmentsCustomListData);
+        fileListView.setAdapter(customListAdapter);
         fileListView.setVisibility(View.VISIBLE);
     }
 

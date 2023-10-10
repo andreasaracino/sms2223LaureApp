@@ -16,11 +16,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import it.uniba.dib.sms22231.R;
-import it.uniba.dib.sms22231.adapters.ListAdapter;
+import it.uniba.dib.sms22231.adapters.CustomListAdapter;
 import it.uniba.dib.sms22231.config.ApplicationStatus;
 import it.uniba.dib.sms22231.config.RequirementTypes;
 import it.uniba.dib.sms22231.model.Application;
-import it.uniba.dib.sms22231.model.ListData;
+import it.uniba.dib.sms22231.model.CustomListData;
 import it.uniba.dib.sms22231.model.Requirement;
 import it.uniba.dib.sms22231.service.ApplicationService;
 import it.uniba.dib.sms22231.service.RequirementService;
@@ -77,7 +77,7 @@ public class ApplicationDetailActivity extends AppCompatActivity {
                 requirementService.getRequirementsByThesis(thesis).subscribe(requirements -> {
                     teacherRequirements = requirements;
 
-                    ArrayList<ListData> listDataArrayList = new ArrayList<>();
+                    ArrayList<CustomListData> listDataArrayCustomList = new ArrayList<>();
                     boolean averageControl = false;
                     int teacherAverage = 0;
                     int studentAverage = 0;
@@ -95,8 +95,8 @@ public class ApplicationDetailActivity extends AppCompatActivity {
                     }
                     if (averageControl){
                         String averageText = getString(R.string.average) + ": " + studentAverage + "/" + teacherAverage;
-                        ListData average = new ListData(studentAverage < teacherAverage ? R.drawable.clear : R. drawable.check, averageText);
-                        listDataArrayList.add(average);
+                        CustomListData average = new CustomListData(studentAverage < teacherAverage ? R.drawable.clear : R. drawable.check, averageText);
+                        listDataArrayCustomList.add(average);
                     }
 
                     boolean givenExam;
@@ -112,13 +112,13 @@ public class ApplicationDetailActivity extends AppCompatActivity {
                                 }
                             }
                             String examText = getResources().getStringArray(R.array.requirements)[teacherReq.description.ordinal()] + ": " + teacherReq.value;
-                            ListData exam = new ListData(givenExam ? R.drawable.check : R.drawable.clear, examText);
-                            listDataArrayList.add(exam);
+                            CustomListData exam = new CustomListData(givenExam ? R.drawable.check : R.drawable.clear, examText);
+                            listDataArrayCustomList.add(exam);
                         }
                     }
 
-                    ListAdapter listAdapter = new ListAdapter(this, listDataArrayList);
-                    reqListview.setAdapter(listAdapter);
+                    CustomListAdapter customListAdapter = new CustomListAdapter(this, listDataArrayCustomList);
+                    reqListview.setAdapter(customListAdapter);
                     reqListview.setVisibility(View.VISIBLE);
                 });
             });

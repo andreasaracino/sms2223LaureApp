@@ -1,13 +1,13 @@
 package it.uniba.dib.sms22231.model;
 
-public class ListData {
+public class CustomListData {
     private int imageId;
     private String text;
 
-    public ListData() {
+    public CustomListData() {
     }
 
-    public ListData(int imageId, String text) {
+    public CustomListData(int imageId, String text) {
         this.imageId = imageId;
         this.text = text;
     }
