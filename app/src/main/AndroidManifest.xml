@@ -18,6 +18,9 @@
         android:theme="@style/Theme.Sms2223LaureApp"
         tools:targetApi="31">
         <activity
+            android:name=".activities.ChatListActivity"
+            android:exported="true" />
+        <activity
             android:name=".activities.ApplicationDetailActivity"
             android:exported="false" />
         <activity

@@ -2,6 +2,7 @@ package it.uniba.dib.sms22231.model;
 
 import android.annotation.SuppressLint;
 
+import java.io.Serializable;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -10,7 +11,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
-public class Message {
+public class Message implements Serializable {
     public String id;
     public String chatId;
     public String attachmentId;

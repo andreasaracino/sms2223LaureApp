@@ -72,7 +72,7 @@ public class DashboardActivity extends AppCompatActivity {
         dash.setIconPadding(50);
         dash.setIconGravity(MaterialButton.ICON_GRAVITY_TEXT_TOP);
         dash.setIconResource(iconId);
-
+        dash.setVisibility(View.VISIBLE);
     }
 
     //onClick del primo MaterialButton in base all'utente
@@ -160,5 +160,10 @@ public class DashboardActivity extends AppCompatActivity {
             doLogout(null);
         }
         return true;
+    }
+
+    public void openChat(View view) {
+        Intent intent = new Intent(this, ChatListActivity.class);
+        startActivity(intent);
     }
 }

@@ -1,21 +1,22 @@
 package it.uniba.dib.sms22231.model;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Chat {
+public class Chat implements Serializable {
     public String id;
     public String applicationId;
     public String studentId;
     public String teacherId;
     public Integer unreadMessages;
+    public String userFullName;
+    public Message lastMessage;
 
 
-    public Chat() {
-    }
+    public Chat() {}
 
-    public Chat(String id, String applicationId, String studentId, String teacherId) {
-        this.id = id;
+    public Chat(String applicationId, String studentId, String teacherId) {
         this.applicationId = applicationId;
         this.studentId = studentId;
         this.teacherId = teacherId;
