@@ -37,11 +37,11 @@ public class AvailableFragment extends Fragment implements RecyclerViewInterface
     private ArrayList<CardData> cardData;
     private ArrayList<CardData> filteredList;
     private View view;
-    private boolean paused;
     private BottomNavigationView bottomNavigationView;
     private LinearLayout searchThesisLayout;
     private LinearLayout searchAverageLayout;
     private RecyclerAdapter recad;
+    private boolean paused;
     private boolean isOpen = false;
 
     @Override
@@ -60,19 +60,21 @@ public class AvailableFragment extends Fragment implements RecyclerViewInterface
         return view;
     }
 
+    //creazione della bottomNavigationView e click sugli items del menu
     private void bottomNavBar() {
         bottomNavigationView = view.findViewById(R.id.availableBottom);
         bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
             int caller;
+
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                if (item.getItemId() == R.id.searchThesis){
+                if (item.getItemId() == R.id.searchThesis) {
                     caller = 1;
                     searchThesis(caller);
-                } else if (item.getItemId() == R.id.searchTeacher){
+                } else if (item.getItemId() == R.id.searchTeacher) {
                     caller = 2;
                     searchThesis(caller);
-                } else if (item.getItemId() == R.id.filter){
+                } else if (item.getItemId() == R.id.filter) {
                     filterThesis();
                 }
                 return true;
@@ -80,6 +82,7 @@ public class AvailableFragment extends Fragment implements RecyclerViewInterface
         });
     }
 
+    //filtraggio per media
     private void filterThesis() {
         searchThesisLayout.setVisibility(View.GONE);
         searchAverageLayout.setVisibility(View.VISIBLE);
@@ -89,57 +92,47 @@ public class AvailableFragment extends Fragment implements RecyclerViewInterface
         Button filter = view.findViewById(R.id.filterButton);
         Button close2 = view.findViewById(R.id.closebutton2);
 
-        filter.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Integer min = Integer.parseInt(spinnerFrom.getSelectedItem().toString());
-                Integer max = Integer.parseInt(spinnerTo.getSelectedItem().toString());
-                filteredList = new ArrayList<>();
-                for (CardData c : cardData){
-                    Integer reqAverage = (Integer) c.getData();
-                    if (reqAverage >= min && reqAverage <= max) {
-                        filteredList.add(c);
-                    }
-                    }
-                recad.filterList(filteredList);
+        filter.setOnClickListener(view -> {
+            Integer min = Integer.parseInt(spinnerFrom.getSelectedItem().toString());
+            Integer max = Integer.parseInt(spinnerTo.getSelectedItem().toString());
+            filteredList = new ArrayList<>();
+            for (CardData c : cardData) {
+                Integer reqAverage = (Integer) c.getData();
+                if (reqAverage >= min && reqAverage <= max) {
+                    filteredList.add(c);
                 }
-
+            }
+            recad.filterList(filteredList);
         });
 
-        close2.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                searchAverageLayout.setVisibility(View.GONE);
-                isOpen =false;
+        close2.setOnClickListener(view -> {
+            searchAverageLayout.setVisibility(View.GONE);
+            isOpen = false;
 
-            }
         });
     }
 
-
-
+    //inizializzazione layout e strumenti di ricerca
     private void searchThesis(int caller) {
         searchAverageLayout.setVisibility(View.GONE);
         searchThesisLayout.setVisibility(View.VISIBLE);
         isOpen = true;
         SearchView searchView = view.findViewById(R.id.searchViewThesis);
-        searchView.setQuery("",false);
+        searchView.setQuery("", false);
         searchView.setIconifiedByDefault(false);
         searchView.requestFocus();
         if (caller == 1) {
             searchView.setQueryHint(getString(R.string.insTitle));
         } else if (caller == 2) {
-            searchView.setQueryHint(getString(R.string.insTeacher));;
+            searchView.setQueryHint(getString(R.string.insTeacher));
+            ;
         }
 
         Button close = view.findViewById(R.id.closebutton);
-        close.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                searchView.setQuery("",false);
-                isOpen = false;
-                searchThesisLayout.setVisibility(View.GONE);
-            }
+        close.setOnClickListener(view -> {
+            searchView.setQuery("", false);
+            isOpen = false;
+            searchThesisLayout.setVisibility(View.GONE);
         });
 
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
@@ -147,6 +140,7 @@ public class AvailableFragment extends Fragment implements RecyclerViewInterface
             public boolean onQueryTextSubmit(String s) {
                 return false;
             }
+
             @Override
             public boolean onQueryTextChange(String s) {
                 if (caller == 1) {
@@ -160,20 +154,22 @@ public class AvailableFragment extends Fragment implements RecyclerViewInterface
         });
     }
 
+    //ricerca per professore
     private void filterTeacher(String s) {
         filteredList = new ArrayList<>();
-        for (CardData c : cardData){
-            if (c.getSubtitle().toLowerCase().contains(s.toLowerCase())){
+        for (CardData c : cardData) {
+            if (c.getSubtitle().toLowerCase().contains(s.toLowerCase())) {
                 filteredList.add(c);
             }
         }
         recad.filterList(filteredList);
     }
 
+    //ricerca per titolo tesi
     private void filterTitle(String s) {
         filteredList = new ArrayList<>();
-        for (CardData c : cardData){
-            if (c.getTitle().toLowerCase().contains(s.toLowerCase())){
+        for (CardData c : cardData) {
+            if (c.getTitle().toLowerCase().contains(s.toLowerCase())) {
                 filteredList.add(c);
             }
         }
@@ -201,12 +197,12 @@ public class AvailableFragment extends Fragment implements RecyclerViewInterface
     public void onItemClick(int position) {
         Intent intent = new Intent(getContext(), DetailActivity.class);
         String id;
-        if (isOpen){
+        if (isOpen) {
             id = filteredList.get(position).getId();
-        }else {
+        } else {
             id = cardData.get(position).getId();
         }
-        intent.putExtra("id",id);
+        intent.putExtra("id", id);
         intent.putExtra("caller", 1);
         startActivity(intent);
     }
