@@ -16,8 +16,10 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.OpenableColumns;
+import android.text.InputType;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -64,6 +66,7 @@ public class AddModifyThesisActivity extends AppCompatActivity {
     private final List<Change<Requirement>> changedRequirements = new ArrayList<>();
     private final List<Change<Attachment>> changedAttachments = new ArrayList<>();
     private Boolean isEditing = false;
+    private boolean averageControl = false;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -357,23 +360,41 @@ public class AddModifyThesisActivity extends AppCompatActivity {
                 .setNegativeButton(R.string.cancel, null)
                 .show();
 
+        Spinner reqSpinner = customLayout.findViewById(R.id.reqSpinner);
+        Spinner averageSpinner = customLayout.findViewById(R.id.averageSpinner);
+        EditText editText = customLayout.findViewById(R.id.reqEdit);
+
+        reqSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                //usa uno spinner per la media (la media è in posizione 0)
+                if (reqSpinner.getSelectedItemPosition() == 0){
+                    averageSpinner.setVisibility(View.VISIBLE);
+                    editText.setVisibility(View.GONE);
+                    averageControl = true;
+                } else if (reqSpinner.getSelectedItemPosition() != 0){
+                    averageSpinner.setVisibility(View.GONE);
+                    editText.setVisibility(View.VISIBLE);
+                    averageControl = false;
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+
+
         builder.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(view1 -> {
             Requirement req = null;
-            Spinner spinner = customLayout.findViewById(R.id.reqSpinner);
-            EditText editText = customLayout.findViewById(R.id.reqEdit);
-
             String control = editText.getText().toString();
-
             String item = null;
 
-            if (control.trim().isEmpty()) {
-                editText.setError(getText(R.string.error));
-                editText.requestFocus();
-            } else {
-                int position = spinner.getSelectedItemPosition();
-                req = new Requirement(null, null, RequirementTypes.values()[position], control);
-                item = getResources().getStringArray(R.array.requirements)[position] + ": " + control;
-
+            if (averageControl){
+                String average = averageSpinner.getSelectedItem().toString();
+                req = new Requirement(null, null, RequirementTypes.average, average);
+                item = getResources().getStringArray(R.array.requirements)[0] + ": " + average;
                 if (isEditing) {
                     changedRequirements.add(new Change<>(req, ChangeTypes.added));
                 }
@@ -381,6 +402,23 @@ public class AddModifyThesisActivity extends AppCompatActivity {
                 reqString.add(item);
                 fillRequirementsList(reqString, listViewReq);
                 builder.dismiss();
+            } else {
+                if (control.trim().isEmpty()) {
+                    editText.setError(getText(R.string.error));
+                    editText.requestFocus();
+                } else {
+                    int position = reqSpinner.getSelectedItemPosition();
+                    req = new Requirement(null, null, RequirementTypes.values()[position], control);
+                    item = getResources().getStringArray(R.array.requirements)[position] + ": " + control;
+
+                    if (isEditing) {
+                        changedRequirements.add(new Change<>(req, ChangeTypes.added));
+                    }
+                    currentRequirements.add(req);
+                    reqString.add(item);
+                    fillRequirementsList(reqString, listViewReq);
+                    builder.dismiss();
+                }
             }
         });
     }
