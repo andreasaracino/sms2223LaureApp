@@ -113,12 +113,12 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.ViewHo
             if (message.sent) {
                 textView.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(context, R.color.color_primary)));
                 textView.setTextColor(Color.WHITE);
-                textLayoutParams.setMargins(64, position > 0 && messageList.get(position - 1).sent ? 4 : 32, 0, 0);
+                textLayoutParams.setMargins(128, position > 0 && messageList.get(position - 1).sent ? 4 : 32, 0, 0);
                 textLayoutParams.gravity = Gravity.END;
             } else {
                 textView.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(context, R.color.teal_700)));
                 textView.setTextColor(Color.WHITE);
-                textLayoutParams.setMargins(0, position > 0 && !messageList.get(position - 1).sent ? 4 : 32, 64, 0);
+                textLayoutParams.setMargins(0, position > 0 && !messageList.get(position - 1).sent ? 4 : 32, 128, 0);
                 textLayoutParams.gravity = Gravity.START;
             }
         }

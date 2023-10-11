@@ -78,7 +78,7 @@ public class ChatService {
 
     private Observable<Integer> getUnreadMessages(String chatId) {
         return new Observable<>(next -> {
-            messagesCollection.whereEqualTo("chatId", chatId).whereEqualTo("read", false).count().get(AggregateSource.SERVER).addOnCompleteListener(task -> next.apply((int) task.getResult().getCount()));
+            messagesCollection.whereEqualTo("chatId", chatId).whereEqualTo("read", false).whereNotEqualTo("senderUID", currentUser.uid).count().get(AggregateSource.SERVER).addOnCompleteListener(task -> next.apply((int) task.getResult().getCount()));
         });
     }
 
