@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 
@@ -22,14 +23,16 @@ import it.uniba.dib.sms22231.service.ApplicationService;
 import it.uniba.dib.sms22231.utility.RecyclerViewInterface;
 
 public class RequestsFragment extends Fragment implements RecyclerViewInterface {
-    ApplicationService applicationService = ApplicationService.getInstance();
-    View view;
-    ArrayList<CardData<Application>> cardDataArrayList;
+    private final ApplicationService applicationService = ApplicationService.getInstance();
+    private View view;
+    private ArrayList<CardData<Application>> cardDataArrayList;
+    private TextView noItemText;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_requests, container, false);
+        noItemText = view.findViewById(R.id.noItemText);
 
         getApplications();
 
@@ -49,6 +52,11 @@ public class RequestsFragment extends Fragment implements RecyclerViewInterface 
             LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
             rec.setLayoutManager(linearLayoutManager);
             rec.setAdapter(recad);
+            if (cardDataArrayList.isEmpty()){
+                noItemText.setVisibility(View.VISIBLE);
+            } else {
+                noItemText.setVisibility(View.GONE);
+            }
         });
 
     }

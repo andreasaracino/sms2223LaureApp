@@ -92,4 +92,6 @@
     <string name="to">To:</string>
     <string name="you">You</string>
     <string name="now">Now</string>
+    <string name="maxmin">First value must be lower than second</string>
+    <string name="noThesis">No thesis found</string>
 </resources>

@@ -137,6 +137,7 @@ public class DetailActivity extends AppCompatActivity {
                     txtNoRequirement.setVisibility(View.VISIBLE);
                 } else {
                     fillRequirementList(req, reqListview);
+                    txtNoRequirement.setVisibility(View.GONE);
                 }
             });
             attachmentService.getAttachmentsByThesis(thesis).subscribe(attachments -> {
@@ -151,6 +152,7 @@ public class DetailActivity extends AppCompatActivity {
                     fileListView.setVisibility(View.GONE);
                     txtNoFile.setVisibility(View.VISIBLE);
                 } else {
+                    txtNoFile.setVisibility(View.GONE);
                     fillAttachmentsList();
                 }
             });
@@ -170,23 +172,23 @@ public class DetailActivity extends AppCompatActivity {
         }
         //click sugli item del menu
         bottomNavigationView.setOnItemSelectedListener(item -> {
-             if (item.getItemId() == R.id.req) {
-                 doRequest();
-             } else if (item.getItemId() == R.id.favorite) {
-                 addFavorite();
-             } else if (item.getItemId() == R.id.share) {
-                 sendMessage();
-             } else if (item.getItemId() == R.id.qr) {
-                 generateQr();
-             } else if (item.getItemId() == R.id.chat) {
-                 goToChat();
-             } else if (item.getItemId() == R.id.modify) {
-                 thesisMod();
-             } else if (item.getItemId() == R.id.deleteThesis) {
-                 deleteThesis();
-             }
-             return false;
-         });
+            if (item.getItemId() == R.id.req) {
+                doRequest();
+            } else if (item.getItemId() == R.id.favorite) {
+                addFavorite();
+            } else if (item.getItemId() == R.id.share) {
+                sendMessage();
+            } else if (item.getItemId() == R.id.qr) {
+                generateQr();
+            } else if (item.getItemId() == R.id.chat) {
+                goToChat();
+            } else if (item.getItemId() == R.id.modify) {
+                thesisMod();
+            } else if (item.getItemId() == R.id.deleteThesis) {
+                deleteThesis();
+            }
+            return false;
+        });
     }
 
     //eliminazione della tesi
@@ -264,7 +266,7 @@ public class DetailActivity extends AppCompatActivity {
 
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.average, android.R.layout.simple_spinner_dropdown_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-averageSpinner.setAdapter(adapter);
+        averageSpinner.setAdapter(adapter);
         builder.setView(averageSpinner);
         AlertDialog dialog = builder.create();
         dialog.show();

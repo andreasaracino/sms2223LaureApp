@@ -15,6 +15,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -35,12 +36,14 @@ public class RankingFragment extends Fragment implements RecyclerViewInterface {
     private ArrayList<CardData> cardData;
     private RecyclerView rec;
     private View view;
+    private TextView noItemText;
     private boolean paused;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_ranking, container, false);
+        noItemText = view.findViewById(R.id.noItemText);
 
         initRecyclerView();
         getTheses();
@@ -69,6 +72,11 @@ public class RankingFragment extends Fragment implements RecyclerViewInterface {
             }
             RecyclerAdapter recad = new RecyclerAdapter(cardData, getContext(), this);
             rec.setAdapter(recad);
+            if (cardData.isEmpty()){
+                noItemText.setVisibility(View.VISIBLE);
+            } else {
+                noItemText.setVisibility(View.GONE);
+            }
         });
     }
 

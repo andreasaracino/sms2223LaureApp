@@ -18,6 +18,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.SearchView;
 import android.widget.Spinner;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
@@ -40,6 +42,8 @@ public class AvailableFragment extends Fragment implements RecyclerViewInterface
     private BottomNavigationView bottomNavigationView;
     private LinearLayout searchThesisLayout;
     private LinearLayout searchAverageLayout;
+    private SearchView searchView;
+    private TextView noItemText;
     private RecyclerAdapter recad;
     private boolean paused;
     private boolean isOpen = false;
@@ -52,6 +56,8 @@ public class AvailableFragment extends Fragment implements RecyclerViewInterface
 
         searchThesisLayout = view.findViewById(R.id.searchThesisLayout);
         searchAverageLayout = view.findViewById(R.id.searchAverageLayout);
+        searchView = view.findViewById(R.id.searchViewThesis);
+        noItemText = view.findViewById(R.id.noItemText);
 
         getTheses();
 
@@ -69,9 +75,11 @@ public class AvailableFragment extends Fragment implements RecyclerViewInterface
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 if (item.getItemId() == R.id.searchThesis) {
+                    getTheses();
                     caller = 1;
                     searchThesis(caller);
                 } else if (item.getItemId() == R.id.searchTeacher) {
+                    getTheses();
                     caller = 2;
                     searchThesis(caller);
                 } else if (item.getItemId() == R.id.filter) {
@@ -85,6 +93,7 @@ public class AvailableFragment extends Fragment implements RecyclerViewInterface
     //filtraggio per media
     private void filterThesis() {
         searchThesisLayout.setVisibility(View.GONE);
+        searchView.setQuery("", false);
         searchAverageLayout.setVisibility(View.VISIBLE);
         isOpen = true;
         Spinner spinnerFrom = view.findViewById(R.id.spinnerFrom);
@@ -95,20 +104,31 @@ public class AvailableFragment extends Fragment implements RecyclerViewInterface
         filter.setOnClickListener(view -> {
             Integer min = Integer.parseInt(spinnerFrom.getSelectedItem().toString());
             Integer max = Integer.parseInt(spinnerTo.getSelectedItem().toString());
-            filteredList = new ArrayList<>();
-            for (CardData c : cardData) {
-                Integer reqAverage = (Integer) c.getData();
-                if (reqAverage >= min && reqAverage <= max) {
-                    filteredList.add(c);
+            if (min > max) {
+                Toast.makeText(getContext(), R.string.maxmin, Toast.LENGTH_SHORT).show();
+            } else {
+                filteredList = new ArrayList<>();
+                for (CardData c : cardData) {
+                    Integer reqAverage = (Integer) c.getData();
+                    if (reqAverage >= min && reqAverage <= max) {
+                        filteredList.add(c);
+                    }
                 }
+                recad.filterList(filteredList);
+                if (filteredList.isEmpty()){
+                    noItemText.setVisibility(View.VISIBLE);
+                } else {
+                    noItemText.setVisibility(View.GONE);
+
+                }
+
             }
-            recad.filterList(filteredList);
         });
 
         close2.setOnClickListener(view -> {
             searchAverageLayout.setVisibility(View.GONE);
             isOpen = false;
-
+            getTheses();
         });
     }
 
@@ -117,7 +137,6 @@ public class AvailableFragment extends Fragment implements RecyclerViewInterface
         searchAverageLayout.setVisibility(View.GONE);
         searchThesisLayout.setVisibility(View.VISIBLE);
         isOpen = true;
-        SearchView searchView = view.findViewById(R.id.searchViewThesis);
         searchView.setQuery("", false);
         searchView.setIconifiedByDefault(false);
         searchView.requestFocus();
@@ -125,7 +144,6 @@ public class AvailableFragment extends Fragment implements RecyclerViewInterface
             searchView.setQueryHint(getString(R.string.insTitle));
         } else if (caller == 2) {
             searchView.setQueryHint(getString(R.string.insTeacher));
-            ;
         }
 
         Button close = view.findViewById(R.id.closebutton);
@@ -163,6 +181,12 @@ public class AvailableFragment extends Fragment implements RecyclerViewInterface
             }
         }
         recad.filterList(filteredList);
+
+        if (filteredList.isEmpty()){
+            noItemText.setVisibility(View.VISIBLE);
+        } else {
+            noItemText.setVisibility(View.GONE);
+        }
     }
 
     //ricerca per titolo tesi
@@ -174,6 +198,12 @@ public class AvailableFragment extends Fragment implements RecyclerViewInterface
             }
         }
         recad.filterList(filteredList);
+
+        if (filteredList.isEmpty()){
+            noItemText.setVisibility(View.VISIBLE);
+        } else {
+            noItemText.setVisibility(View.GONE);
+        }
     }
 
     //riempimento della Recycler con tutte le tesi disponibili
@@ -189,6 +219,11 @@ public class AvailableFragment extends Fragment implements RecyclerViewInterface
             LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
             rec.setLayoutManager(linearLayoutManager);
             rec.setAdapter(recad);
+            if (cardData.isEmpty()){
+                noItemText.setVisibility(View.VISIBLE);
+            } else {
+                noItemText.setVisibility(View.GONE);
+            }
         });
     }
 

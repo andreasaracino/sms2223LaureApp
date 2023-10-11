@@ -12,6 +12,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.TextView;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -32,6 +34,7 @@ public class MyThesesActivity extends AppCompatActivity implements RecyclerViewI
     private User user;
     private ArrayList<CardData> cardData;
     private MenuItem menuItem;
+    private TextView noItemText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +44,8 @@ public class MyThesesActivity extends AppCompatActivity implements RecyclerViewI
         ActionBar actionBar = getSupportActionBar();
         actionBar.setTitle(R.string.my_theses);
         actionBar.setDisplayHomeAsUpEnabled(true);
+
+        noItemText = findViewById(R.id.noItemText);
 
         fillCard();
 
@@ -68,6 +73,11 @@ public class MyThesesActivity extends AppCompatActivity implements RecyclerViewI
             LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL,false);
             rec.setLayoutManager(linearLayoutManager);
             rec.setAdapter(recad);
+            if (cardData.isEmpty()){
+                noItemText.setVisibility(View.VISIBLE);
+            } else {
+                noItemText.setVisibility(View.GONE);
+            }
         });
 
         thesisService.getUserOwnTheses();

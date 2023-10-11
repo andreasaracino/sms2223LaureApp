@@ -6,6 +6,20 @@
     android:layout_height="match_parent"
     tools:context=".activities.MyThesesActivity">
 
+    <TextView
+        android:id="@+id/noItemText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="@string/noThesis"
+        android:textAlignment="center"
+        android:textColor="@color/black"
+        android:textSize="16sp"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/thesisRecycler"
         android:layout_width="match_parent"

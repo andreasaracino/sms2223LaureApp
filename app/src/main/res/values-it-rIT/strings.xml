@@ -81,4 +81,6 @@
     <string name="to">A:</string>
     <string name="you">Tu</string>
     <string name="now">Adesso</string>
+    <string name="maxmin">Il primo valore deve essere minore del secondo</string>
+    <string name="noThesis">Nessuna tesi trovata</string>
 </resources>
