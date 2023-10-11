@@ -79,4 +79,6 @@
     <string name="success">Operazione effetuata con successo</string>
     <string name="from">Da:</string>
     <string name="to">A:</string>
+    <string name="you">Tu</string>
+    <string name="now">Adesso</string>
 </resources>

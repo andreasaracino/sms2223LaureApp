@@ -41,6 +41,7 @@ import it.uniba.dib.sms22231.model.Requirement;
 import it.uniba.dib.sms22231.model.Thesis;
 import it.uniba.dib.sms22231.service.ApplicationService;
 import it.uniba.dib.sms22231.service.AttachmentService;
+import it.uniba.dib.sms22231.service.ChatService;
 import it.uniba.dib.sms22231.service.RequirementService;
 import it.uniba.dib.sms22231.service.StudentService;
 import it.uniba.dib.sms22231.service.ThesisService;
@@ -204,11 +205,11 @@ public class DetailActivity extends AppCompatActivity {
 
     //apertura della chat
     private void goToChat() {
-//        Intent intent = new Intent(this, ChatActivity.class);
-//        ChatService.getInstance().getChatByTeacherId(thesis.teacherId).subscribe(chat -> {
-//            intent.putExtra("chat", chat);
-//            startActivity(intent);
-//        });
+        Intent intent = new Intent(this, ChatActivity.class);
+        ChatService.getInstance().getChatByTeacherId(thesis.teacherId).subscribe(chat -> {
+            intent.putExtra("chat", chat);
+            startActivity(intent);
+        });
     }
 
     //aggiunta o rimozione della della tesi dalla classifica dei preferiti

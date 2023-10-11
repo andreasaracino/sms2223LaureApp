@@ -90,5 +90,6 @@
     <string name="success">Updated successfully</string>
     <string name="from">From:</string>
     <string name="to">To:</string>
-
+    <string name="you">You</string>
+    <string name="now">Now</string>
 </resources>

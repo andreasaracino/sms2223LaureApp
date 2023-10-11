@@ -25,4 +25,17 @@
         <item>29</item>
         <item>30</item>
     </string-array>
+
+    <string-array name="chat_icon_colors">
+        <item>#ffcdd2</item>
+        <item>#d1c4e9</item>
+        <item>#bbdefb</item>
+        <item>#b2dfdb</item>
+        <item>#dcedc8</item>
+        <item>#fff9c4</item>
+        <item>#ffccbc</item>
+        <item>#b3e5fc</item>
+        <item>#d7ccc8</item>
+        <item>#c8e6c9</item>
+    </string-array>
 </resources>
