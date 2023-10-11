@@ -129,12 +129,11 @@ public class ApplicationDetailActivity extends AppCompatActivity {
     public void rejectApplication(View view){
         ApplicationStatus newStatus = ApplicationStatus.rejected;
         setStatus(newStatus);
-        sendMessage(newStatus);
     }
 
     //modifica dello stato della tesi
     private void setStatus(ApplicationStatus newStatus) {
-        applicationService.setNewApplicationStatus(application.id, newStatus, success -> {
+        applicationService.setNewApplicationStatus(this, application, newStatus, success -> {
             if (success){
                 Toast.makeText(this,R.string.success,Toast.LENGTH_SHORT).show();
             }
@@ -146,12 +145,6 @@ public class ApplicationDetailActivity extends AppCompatActivity {
     public void acceptApplication(View view){
         ApplicationStatus newStatus = ApplicationStatus.approved;
         setStatus(newStatus);
-        sendMessage(newStatus);
-    }
-
-    //invia un messaggio alla chat dello studente per comunicare accettazione o rifiuto della tesi
-    private void sendMessage(ApplicationStatus newStatus) {
-        //TODO
     }
 
     @Override

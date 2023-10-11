@@ -1,7 +1,9 @@
 package it.uniba.dib.sms22231.adapters;
 
 import android.content.Context;
+import android.content.res.ColorStateList;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,7 +15,11 @@ import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.List;
+import java.util.Locale;
 
 import it.uniba.dib.sms22231.R;
 import it.uniba.dib.sms22231.model.Message;
@@ -87,19 +93,79 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.ViewHo
 
         LinearLayout.LayoutParams textLayoutParams = (LinearLayout.LayoutParams) textView.getLayoutParams();
 
-        if (message.sent) {
-            textView.setBackgroundColor(ContextCompat.getColor(context, R.color.indigo_500));
-            textView.setTextColor(Color.WHITE);
-            textLayoutParams.setMargins(64, position > 0 && messageList.get(position - 1).sent ? 8 : 64, 0, 0);
-            textLayoutParams.gravity = Gravity.END;
+        textView.setBackground(getBgDrawable(message, position));
+
+        if (message.senderUID == null) {
+            String currentLang = Locale.getDefault().getLanguage();
+            try {
+                JSONObject jsonObject = new JSONObject(message.text);
+                if (!jsonObject.has(currentLang)) {
+                    currentLang = "en";
+                }
+
+                textView.setText(jsonObject.getString(currentLang));
+                textView.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(context, R.color.indigo_100)));
+                textView.setTextColor(Color.BLACK);
+                textLayoutParams.setMargins(64, 64, 64, 0);
+                textLayoutParams.gravity = Gravity.CENTER_HORIZONTAL;
+            } catch (JSONException e) {}
         } else {
-            textView.setBackgroundColor(Color.LTGRAY);
-            textView.setTextColor(Color.BLACK);
-            textLayoutParams.setMargins(0, position > 0 && !messageList.get(position - 1).sent ? 8 : 64, 64, 0);
-            textLayoutParams.gravity = Gravity.START;
+            if (message.sent) {
+                textView.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(context, R.color.color_primary)));
+                textView.setTextColor(Color.WHITE);
+                textLayoutParams.setMargins(64, position > 0 && messageList.get(position - 1).sent ? 4 : 32, 0, 0);
+                textLayoutParams.gravity = Gravity.END;
+            } else {
+                textView.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(context, R.color.teal_700)));
+                textView.setTextColor(Color.WHITE);
+                textLayoutParams.setMargins(0, position > 0 && !messageList.get(position - 1).sent ? 4 : 32, 64, 0);
+                textLayoutParams.gravity = Gravity.START;
+            }
         }
 
         textView.setLayoutParams(textLayoutParams);
+    }
+
+    private Drawable getBgDrawable(Message message, int position) {
+        int resId;
+
+        if (messageList.size() == 1 || message.senderUID == null) {
+            resId = R.drawable.message_all_round;
+        } else if (position == 0) {
+            if (message.sent && messageList.get(position + 1).sent) {
+                resId = R.drawable.message_top_round_s;
+            } else if (!message.sent && !messageList.get(position + 1).sent) {
+                resId = R.drawable.message_top_round;
+            } else {
+                resId = R.drawable.message_all_round;
+            }
+        } else if (position == messageList.size() - 1) {
+            if (message.sent && messageList.get(position - 1).sent) {
+                resId = R.drawable.message_bottom_round_s;
+            } else if (!message.sent && !messageList.get(position - 1).sent) {
+                resId = R.drawable.message_bottom_round;
+            } else {
+                resId = R.drawable.message_all_round;
+            }
+        } else {
+            if (message.sent && messageList.get(position - 1).sent && messageList.get(position + 1).sent) {
+                resId = R.drawable.message_square_s;
+            } else if (!message.sent && !messageList.get(position - 1).sent && !messageList.get(position + 1).sent) {
+                resId = R.drawable.message_square;
+            } else if (message.sent && messageList.get(position + 1).sent && !messageList.get(position - 1).sent) {
+                resId = R.drawable.message_top_round_s;
+            } else if (!message.sent && !messageList.get(position + 1).sent && messageList.get(position - 1).sent) {
+                resId = R.drawable.message_top_round;
+            } else if (message.sent && !messageList.get(position + 1).sent && messageList.get(position - 1).sent) {
+                resId = R.drawable.message_bottom_round_s;
+            } else if (!message.sent && messageList.get(position + 1).sent && !messageList.get(position - 1).sent) {
+                resId = R.drawable.message_bottom_round;
+            } else {
+                resId = R.drawable.message_all_round;
+            }
+        }
+
+        return context.getDrawable(resId);
     }
 
     // Return the size of your dataset (invoked by the layout manager)

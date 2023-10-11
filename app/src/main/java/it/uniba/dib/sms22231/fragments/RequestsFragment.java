@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import it.uniba.dib.sms22231.R;
 import it.uniba.dib.sms22231.activities.ApplicationDetailActivity;
 import it.uniba.dib.sms22231.adapters.RecyclerAdapter;
+import it.uniba.dib.sms22231.config.ApplicationStatus;
 import it.uniba.dib.sms22231.model.Application;
 import it.uniba.dib.sms22231.model.CardData;
 import it.uniba.dib.sms22231.service.ApplicationService;
@@ -41,7 +42,7 @@ public class RequestsFragment extends Fragment implements RecyclerViewInterface 
 
     //riempimento della RecyclerView con tutte le richieste di tesi
     private void getApplications() {
-        applicationService.getAllApplications().subscribe(applications -> {
+        applicationService.getAllApplicationsByStatus(ApplicationStatus.pending).subscribe(applications -> {
             cardDataArrayList = new ArrayList<>();
             applications.forEach(application -> {
                 CardData<Application> cardData = new CardData<>(application.studentName, application.thesisTitle, application.id, null, application);

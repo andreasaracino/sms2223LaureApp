@@ -4,7 +4,6 @@ import com.google.firebase.firestore.AggregateSource;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.Filter;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -19,9 +18,9 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 import it.uniba.dib.sms22231.config.UserTypes;
+import it.uniba.dib.sms22231.model.Application;
 import it.uniba.dib.sms22231.model.Chat;
 import it.uniba.dib.sms22231.model.Message;
-import it.uniba.dib.sms22231.model.Thesis;
 import it.uniba.dib.sms22231.model.User;
 import it.uniba.dib.sms22231.utility.CallbackFunction;
 import it.uniba.dib.sms22231.utility.Observable;
@@ -139,11 +138,11 @@ public class ChatService {
         });
     }
 
-    public Observable<Chat> getChatByTeacherId(String teacherId) {
+    public Observable<Chat> getChatByStudentIdAndTeacherId(String studentUid, String teacherId) {
         return new Observable<>(next -> {
-            chatsCollection.whereEqualTo("studentId", currentUser.uid).whereEqualTo("teacherId", teacherId).get().addOnCompleteListener(task -> {
+            chatsCollection.whereEqualTo("studentId", studentUid).whereEqualTo("teacherId", teacherId).get().addOnCompleteListener(task -> {
                 if (task.getResult().isEmpty()) {
-                    Chat chat = new Chat(null, currentUser.uid, teacherId);
+                    Chat chat = new Chat(null, studentUid, teacherId);
                     chatsCollection.add(chat).addOnCompleteListener(task1 -> {
                         task1.getResult().get().addOnCompleteListener(task2 -> mapChat(task2.getResult(), next));
                     });
@@ -221,6 +220,19 @@ public class ChatService {
         message.senderUID = currentUser.uid;
 
         messagesCollection.add(message.toMap());
+    }
+
+    public void sendApplicationStatusUpdate(Application application, String text) {
+        getChatByStudentIdAndTeacherId(application.studentUid, currentUser.uid).subscribe(chat -> {
+            Message message = new Message();
+
+            message.text = text;
+            message.chatId = chat.id;
+            message.dateSent = Date.from(Instant.now());
+            message.read = false;
+
+            messagesCollection.add(message.toMap());
+        });
     }
 
     public static ChatService getInstance() {

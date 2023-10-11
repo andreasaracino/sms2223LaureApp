@@ -25,6 +25,8 @@ public class Message implements Serializable {
     public Message() {
     }
 
+
+
     public Message(String id, String chatId, String attachmentId, String text, String senderUID, String taskId, Date dateSent, Boolean read, Boolean sent) {
         this.id = id;
         this.chatId = chatId;

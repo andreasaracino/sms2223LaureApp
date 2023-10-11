@@ -1,5 +1,6 @@
 package it.uniba.dib.sms22231.service;
 
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -20,6 +21,7 @@ public class StudentService {
 
     private FirebaseFirestore db;
     private UserService userService;
+    private CollectionReference studentsCollection;
     private DocumentReference studentDocument;
     private Map<String, Object> studentRawData;
     private Student studentData;
@@ -40,7 +42,8 @@ public class StudentService {
     }
 
     private void getStudentByUid(String uid) {
-        studentDocument = db.collection(COLLECTION_NAME).document(uid);
+        studentsCollection = db.collection(COLLECTION_NAME);
+        studentDocument = studentsCollection.document(uid);
         updateStudent();
     }
 
@@ -82,6 +85,10 @@ public class StudentService {
         });
 
         return studentObservable;
+    }
+
+    public void saveNewCurrentApplicationId(String studentUid, String applicationId) {
+        studentsCollection.document(studentUid).update("currentApplicationId", applicationId);
     }
 
     public boolean isThesisFavorite(Thesis thesis) {

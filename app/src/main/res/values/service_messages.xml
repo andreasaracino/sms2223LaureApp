@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="applicationRejected_en" translatable="false">The application for thesis \"%1$s\" has been REJECTED by Prof. %2$s</string>
+    <string name="applicationRejected_it" translatable="false">La richiesta per la tesi \"%1$s\" è stata RIFIUTATA dal Prof. %2$s</string>
+    <string name="applicationApproved_en" translatable="false">The application for thesis \"%1$s\" has been APPROVED by Prof. %2$s</string>
+    <string name="applicationApproved_it" translatable="false">La richiesta per la tesi \"%1$s\" è stata APPROVATA dal Prof. %2$s</string>
+</resources>

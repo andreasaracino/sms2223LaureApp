@@ -1,9 +1,14 @@
 package it.uniba.dib.sms22231.service;
 
+import android.content.Context;
+
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,8 +17,10 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import it.uniba.dib.sms22231.R;
 import it.uniba.dib.sms22231.config.ApplicationStatus;
 import it.uniba.dib.sms22231.model.Application;
+import it.uniba.dib.sms22231.model.Message;
 import it.uniba.dib.sms22231.model.Thesis;
 import it.uniba.dib.sms22231.utility.CallbackFunction;
 import it.uniba.dib.sms22231.utility.Observable;
@@ -25,13 +32,15 @@ public class ApplicationService {
     private final CollectionReference applicationsCollection;
     private final ThesisService thesisService = ThesisService.getInstance();
     private final UserService userService = UserService.getInstance();
+    private final StudentService studentService = StudentService.getInstance();
+    private final ChatService chatService = ChatService.getInstance();
 
-    public Observable<List<Application>> getAllApplications() {
+    public Observable<List<Application>> getAllApplicationsByStatus(ApplicationStatus applicationStatus) {
         return new Observable<>(next -> {
             thesisService.userOwnTheses.reset();
             thesisService.userOwnTheses.subscribe(theses -> {
                 List<String> thesesIds = theses.stream().map(thesis -> thesis.id).collect(Collectors.toList());
-                applicationsCollection.whereIn("thesisId", thesesIds).get().addOnCompleteListener(task -> {
+                applicationsCollection.whereIn("thesisId", thesesIds).whereEqualTo("status", applicationStatus).get().addOnCompleteListener(task -> {
                     mapApplications(task.getResult(), theses, next);
                 });
             });
@@ -56,8 +65,17 @@ public class ApplicationService {
         });
     }
 
-    public void setNewApplicationStatus(String applicationId, ApplicationStatus status, CallbackFunction<Boolean> callback) {
-        applicationsCollection.document(applicationId).update("status", status).addOnCompleteListener(task -> callback.apply(task.isSuccessful()));
+    public void setNewApplicationStatus(Context context, Application application, ApplicationStatus status, CallbackFunction<Boolean> callback) {
+        applicationsCollection.document(application.id).update("status", status).addOnCompleteListener(task -> {
+            if (status == ApplicationStatus.approved) {
+                studentService.saveNewCurrentApplicationId(application.id, application.studentUid);
+            }
+
+            getApplicationStatusMessage(context, application, status, message -> {
+                chatService.sendApplicationStatusUpdate(application, message);
+            });
+            callback.apply(task.isSuccessful());
+        });
     }
 
     private void mapApplications(QuerySnapshot querySnapshot, List<Thesis> theses, CallbackFunction<List<Application>> callback) {
@@ -111,6 +129,20 @@ public class ApplicationService {
             } else {
                 completed[0] = true;
             }
+        });
+    }
+
+    private void getApplicationStatusMessage(Context context, Application application, ApplicationStatus status, CallbackFunction<String> callback) {
+        int itResId = status == ApplicationStatus.approved ? R.string.applicationApproved_it : R.string.applicationRejected_it;
+        int enResId = status == ApplicationStatus.approved ? R.string.applicationApproved_en : R.string.applicationRejected_en;
+
+        thesisService.getThesisById(application.thesisId, thesis -> {
+            try {
+                JSONObject jsonObject = new JSONObject();
+                jsonObject.put("it", context.getString(itResId, thesis.title, userService.getUserData().fullName));
+                jsonObject.put("en", context.getString(enResId, thesis.title, userService.getUserData().fullName));
+                callback.apply(jsonObject.toString());
+            } catch (JSONException e) {}
         });
     }
 

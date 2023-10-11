@@ -8,6 +8,7 @@ import java.util.Map;
 
 public class Student {
     public String uid;
+    public String currentApplicationId;
     public Map<String, String> savedThesesIds;
 
     public Student() {
@@ -22,6 +23,7 @@ public class Student {
         if (data == null) return;
 
         uid = (String) data.get("uid");
+        currentApplicationId = (String) data.get("currentApplicationId");
 
         try {
             savedThesesIds = (Map<String, String>) data.get("savedThesesIds");
@@ -33,6 +35,7 @@ public class Student {
     public Map<String, Object> toMap() {
         Map<String, Object> map = new HashMap<>();
         map.put("uid", uid);
+        map.put("currentApplicationId", currentApplicationId);
         return map;
     }
 }
