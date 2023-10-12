@@ -16,9 +16,11 @@ import java.util.List;
 import it.uniba.dib.sms22231.R;
 import it.uniba.dib.sms22231.model.Chat;
 import it.uniba.dib.sms22231.utility.RecyclerViewInterface;
+import it.uniba.dib.sms22231.utility.ResUtils;
 import it.uniba.dib.sms22231.utility.TimeUtils;
 
 public class ChatElementAdapter extends RecyclerView.Adapter<ChatElementAdapter.ViewHolder> {
+    private final ResUtils resUtils = ResUtils.getInstance();
     private final Context context;
     private final List<Chat> chatList;
     RecyclerViewInterface recyclerViewInterface;
@@ -52,7 +54,7 @@ public class ChatElementAdapter extends RecyclerView.Adapter<ChatElementAdapter.
         String[] splitName = userName.split(" ");
         String initials = String.valueOf(splitName[0].charAt(0)) + splitName[splitName.length - 1].charAt(0);
 
-        int iconColor = Color.parseColor(context.getResources().getStringArray(R.array.chat_icon_colors)[userName.length() % 10]);
+        int iconColor = resUtils.getColorByNumber(userName.length());
 
         if (chat.lastMessage != null) {
             String lastMessage = "";

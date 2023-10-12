@@ -1,0 +1,27 @@
+package it.uniba.dib.sms22231.utility;
+
+import android.content.Context;
+import android.graphics.Color;
+
+import it.uniba.dib.sms22231.R;
+
+public class ResUtils {
+    private static ResUtils instance;
+    private final Context context;
+
+    private ResUtils(Context context) {
+        this.context = context;
+    }
+
+    public int getColorByNumber(int n) {
+        return Color.parseColor(context.getResources().getStringArray(R.array.chat_icon_colors)[n % 10]);
+    }
+
+    public static void init(Context context) {
+        instance = new ResUtils(context);
+    }
+
+    public static ResUtils getInstance() {
+        return instance;
+    }
+}
