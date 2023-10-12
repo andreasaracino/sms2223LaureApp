@@ -70,12 +70,12 @@ public class RankingFragment extends Fragment implements RecyclerViewInterface {
                 CardData thesis = new CardData(t.title, t.teacherFullname, t.id, String.valueOf(rank) + ".");
                 cardData.add(thesis);
             }
-            RecyclerAdapter recad = new RecyclerAdapter(cardData, getContext(), this);
-            rec.setAdapter(recad);
             if (cardData.isEmpty()){
                 noItemText.setVisibility(View.VISIBLE);
             } else {
                 noItemText.setVisibility(View.GONE);
+                RecyclerAdapter recad = new RecyclerAdapter(cardData, getContext(), this);
+                rec.setAdapter(recad);
             }
         });
     }

@@ -48,15 +48,15 @@ public class InProgressFragment extends Fragment implements RecyclerViewInterfac
                 CardData<Application> cardData = new CardData<>(application.studentName, application.thesisTitle, application.id, null, application);
                 cardDataArrayList.add(cardData);
             });
-            RecyclerView rec = view.findViewById(R.id.accepetdApplicationsRecycler);
-            RecyclerAdapter<Application> recad = new RecyclerAdapter<>(cardDataArrayList, getContext(), this);
-            LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
-            rec.setLayoutManager(linearLayoutManager);
-            rec.setAdapter(recad);
             if (cardDataArrayList.isEmpty()){
                 noItemText.setVisibility(View.VISIBLE);
             } else {
                 noItemText.setVisibility(View.GONE);
+                RecyclerView rec = view.findViewById(R.id.accepetdApplicationsRecycler);
+                RecyclerAdapter<Application> recad = new RecyclerAdapter<>(cardDataArrayList, getContext(), this);
+                LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
+                rec.setLayoutManager(linearLayoutManager);
+                rec.setAdapter(recad);
             }
         });
     }

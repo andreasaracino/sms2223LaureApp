@@ -48,15 +48,15 @@ public class RequestsFragment extends Fragment implements RecyclerViewInterface 
                 CardData<Application> cardData = new CardData<>(application.studentName, application.thesisTitle, application.id, null, application);
                 cardDataArrayList.add(cardData);
             });
-            RecyclerView rec = view.findViewById(R.id.requestsRecycler);
-            RecyclerAdapter<Application> recad = new RecyclerAdapter<>(cardDataArrayList, getContext(), this);
-            LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
-            rec.setLayoutManager(linearLayoutManager);
-            rec.setAdapter(recad);
             if (cardDataArrayList.isEmpty()){
                 noItemText.setVisibility(View.VISIBLE);
             } else {
                 noItemText.setVisibility(View.GONE);
+                RecyclerView rec = view.findViewById(R.id.requestsRecycler);
+                RecyclerAdapter<Application> recad = new RecyclerAdapter<>(cardDataArrayList, getContext(), this);
+                LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
+                rec.setLayoutManager(linearLayoutManager);
+                rec.setAdapter(recad);
             }
         });
 
