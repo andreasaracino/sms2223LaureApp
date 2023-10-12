@@ -94,4 +94,5 @@
     <string name="now">Now</string>
     <string name="maxmin">First value must be lower than second</string>
     <string name="noThesis">No thesis found</string>
+    <string name="thesis">Thesis</string>
 </resources>
