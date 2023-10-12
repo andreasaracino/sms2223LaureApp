@@ -95,4 +95,5 @@
     <string name="maxmin">First value must be lower than second</string>
     <string name="noThesis">No thesis found</string>
     <string name="thesis">Thesis</string>
+    <string name="alreadyApplied">You already have an open application!</string>
 </resources>

@@ -84,4 +84,5 @@
     <string name="maxmin">Il primo valore deve essere minore del secondo</string>
     <string name="noThesis">Nessuna tesi trovata</string>
     <string name="thesis">Tesi</string>
+    <string name="alreadyApplied">Hai già una richiesta aperta!</string>
 </resources>
