@@ -17,10 +17,12 @@ import java.lang.reflect.Method;
 
 import it.uniba.dib.sms22231.R;
 import it.uniba.dib.sms22231.model.User;
+import it.uniba.dib.sms22231.service.StudentService;
 import it.uniba.dib.sms22231.service.UserService;
 
 public class DashboardActivity extends AppCompatActivity {
     private final UserService userService = UserService.getInstance();
+    private final StudentService studentService = StudentService.getInstance();
     private User user;
     private MaterialButton dash1;
     private MaterialButton dash2;
@@ -102,6 +104,7 @@ public class DashboardActivity extends AppCompatActivity {
         switch (user.userType) {
             case STUDENT:
                 intent = new Intent(this, MyThesisActivity.class);
+                intent.putExtra("id", studentService.getStudentData().currentApplicationId);
                 break;
             case TEACHER:
                 intent = new Intent(this, MyStudentsActivity.class);

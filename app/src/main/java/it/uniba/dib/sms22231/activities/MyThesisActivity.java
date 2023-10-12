@@ -49,7 +49,7 @@ public class MyThesisActivity extends AppCompatActivity {
 
         VPAdapter vpAdapter = new VPAdapter(getSupportFragmentManager(), getLifecycle());
         viewPager2.setAdapter(vpAdapter);
-        vpAdapter.addFragment(new MyThesisFragment());
+        vpAdapter.addFragment(new MyThesisFragment(applicationId, caller));
         vpAdapter.addFragment(new TaskFragment());
         vpAdapter.addFragment(new MeetingFragment());
 

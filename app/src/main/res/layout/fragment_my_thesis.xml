@@ -20,7 +20,8 @@
             android:layout_height="wrap_content"
             android:text="@string/noThesis"
             android:textAlignment="center"
-            android:textColor="@color/black" />
+            android:textColor="@color/black"
+            android:visibility="gone" />
 
         <TextView
             android:id="@+id/titleText"
@@ -54,7 +55,8 @@
             android:layout_marginTop="16dp"
             android:text="@string/req"
             android:textColor="#007fff"
-            android:textSize="16sp" />
+            android:textSize="16sp"
+            android:visibility="gone" />
 
         <TextView
             android:id="@+id/textNoReq"
@@ -81,7 +83,8 @@
             android:layout_marginTop="16dp"
             android:text="@string/attach"
             android:textColor="#007fff"
-            android:textSize="16sp" />
+            android:textSize="16sp"
+            android:visibility="gone" />
 
         <TextView
             android:id="@+id/textNoFile"
