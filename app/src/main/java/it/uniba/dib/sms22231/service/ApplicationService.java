@@ -81,6 +81,11 @@ public class ApplicationService {
     private void mapApplications(QuerySnapshot querySnapshot, List<Thesis> theses, CallbackFunction<List<Application>> callback) {
         List<Application> applications = new ArrayList<>();
 
+        if (querySnapshot.isEmpty()) {
+            callback.apply(applications);
+            return;
+        }
+
         for (QueryDocumentSnapshot rawApplication : querySnapshot) {
             mapApplication(theses, rawApplication.getId(), rawApplication.getData(), application -> {
                 applications.add(application);
