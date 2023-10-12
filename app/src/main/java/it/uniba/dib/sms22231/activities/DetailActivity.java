@@ -70,6 +70,7 @@ public class DetailActivity extends AppCompatActivity {
     private Thesis thesis;
     private int caller;
     private boolean averageControl = false;
+    private boolean alreadyApplied;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -104,6 +105,10 @@ public class DetailActivity extends AppCompatActivity {
         fileListView = findViewById(R.id.fileList);
         txtNoRequirement = findViewById(R.id.textNoReq);
         txtNoFile = findViewById(R.id.textNoFile);
+
+        studentService.studentObservable.subscribe(student -> {
+            alreadyApplied = student.currentApplicationId != null;
+        });
 
         thesisService.getThesisById(id, thesis -> {
             this.thesis = thesis;
@@ -246,14 +251,22 @@ public class DetailActivity extends AppCompatActivity {
     private void doRequest() {
 
         ArrayList<Requirement> studentRequirements = new ArrayList<>();
-        if (!examArrayList.isEmpty()) {
+        if (alreadyApplied) {
+            callAlreadyAppliedDialog();
+        } else if (req.isEmpty()) {
+            callConfirmDialog(studentRequirements);
+        } else if (!examArrayList.isEmpty()) {
             callExamDialog(studentRequirements);
         } else if (averageControl) {
             callAverageDialog(studentRequirements);
         }
-        if (req.isEmpty()) {
-            callConfirmDialog(studentRequirements);
-        }
+    }
+
+    private void callAlreadyAppliedDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(R.string.alreadyApplied)
+                .setPositiveButton("OK", null)
+                .show();
     }
 
     //inserimento della media dello studente per richiedere la tesi

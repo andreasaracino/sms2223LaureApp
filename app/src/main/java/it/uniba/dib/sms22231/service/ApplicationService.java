@@ -60,15 +60,16 @@ public class ApplicationService {
     }
 
     public void createApplication(Application application, CallbackFunction<Boolean> callback) {
-        applicationsCollection.document().set(application).addOnCompleteListener(task -> {
+        applicationsCollection.add(application).addOnCompleteListener(task -> {
+            studentService.saveNewCurrentApplicationId(userService.getUserData().uid, task.getResult().getId());
             callback.apply(task.isSuccessful());
         });
     }
 
     public void setNewApplicationStatus(Context context, Application application, ApplicationStatus status, CallbackFunction<Boolean> callback) {
         applicationsCollection.document(application.id).update("status", status).addOnCompleteListener(task -> {
-            if (status == ApplicationStatus.approved) {
-                studentService.saveNewCurrentApplicationId(application.id, application.studentUid);
+            if (status == ApplicationStatus.rejected) {
+                studentService.saveNewCurrentApplicationId(application.studentUid, null);
             }
 
             getApplicationStatusMessage(context, application, status, message -> {
