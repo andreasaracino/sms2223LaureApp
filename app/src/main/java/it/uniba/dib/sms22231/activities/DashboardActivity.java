@@ -60,7 +60,7 @@ public class DashboardActivity extends AppCompatActivity {
                 setDash(dash2, R.drawable.my_thesis, R.string.my_thesis);
                 break;
             case TEACHER:
-                setDash(dash1, R.drawable.mt_theses, R.string.my_theses);
+                setDash(dash1, R.drawable.my_theses, R.string.my_theses);
                 setDash(dash2, R.drawable.my_students, R.string.my_students);
         }
     }
