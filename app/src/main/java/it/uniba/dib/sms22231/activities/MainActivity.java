@@ -9,6 +9,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import it.uniba.dib.sms22231.R;
+import it.uniba.dib.sms22231.utility.ResUtils;
 
 public class MainActivity extends AppCompatActivity {
     Timer timer;
@@ -16,6 +17,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        ResUtils.init(getApplicationContext());
 
         showSplash();
     }
