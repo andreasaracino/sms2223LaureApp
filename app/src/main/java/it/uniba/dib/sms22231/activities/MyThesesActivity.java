@@ -68,15 +68,15 @@ public class MyThesesActivity extends AppCompatActivity implements RecyclerViewI
                 CardData thesis = new CardData(t.title, user.fullName, t.id, null);
                 cardData.add(thesis);
             }
-            RecyclerView rec = findViewById(R.id.thesisRecycler);
-            RecyclerAdapter  recad = new RecyclerAdapter(cardData, this, this);
-            LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL,false);
-            rec.setLayoutManager(linearLayoutManager);
-            rec.setAdapter(recad);
             if (cardData.isEmpty()){
                 noItemText.setVisibility(View.VISIBLE);
             } else {
                 noItemText.setVisibility(View.GONE);
+                RecyclerView rec = findViewById(R.id.thesisRecycler);
+                RecyclerAdapter  recad = new RecyclerAdapter(cardData, this, this);
+                LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL,false);
+                rec.setLayoutManager(linearLayoutManager);
+                rec.setAdapter(recad);
             }
         });
 

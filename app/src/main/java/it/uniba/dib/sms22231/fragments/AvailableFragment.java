@@ -214,15 +214,15 @@ public class AvailableFragment extends Fragment implements RecyclerViewInterface
                 CardData thesis = new CardData(t.title, t.teacherFullname, t.id, null, t.averageRequirement);
                 cardData.add(thesis);
             }
-            RecyclerView rec = view.findViewById(R.id.availableRecycler);
-            recad = new RecyclerAdapter(cardData, getContext(), this);
-            LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
-            rec.setLayoutManager(linearLayoutManager);
-            rec.setAdapter(recad);
             if (cardData.isEmpty()){
                 noItemText.setVisibility(View.VISIBLE);
             } else {
                 noItemText.setVisibility(View.GONE);
+                RecyclerView rec = view.findViewById(R.id.availableRecycler);
+                recad = new RecyclerAdapter(cardData, getContext(), this);
+                LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
+                rec.setLayoutManager(linearLayoutManager);
+                rec.setAdapter(recad);
             }
         });
     }
