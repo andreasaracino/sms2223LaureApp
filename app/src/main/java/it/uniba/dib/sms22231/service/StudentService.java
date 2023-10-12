@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 
+import it.uniba.dib.sms22231.config.UserTypes;
 import it.uniba.dib.sms22231.model.Student;
 import it.uniba.dib.sms22231.model.Thesis;
 import it.uniba.dib.sms22231.model.User;
@@ -35,7 +36,7 @@ public class StudentService {
         db = FirebaseFirestore.getInstance();
         userService = UserService.getInstance();
         userService.userObservable.subscribe((user) -> {
-            if (user != null) {
+            if (user != null && user.userType == UserTypes.STUDENT) {
                 getStudentByUid(user.uid);
             }
         });
@@ -57,6 +58,7 @@ public class StudentService {
             }
 
             studentDocument.update("savedThesesIds", student.savedThesesIds).addOnCompleteListener(task -> {
+                updateStudent();
                 callback.apply(!isFavorite);
                 unsubscribe.apply();
             });
@@ -70,7 +72,7 @@ public class StudentService {
         savedTheses.forEach(thesisId -> {
             thesesIdsMap.put(i.getAndSet(i.get() + 1).toString(), thesisId);
         });
-        studentDocument.update("savedThesesIds", thesesIdsMap);
+        studentDocument.update("savedThesesIds", thesesIdsMap).addOnCompleteListener(task -> updateStudent());
     }
 
     public Observable<Student> updateStudent() {
@@ -88,7 +90,7 @@ public class StudentService {
     }
 
     public void saveNewCurrentApplicationId(String studentUid, String applicationId) {
-        studentsCollection.document(studentUid).update("currentApplicationId", applicationId);
+        studentsCollection.document(studentUid).update("currentApplicationId", applicationId).addOnCompleteListener(task -> updateStudent());
     }
 
     public boolean isThesisFavorite(Thesis thesis) {
@@ -96,7 +98,17 @@ public class StudentService {
     }
 
     public void saveStudent(User user, CallbackFunction<Boolean> callback) {
-        studentDocument.set(new Student(user.uid, new HashMap<>())).addOnCompleteListener(task -> callback.apply(task.isSuccessful()));
+        if (studentDocument == null) {
+            studentDocument = studentsCollection.document(user.uid);
+        }
+
+        studentDocument.get().addOnCompleteListener(task -> {
+            if (!task.getResult().exists()) {
+                studentDocument.set(new Student(user.uid, new HashMap<>())).addOnCompleteListener(task1 -> callback.apply(task1.isSuccessful()));
+            } else {
+                callback.apply(true);
+            }
+        });
     }
 
     public Student getStudentData() {

@@ -1,10 +1,14 @@
 package it.uniba.dib.sms22231.service;
 
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.util.HashMap;
 import java.util.Map;
 
+import it.uniba.dib.sms22231.config.UserTypes;
+import it.uniba.dib.sms22231.model.Student;
 import it.uniba.dib.sms22231.model.Teacher;
 import it.uniba.dib.sms22231.model.User;
 import it.uniba.dib.sms22231.utility.CallbackFunction;
@@ -16,6 +20,7 @@ public class TeacherService {
 
     private FirebaseFirestore db;
     private UserService userService;
+    private CollectionReference teacherCollection;
     private DocumentReference teacherDocument;
     private Map<String, Object> teacherRawData;
     private Teacher teacherData;
@@ -28,8 +33,9 @@ public class TeacherService {
     private void initData() {
         db = FirebaseFirestore.getInstance();
         userService = UserService.getInstance();
+        teacherCollection = db.collection(COLLECTION_NAME);
         userService.userObservable.subscribe((user) -> {
-            if (user != null) {
+            if (user != null && user.userType == UserTypes.TEACHER){
                 getTeacherByUid(user.uid);
             } else {
                 teacherDocument = null;
@@ -38,7 +44,7 @@ public class TeacherService {
     }
 
     public void getTeacherByUid(String uid) {
-        teacherDocument = db.collection(COLLECTION_NAME).document(uid);
+        teacherDocument = teacherCollection.document(uid);
         teacherDocument.get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 teacherRawData = task.getResult().getData();
@@ -49,7 +55,18 @@ public class TeacherService {
     }
 
     public void saveTeacher(User user, CallbackFunction<Boolean> callback) {
-        teacherDocument.set(new Teacher(user.uid)).addOnCompleteListener(task -> callback.apply(task.isSuccessful()));
+
+        if (teacherDocument == null) {
+            teacherDocument = teacherCollection.document(user.uid);
+        }
+
+        teacherDocument.get().addOnCompleteListener(task -> {
+            if (!task.getResult().exists()) {
+                teacherDocument.set(new Teacher(user.uid)).addOnCompleteListener(task1 -> callback.apply(task1.isSuccessful()));
+            } else {
+                callback.apply(true);
+            }
+        });
     }
 
     public static TeacherService getInstance() {
