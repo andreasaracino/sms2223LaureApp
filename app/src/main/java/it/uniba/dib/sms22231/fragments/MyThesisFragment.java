@@ -1,7 +1,11 @@
 package it.uniba.dib.sms22231.fragments;
 
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
@@ -196,7 +200,18 @@ public class MyThesisFragment extends Fragment {
             }
             attachmentsCustomListData.add(customListData);
         });
-        CustomListAdapter customListAdapter = new CustomListAdapter(getContext(), attachmentsCustomListData);
+        CustomListAdapter customListAdapter = new CustomListAdapter(getContext(), attachmentsCustomListData){
+            @NonNull
+            @Override
+            public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+                View view1 = super.getView(position, convertView, parent);
+                TextView textView = view1.findViewById(R.id.listText);
+                textView.setTextColor(Color.BLUE);
+                textView.setPaintFlags(textView.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+                return view1;
+            }
+        };
+
         attachmentsList.setAdapter(customListAdapter);
         attachmentsList.setVisibility(View.VISIBLE);
     }
