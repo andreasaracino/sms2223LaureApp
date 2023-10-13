@@ -1,24 +1,33 @@
 package it.uniba.dib.sms22231.fragments;
 
+import android.app.AlertDialog;
+import android.app.DownloadManager;
+import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import android.os.Environment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.w3c.dom.Text;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.grpc.okhttp.internal.Util;
 import it.uniba.dib.sms22231.R;
 import it.uniba.dib.sms22231.adapters.CustomListAdapter;
 import it.uniba.dib.sms22231.config.RequirementTypes;
@@ -80,8 +89,38 @@ public class MyThesisFragment extends Fragment {
 
 
         fillFragment();
+        onClickAttachmentsList();
 
         return view;
+    }
+
+    private void onClickAttachmentsList() {
+        attachmentsList.setOnItemClickListener((adapterView, view, i, l) -> {
+            AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+            builder.setMessage(getString(R.string.wantDownload))
+                    .setPositiveButton("Ok", null)
+                    .setNegativeButton(getString(R.string.cancel), null);
+            AlertDialog dialog = builder.create();
+            dialog.show();
+            dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(view1 -> {
+                downloadFile(i);
+                dialog.dismiss();
+            });
+        });
+    }
+
+    private void downloadFile(int position) {
+        Uri uri = attachments.get(position).path;
+        DownloadManager.Request request = new DownloadManager.Request(uri);
+        String fileName = attachments.get(position).getFileName();
+        request.setTitle(fileName);
+        request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
+        request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, fileName);
+
+        DownloadManager downloadManager = (DownloadManager) getContext().getSystemService(Context.DOWNLOAD_SERVICE);
+        downloadManager.enqueue(request);
+
+        Toast.makeText(getContext(), getString(R.string.downloading), Toast.LENGTH_SHORT).show();
     }
 
     private void fillFragment() {
@@ -164,7 +203,7 @@ public class MyThesisFragment extends Fragment {
                         for (Attachment attachment : attachments) {
                             fileNames.add(attachment.getFileName());
                         }
-                        if (fileNames.isEmpty()){
+                        if (fileNames.isEmpty()) {
                             noFile.setVisibility(View.VISIBLE);
                         } else {
                             noFile.setVisibility(View.GONE);
@@ -200,7 +239,7 @@ public class MyThesisFragment extends Fragment {
             }
             attachmentsCustomListData.add(customListData);
         });
-        CustomListAdapter customListAdapter = new CustomListAdapter(getContext(), attachmentsCustomListData){
+        CustomListAdapter customListAdapter = new CustomListAdapter(getContext(), attachmentsCustomListData) {
             @NonNull
             @Override
             public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {

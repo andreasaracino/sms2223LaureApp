@@ -85,4 +85,6 @@
     <string name="noThesis">Nessuna tesi trovata</string>
     <string name="thesis">Tesi</string>
     <string name="alreadyApplied">Hai già una richiesta aperta!</string>
+    <string name="wantDownload">Vuoi scaricare questo file?</string>
+    <string name="downloading">Download in corso…</string>
 </resources>

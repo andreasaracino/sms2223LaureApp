@@ -96,4 +96,6 @@
     <string name="noThesis">No thesis found</string>
     <string name="thesis">Thesis</string>
     <string name="alreadyApplied">You already have an open application!</string>
+    <string name="wantDownload">Do you want to download this file?</string>
+    <string name="downloading">Downloading…</string>
 </resources>
