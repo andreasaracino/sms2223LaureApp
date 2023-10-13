@@ -54,7 +54,6 @@ public class MyThesisFragment extends Fragment {
     private List<Requirement> studentRequirements;
     private List<Attachment> attachments;
     private ArrayList<String> fileNames;
-    private TextView noItemText;
     private TextView titleText;
     private TextView ownerText;
     private TextView descriptionText;
@@ -76,7 +75,6 @@ public class MyThesisFragment extends Fragment {
                              Bundle savedInstanceState) {
 
         view = inflater.inflate(R.layout.fragment_my_thesis, container, false);
-        noItemText = view.findViewById(R.id.noThesisText);
         titleText = view.findViewById(R.id.titleText);
         ownerText = view.findViewById(R.id.ownerText);
         descriptionText = view.findViewById(R.id.descriptionText);
@@ -239,19 +237,25 @@ public class MyThesisFragment extends Fragment {
             }
             attachmentsCustomListData.add(customListData);
         });
-        CustomListAdapter customListAdapter = new CustomListAdapter(getContext(), attachmentsCustomListData) {
-            @NonNull
-            @Override
-            public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-                View view1 = super.getView(position, convertView, parent);
-                TextView textView = view1.findViewById(R.id.listText);
-                textView.setTextColor(Color.BLUE);
-                textView.setPaintFlags(textView.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
-                return view1;
-            }
-        };
+        if (attachmentsCustomListData.isEmpty()) {
+            noFile.setVisibility(View.VISIBLE);
+            attachmentsList.setVisibility(View.GONE);
+        } else {
+            noFile.setVisibility(View.GONE);
+            CustomListAdapter customListAdapter = new CustomListAdapter(getContext(), attachmentsCustomListData) {
+                @NonNull
+                @Override
+                public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+                    View view1 = super.getView(position, convertView, parent);
+                    TextView textView = view1.findViewById(R.id.listText);
+                    textView.setTextColor(Color.BLUE);
+                    textView.setPaintFlags(textView.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+                    return view1;
+                }
+            };
 
-        attachmentsList.setAdapter(customListAdapter);
-        attachmentsList.setVisibility(View.VISIBLE);
+            attachmentsList.setAdapter(customListAdapter);
+            attachmentsList.setVisibility(View.VISIBLE);
+        }
     }
 }
