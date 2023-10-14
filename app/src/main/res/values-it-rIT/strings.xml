@@ -88,4 +88,5 @@
     <string name="wantDownload">Vuoi scaricare questo file?</string>
     <string name="downloading">Download in corso…</string>
     <string name="writeMessage">Scrivi un messaggio…</string>
+    <string name="noAccepted">Nessuna richiesta di tesi accettata</string>
 </resources>

@@ -10,19 +10,23 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
 import com.google.android.material.button.MaterialButton;
 
 import java.lang.reflect.Method;
 
 import it.uniba.dib.sms22231.R;
+import it.uniba.dib.sms22231.config.ApplicationStatus;
 import it.uniba.dib.sms22231.model.User;
+import it.uniba.dib.sms22231.service.ApplicationService;
 import it.uniba.dib.sms22231.service.StudentService;
 import it.uniba.dib.sms22231.service.UserService;
 
 public class DashboardActivity extends AppCompatActivity {
     private final UserService userService = UserService.getInstance();
     private final StudentService studentService = StudentService.getInstance();
+    private final ApplicationService applicationService = ApplicationService.getInstance();
     private User user;
     private MaterialButton dash1;
     private MaterialButton dash2;
@@ -97,21 +101,33 @@ public class DashboardActivity extends AppCompatActivity {
 
     //onClick del secondo MaterialButton in base all'utente
     public void dash2OnClick(View view) {
-        Intent intent = null;
+
         if (user.userType == null) {
             return;
         }
         switch (user.userType) {
             case STUDENT:
-                intent = new Intent(this, MyThesisActivity.class);
-                intent.putExtra("id", studentService.getStudentData().currentApplicationId);
+                String applicationId = studentService.getStudentData().currentApplicationId;
+                if (applicationId != null) {
+                    applicationService.getApplicationById(applicationId).subscribe(application -> {
+                        ApplicationStatus status = application.status;
+                        if (status == ApplicationStatus.approved) {
+                            Intent intent = new Intent(this, MyThesisActivity.class);
+                            intent.putExtra("id", applicationId);
+                            startActivity(intent);
+                        } else {
+                            Toast.makeText(this, getString(R.string.noAccepted), Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                } else {
+                    Toast.makeText(this, getString(R.string.noAccepted), Toast.LENGTH_SHORT).show();
+                }
                 break;
             case TEACHER:
-                intent = new Intent(this, MyStudentsActivity.class);
+                Intent intent = new Intent(this, MyStudentsActivity.class);
+                startActivity(intent);
         }
-        if (intent != null) {
-            startActivity(intent);
-        }
+
     }
 
     //click sull'item logout del menu
