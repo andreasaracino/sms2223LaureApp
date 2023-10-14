@@ -21,7 +21,8 @@
             android:layout_width="200dp"
             android:layout_height="200dp"
             android:onClick="dash1OnClick"
-            android:translationX="-20dp" />
+            android:translationX="-20dp"
+            android:visibility="gone" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/dash2"
@@ -29,7 +30,25 @@
             android:layout_width="200dp"
             android:layout_height="200dp"
             android:onClick="dash2OnClick"
-            android:translationX="20dp" />
+            android:translationX="20dp"
+            android:visibility="gone" />
+
     </LinearLayout>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/floatingActionButton2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="24dp"
+        android:layout_marginBottom="24dp"
+        android:layout_weight="1"
+        android:clickable="true"
+        android:onClick="openChat"
+        android:src="@drawable/chat_bubble"
+        android:tint="@color/white"
+        android:tintMode="add"
+        app:backgroundTint="#007fff"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

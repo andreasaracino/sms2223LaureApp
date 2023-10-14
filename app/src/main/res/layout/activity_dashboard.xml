@@ -44,10 +44,11 @@
         android:layout_marginEnd="24dp"
         android:layout_marginBottom="24dp"
         android:clickable="true"
-        android:foreground="@drawable/fab_shape"
         android:onClick="openChat"
         android:src="@drawable/chat_bubble"
-        app:backgroundTint="@color/white"
+        android:tint="@color/white"
+        android:tintMode="add"
+        app:backgroundTint="#007fff"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
