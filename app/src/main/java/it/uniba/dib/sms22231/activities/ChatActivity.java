@@ -80,6 +80,8 @@ public class ChatActivity extends AppCompatActivity {
         List<Message> messageList = new ArrayList<>();
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        layoutManager.setStackFromEnd(true);
+
         MessagesAdapter messagesAdapter = new MessagesAdapter(messageList, this);
         messagesView.setLayoutManager(layoutManager);
         messagesView.setAdapter(messagesAdapter);
@@ -88,6 +90,7 @@ public class ChatActivity extends AppCompatActivity {
             subscription = chatService.getChatMessages(chat.id).subscribe(messages -> {
                 messagesAdapter.setMessages(messages);
                 messagesAdapter.notifyDataSetChanged();
+                messagesView.scrollToPosition(messages.size() - 1);
             });
         });
     }
