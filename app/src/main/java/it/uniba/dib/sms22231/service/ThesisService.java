@@ -44,7 +44,7 @@ public class ThesisService {
     private ThesisService() {}
 
     public Observable<List<Thesis>> getAllTheses() {
-        return new Observable<>((next) -> {
+        return new Observable<>((next, setOnUnsubscribe) -> {
             thesesCollection.orderBy("title", Query.Direction.ASCENDING).get().addOnCompleteListener(task -> {
                 List<DocumentSnapshot> documents = task.getResult().getDocuments();
                 mapThesesResult(documents.stream().collect(Collectors.toMap(documents::indexOf, Function.identity())), next);

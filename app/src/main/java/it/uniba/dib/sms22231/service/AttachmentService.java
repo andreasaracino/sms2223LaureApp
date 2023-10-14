@@ -46,7 +46,7 @@ public class AttachmentService {
     }
 
     public Observable<List<Attachment>> getAttachmentsByThesis(Thesis thesis) {
-        return new Observable<>((next) -> {
+        return new Observable<>((next, setOnUnsubscribe) -> {
             List<String> filesIds = thesis.attachments;
 
             if (filesIds != null && filesIds.size() > 0) {

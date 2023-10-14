@@ -36,7 +36,7 @@ public class ApplicationService {
     private final ChatService chatService = ChatService.getInstance();
 
     public Observable<List<Application>> getAllApplicationsByStatus(ApplicationStatus applicationStatus) {
-        return new Observable<>(next -> {
+        return new Observable<>((next, setOnUnsubscribe) -> {
             thesisService.userOwnTheses.reset();
             thesisService.userOwnTheses.subscribe(theses -> {
                 List<String> thesesIds = theses.stream().map(thesis -> thesis.id).collect(Collectors.toList());
@@ -50,7 +50,7 @@ public class ApplicationService {
     }
 
     public Observable<Application> getApplicationById(String id) {
-        return new Observable<>((next) -> {
+        return new Observable<>((next, setOnUnsubscribe) -> {
             applicationsCollection.document(id).get().addOnCompleteListener(task -> {
                 if (task.isSuccessful()) {
                     mapApplication(task.getResult().getId(), task.getResult().getData(), next);

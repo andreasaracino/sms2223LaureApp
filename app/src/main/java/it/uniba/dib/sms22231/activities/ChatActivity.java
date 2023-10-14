@@ -32,9 +32,11 @@ public class ChatActivity extends AppCompatActivity {
     private final ChatService chatService = ChatService.getInstance();
     private final UserService userService = UserService.getInstance();
     private RecyclerView messagesView;
+    MessagesAdapter messagesAdapter;
     private EditText editText;
     private Chat chat;
     private Observable<List<Message>>.Subscription subscription;
+    private boolean paused;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,16 +84,20 @@ public class ChatActivity extends AppCompatActivity {
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         layoutManager.setStackFromEnd(true);
 
-        MessagesAdapter messagesAdapter = new MessagesAdapter(messageList, this);
+        messagesAdapter = new MessagesAdapter(messageList, this);
         messagesView.setLayoutManager(layoutManager);
         messagesView.setAdapter(messagesAdapter);
 
         userService.userObservable.subscribe(user -> {
-            subscription = chatService.getChatMessages(chat.id).subscribe(messages -> {
-                messagesAdapter.setMessages(messages);
-                messagesAdapter.notifyDataSetChanged();
-                messagesView.scrollToPosition(messages.size() - 1);
-            });
+            subscribeToChat();
+        });
+    }
+
+    private void subscribeToChat() {
+        subscription = chatService.getChatMessages(chat.id).subscribe(messages -> {
+            messagesAdapter.setMessages(messages);
+            messagesAdapter.notifyDataSetChanged();
+            messagesView.scrollToPosition(messages.size() - 1);
         });
     }
 
@@ -110,9 +116,20 @@ public class ChatActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onStop() {
-        super.onStop();
+    protected void onPause() {
+        super.onPause();
 
         subscription.unsubscribe();
+        paused = true;
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        if (paused) {
+            subscribeToChat();
+            paused = false;
+        }
     }
 }

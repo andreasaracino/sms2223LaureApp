@@ -13,12 +13,15 @@ import it.uniba.dib.sms22231.R;
 import it.uniba.dib.sms22231.adapters.ChatElementAdapter;
 import it.uniba.dib.sms22231.model.Chat;
 import it.uniba.dib.sms22231.service.ChatService;
+import it.uniba.dib.sms22231.utility.Observable;
 import it.uniba.dib.sms22231.utility.RecyclerViewInterface;
 
 public class ChatListActivity extends AppCompatActivity implements RecyclerViewInterface {
     private final ChatService chatService = ChatService.getInstance();
     private RecyclerView chatListRecycler;
     private List<Chat> chatList;
+    private Observable.Subscription subscription;
+    private boolean paused;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,7 +34,11 @@ public class ChatListActivity extends AppCompatActivity implements RecyclerViewI
     private void initUi() {
         chatListRecycler = findViewById(R.id.chatListRecycler);
 
-        chatService.getUserChats().subscribe(chats -> {
+        subscribeToChatList();
+    }
+
+    private void subscribeToChatList() {
+        subscription = chatService.getUserChats().subscribe(chats -> {
             LinearLayoutManager layoutManager = new LinearLayoutManager(this);
             ChatElementAdapter chatElementAdapter = new ChatElementAdapter(chats, getApplicationContext(), this);
             chatListRecycler.setLayoutManager(layoutManager);
@@ -45,5 +52,23 @@ public class ChatListActivity extends AppCompatActivity implements RecyclerViewI
         Intent intent = new Intent(this, ChatActivity.class);
         intent.putExtra("chat", chatList.get(position));
         startActivity(intent);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        paused = true;
+        subscription.unsubscribe();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        if (paused) {
+            paused = false;
+            subscribeToChatList();
+        }
     }
 }

@@ -23,7 +23,7 @@ public class RequirementService {
     private final CollectionReference requirementsCollection = db.collection(COLLECTION_NAME);
 
     public Observable<List<Requirement>> getRequirementsByThesis(Thesis thesis) {
-        return new Observable<>((next) -> {
+        return new Observable<>((next, setOnUnsubscribe) -> {
             requirementsCollection.whereEqualTo("thesisId", thesis.id).get().addOnCompleteListener(task -> {
                 List<Requirement> requirements = new ArrayList<>();
                 QuerySnapshot querySnapshot = task.getResult();
