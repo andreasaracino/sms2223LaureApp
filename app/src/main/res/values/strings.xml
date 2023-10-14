@@ -98,4 +98,5 @@
     <string name="alreadyApplied">You already have an open application!</string>
     <string name="wantDownload">Do you want to download this file?</string>
     <string name="downloading">Downloading…</string>
+    <string name="noAccepted">No thesis request accepted</string>
 </resources>
