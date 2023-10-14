@@ -92,6 +92,7 @@ public class MyThesisFragment extends Fragment {
         return view;
     }
 
+    //listener del click sugli elementi della lista dei file per il download
     private void onClickAttachmentsList() {
         attachmentsList.setOnItemClickListener((adapterView, view, i, l) -> {
             AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
@@ -107,6 +108,7 @@ public class MyThesisFragment extends Fragment {
         });
     }
 
+    //download dei file
     private void downloadFile(int position) {
         Uri uri = attachments.get(position).path;
         DownloadManager.Request request = new DownloadManager.Request(uri);
@@ -121,6 +123,7 @@ public class MyThesisFragment extends Fragment {
         Toast.makeText(getContext(), getString(R.string.downloading), Toast.LENGTH_SHORT).show();
     }
 
+    //riempimento dei fragment con il dettaglio della tesi
     private void fillFragment() {
         applicationService.getApplicationById(applicationId).subscribe(application -> {
             this.application = application;
@@ -214,6 +217,7 @@ public class MyThesisFragment extends Fragment {
         });
     }
 
+    //riempimento della lista degli attachments
     private void fillAttachmentsList() {
         ArrayList<CustomListData> attachmentsCustomListData = new ArrayList<>();
         attachments.forEach(attachment -> {
