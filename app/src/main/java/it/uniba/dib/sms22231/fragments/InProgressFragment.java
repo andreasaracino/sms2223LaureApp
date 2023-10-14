@@ -41,6 +41,7 @@ public class InProgressFragment extends Fragment implements RecyclerViewInterfac
         return view;
     }
 
+    //riempimento della recycler con tutte le richieste di tesi accettate
     private void getApplications() {
         applicationService.getAllApplicationsByStatus(ApplicationStatus.approved).subscribe(applications -> {
             cardDataArrayList = new ArrayList<>();
