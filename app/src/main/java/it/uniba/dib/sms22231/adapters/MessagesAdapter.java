@@ -1,7 +1,6 @@
 package it.uniba.dib.sms22231.adapters;
 
 import android.content.Context;
-import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.view.Gravity;
@@ -12,7 +11,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import org.json.JSONException;
@@ -23,8 +21,11 @@ import java.util.Locale;
 
 import it.uniba.dib.sms22231.R;
 import it.uniba.dib.sms22231.model.Message;
+import it.uniba.dib.sms22231.utility.ResUtils;
+import it.uniba.dib.sms22231.utility.TimeUtils;
 
 public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.ViewHolder> {
+    private final ResUtils resUtils = ResUtils.getInstance();
     private List<Message> messageList;
     Context context;
 
@@ -33,23 +34,29 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.ViewHo
      * (custom ViewHolder)
      */
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        private final TextView textView;
-        private final LinearLayout linearLayout;
+        private final TextView messageTextView;
+        private final TextView dateTextView;
+        private final LinearLayout messageContainer;
 
         public ViewHolder(View view) {
             super(view);
             // Define click listener for the ViewHolder's View
 
-            textView = (TextView) view.findViewById(R.id.messageText);
-            linearLayout = (LinearLayout) view.findViewById(R.id.messageItem);
+            messageTextView = (TextView) view.findViewById(R.id.messageText);
+            dateTextView = (TextView) view.findViewById(R.id.dateText);
+            messageContainer = (LinearLayout) view.findViewById(R.id.messageContainer);
         }
 
-        public TextView getTextView() {
-            return textView;
+        public TextView getMessageTextView() {
+            return messageTextView;
         }
 
-        public LinearLayout getLinearLayout() {
-            return linearLayout;
+        public TextView getDateTextView() {
+            return dateTextView;
+        }
+
+        public LinearLayout getMessageContainer() {
+            return messageContainer;
         }
     }
 
@@ -85,16 +92,19 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.ViewHo
 
         // Get element from your dataset at this position and replace the
         // contents of the view with that element
-        TextView textView = viewHolder.getTextView();
+        TextView messageTextView = viewHolder.getMessageTextView();
+        TextView dateTextView = viewHolder.getDateTextView();
+        LinearLayout messageContainer = viewHolder.getMessageContainer();
 
         Message message = messageList.get(position);
 
-        textView.setText(message.text);
+        messageTextView.setText(message.text);
 
-        LinearLayout.LayoutParams textLayoutParams = (LinearLayout.LayoutParams) textView.getLayoutParams();
+        LinearLayout.LayoutParams textLayoutParams = (LinearLayout.LayoutParams) messageContainer.getLayoutParams();
 
-        textView.setBackground(getBgDrawable(message, position));
+        messageContainer.setBackground(getBgDrawable(message, position));
 
+        messageContainer.setOrientation(LinearLayout.VERTICAL);
         if (message.senderUID == null) {
             String currentLang = Locale.getDefault().getLanguage();
             try {
@@ -103,27 +113,35 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.ViewHo
                     currentLang = "en";
                 }
 
-                textView.setText(jsonObject.getString(currentLang));
-                textView.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(context, R.color.indigo_100)));
-                textView.setTextColor(Color.BLACK);
+                messageTextView.setText(jsonObject.getString(currentLang));
+                messageTextView.setTextColor(Color.BLACK);
+                messageContainer.setBackgroundTintList(resUtils.getColorStateList(R.color.indigo_100));
+                dateTextView.setText(TimeUtils.getTodayTimeFromDate(message.dateSent));
+                dateTextView.setTextColor(resUtils.getColor(R.color.black));
                 textLayoutParams.setMargins(64, 64, 64, 0);
                 textLayoutParams.gravity = Gravity.CENTER_HORIZONTAL;
             } catch (JSONException e) {}
         } else {
             if (message.sent) {
-                textView.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(context, R.color.color_primary)));
-                textView.setTextColor(Color.WHITE);
+                messageTextView.setTextColor(Color.WHITE);
+                messageContainer.setBackgroundTintList(resUtils.getColorStateList(R.color.color_primary));
+                messageContainer.setGravity(Gravity.END);
+                dateTextView.setText(TimeUtils.getTodayTimeFromDate(message.dateSent));
+                dateTextView.setTextColor(resUtils.getColor(R.color.indigo_100));
                 textLayoutParams.setMargins(128, position > 0 && messageList.get(position - 1).sent ? 4 : 32, 0, 0);
                 textLayoutParams.gravity = Gravity.END;
             } else {
-                textView.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(context, R.color.teal_700)));
-                textView.setTextColor(Color.WHITE);
+                messageTextView.setTextColor(Color.WHITE);
+                messageContainer.setBackgroundTintList(resUtils.getColorStateList(R.color.teal_700));
+                messageContainer.setGravity(Gravity.START);
+                dateTextView.setTextColor(resUtils.getColor(R.color.teal_100));
                 textLayoutParams.setMargins(0, position > 0 && !messageList.get(position - 1).sent ? 4 : 32, 128, 0);
                 textLayoutParams.gravity = Gravity.START;
+
             }
         }
 
-        textView.setLayoutParams(textLayoutParams);
+        messageContainer.setLayoutParams(textLayoutParams);
     }
 
     private Drawable getBgDrawable(Message message, int position) {

@@ -1,17 +1,15 @@
 package it.uniba.dib.sms22231.utility;
 
-import android.telecom.Call;
-
 import java.util.ArrayList;
 
 public class Observable<T> {
     private T data;
     private final ArrayList<Subscription> subscribers = new ArrayList<>();
-    private CallbackFunction<CallbackFunction<T>> runnable;
+    private RunnableFunction<T> runnable;
 
     public Observable() {}
 
-    public Observable(CallbackFunction<CallbackFunction<T>> runnable) {
+    public Observable(RunnableFunction<T> runnable) {
         this.runnable = runnable;
     }
 
@@ -24,7 +22,7 @@ public class Observable<T> {
         subscribers.add(subscription);
 
         if (runnable != null) {
-            runnable.apply(this::next);
+            runnable.apply(this::next, subscription::setOnUnsubscribe);
         }
         return subscription;
     }
@@ -46,6 +44,7 @@ public class Observable<T> {
 
     public class Subscription {
         private final SubscribeCallback<T> updateFunction;
+        private CallbackFunctionVoid onUnsubscribe;
 
         public Subscription(SubscribeCallback<T> updateFunction) {
             this.updateFunction = updateFunction;
@@ -59,8 +58,16 @@ public class Observable<T> {
             updateFunction.apply(data, this::unsubscribe);
         }
 
+        public void setOnUnsubscribe(CallbackFunctionVoid onUnsubscribe) {
+            this.onUnsubscribe = onUnsubscribe;
+        }
+
         public void unsubscribe() {
             subscribers.remove(this);
+
+            if (onUnsubscribe != null) {
+                onUnsubscribe.apply();
+            }
         }
     }
 }

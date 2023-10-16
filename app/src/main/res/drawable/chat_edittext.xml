@@ -7,4 +7,7 @@
         android:left="16dp"
         android:right="16dp"
         android:top="8dp" />
+    <stroke
+        android:width="2dp"
+        android:color="@color/color_primary" />
 </shape>
