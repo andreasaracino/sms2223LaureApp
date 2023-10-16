@@ -91,4 +91,11 @@
     <string name="noAccepted">Nessuna richiesta di tesi accettata</string>
     <string name="noTask">Non ci sono task per questa tesi</string>
     <string name="noMeeting">Non ci sono ricevimenti per questa tesi</string>
+    <string name="addTask">Aggiungi Task</string>
+    <string name="save">Salva</string>
+    <string name="status">Stato:</string>
+    <string name="dueDate">Scadenza:</string>
+    <string name="openStatus">In corso</string>
+    <string name="closedStatus">Completato</string>
+
 </resources>

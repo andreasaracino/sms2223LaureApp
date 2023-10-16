@@ -102,4 +102,10 @@
     <string name="noAccepted">No thesis request accepted</string>
     <string name="noTask">There are no tasks for this thesis</string>
     <string name="noMeeting">There are not meetings for this thesis</string>
+    <string name="addTask">Add Task</string>
+    <string name="save">Save</string>
+    <string name="status">Status:</string>
+    <string name="dueDate">Due date:</string>
+    <string name="openStatus">Open</string>
+    <string name="closedStatus">Closed</string>
 </resources>
