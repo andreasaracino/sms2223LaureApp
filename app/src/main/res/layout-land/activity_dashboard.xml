@@ -47,7 +47,7 @@
         android:src="@drawable/chat_bubble"
         android:tint="@color/white"
         android:tintMode="add"
-        app:backgroundTint="#007fff"
+        app:backgroundTint="@color/color_primary"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 

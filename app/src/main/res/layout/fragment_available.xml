@@ -39,7 +39,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 app:icon="@drawable/clear"
-                app:iconTint="#007fff" />
+                app:iconTint="@color/color_primary" />
         </LinearLayout>
 
         <LinearLayout
@@ -78,7 +78,7 @@
                     android:gravity="center"
                     app:icon="@drawable/clear"
                     app:iconGravity="end"
-                    app:iconTint="#007fff" />
+                    app:iconTint="@color/color_primary" />
             </LinearLayout>
 
             <LinearLayout
@@ -150,7 +150,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
-            app:backgroundTint="#007fff"
+            app:backgroundTint="@color/color_primary"
             app:itemIconTint="@color/white"
             app:itemTextAppearanceInactive="@style/Theme.Sms2223LaureApp"
             app:itemTextColor="@color/white"

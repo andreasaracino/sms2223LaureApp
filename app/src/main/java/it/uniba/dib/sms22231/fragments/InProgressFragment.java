@@ -15,7 +15,6 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 import it.uniba.dib.sms22231.R;
-import it.uniba.dib.sms22231.activities.ApplicationDetailActivity;
 import it.uniba.dib.sms22231.activities.MyThesisActivity;
 import it.uniba.dib.sms22231.adapters.RecyclerAdapter;
 import it.uniba.dib.sms22231.config.ApplicationStatus;
@@ -53,7 +52,7 @@ public class InProgressFragment extends Fragment implements RecyclerViewInterfac
                 noItemText.setVisibility(View.VISIBLE);
             } else {
                 noItemText.setVisibility(View.GONE);
-                RecyclerView rec = view.findViewById(R.id.accepetdApplicationsRecycler);
+                RecyclerView rec = view.findViewById(R.id.acceptedApplicationsRecycler);
                 RecyclerAdapter<Application> recad = new RecyclerAdapter<>(cardDataArrayList, getContext(), this);
                 LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
                 rec.setLayoutManager(linearLayoutManager);

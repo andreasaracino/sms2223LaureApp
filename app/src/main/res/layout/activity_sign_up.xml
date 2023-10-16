@@ -48,7 +48,7 @@
         android:onClick="goToSignIn"
         android:shadowRadius="0"
         android:text="@string/action_sign_in"
-        android:textColor="?colorPrimary"
+        android:textColor="@color/color_primary"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.505"

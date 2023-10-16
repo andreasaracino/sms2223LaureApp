@@ -19,7 +19,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textAlignment="center"
-            android:textColor="#007fff"
+            android:textColor="@color/color_primary"
             android:textSize="20sp"
             android:textStyle="bold" />
 
@@ -45,7 +45,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:text="@string/req"
-            android:textColor="#007fff"
+            android:textColor="@color/color_primary"
             android:textSize="16sp"
             android:visibility="gone" />
 
@@ -73,7 +73,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:text="@string/attach"
-            android:textColor="#007fff"
+            android:textColor="@color/color_primary"
             android:textSize="16sp"
             android:visibility="gone" />
 
