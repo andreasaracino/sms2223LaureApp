@@ -89,4 +89,5 @@
     <string name="downloading">Download in corso…</string>
     <string name="writeMessage">Scrivi un messaggio…</string>
     <string name="noAccepted">Nessuna richiesta di tesi accettata</string>
+    <string name="noTask">Non ci sono task per questa tesi</string>
 </resources>

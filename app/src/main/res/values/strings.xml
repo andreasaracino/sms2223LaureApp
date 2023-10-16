@@ -100,4 +100,5 @@
     <string name="downloading">Downloading…</string>
     <string name="writeMessage">Send a message…</string>
     <string name="noAccepted">No thesis request accepted</string>
+    <string name="noTask">There are no task for this thesis</string>
 </resources>
