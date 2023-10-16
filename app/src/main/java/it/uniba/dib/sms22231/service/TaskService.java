@@ -1,5 +1,7 @@
 package it.uniba.dib.sms22231.service;
 
+import androidx.annotation.NonNull;
+
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -18,19 +20,30 @@ public class TaskService {
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private CollectionReference tasksCollection = db.collection(TASK_COLLECTION);
 
+    public Observable<Task> getTaskById(String taskId) {
+        return new Observable<>((next, setOnUnsubscribe) -> {
+            tasksCollection.document(taskId).get().addOnCompleteListener(task -> {
+                next.apply(mapTask(task.getResult()));
+            });
+        });
+    }
+
     public Observable<List<Task>> getTasksByApplicationId(String applicationId) {
         return new Observable<>((next, setOnUnsubscribe) -> {
             tasksCollection.whereEqualTo("applicationId", applicationId).get().addOnCompleteListener(task -> {
                 List<DocumentSnapshot> documents = task.getResult().getDocuments();
-                List<Task> Tasks = documents.stream().map(rawTask -> {
-                    Task Task = new Task(rawTask.getData());
-                    Task.id = rawTask.getId();
-                    return Task;
-                }).collect(Collectors.toList());
+                List<Task> Tasks = documents.stream().map(TaskService::mapTask).collect(Collectors.toList());
 
                 next.apply(Tasks);
             });
         });
+    }
+
+    @NonNull
+    private static Task mapTask(DocumentSnapshot rawTask) {
+        Task Task = new Task(rawTask.getData());
+        Task.id = rawTask.getId();
+        return Task;
     }
 
     public void saveNewTask(Task task, CallbackFunction<Boolean> callback) {
