@@ -90,4 +90,5 @@
     <string name="writeMessage">Scrivi un messaggio…</string>
     <string name="noAccepted">Nessuna richiesta di tesi accettata</string>
     <string name="noTask">Non ci sono task per questa tesi</string>
+    <string name="noMeeting">Non ci sono ricevimenti per questa tesi</string>
 </resources>
