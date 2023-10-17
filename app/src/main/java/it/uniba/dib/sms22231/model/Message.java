@@ -3,6 +3,7 @@ package it.uniba.dib.sms22231.model;
 import android.annotation.SuppressLint;
 
 import java.io.Serializable;
+import java.sql.Time;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -10,6 +11,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+
+import it.uniba.dib.sms22231.utility.TimeUtils;
 
 public class Message implements Serializable {
     public String id;
@@ -47,13 +50,7 @@ public class Message implements Serializable {
         senderUID = (String) data.get("senderUID");
         taskId = (String) data.get("taskId");
         read = (Boolean) data.get("read");
-
-        try {
-            @SuppressLint("SimpleDateFormat") DateFormat simpleDateFormat = new SimpleDateFormat("yyyy/MM/dd - HH:mm");
-            dateSent = simpleDateFormat.parse((String) Objects.requireNonNull(data.get("dateSent")));
-        } catch (ParseException e) {
-            //
-        }
+        dateSent = TimeUtils.stringToDate((String) data.get("dateSent"));
     }
 
     public Map<String, Object> toMap() {
@@ -64,8 +61,7 @@ public class Message implements Serializable {
         map.put("senderUID", senderUID);
         map.put("taskId", taskId);
         map.put("read", read);
-        @SuppressLint("SimpleDateFormat") DateFormat simpleDateFormat = new SimpleDateFormat("yyyy/MM/dd - HH:mm");
-        map.put("dateSent", simpleDateFormat.format(dateSent));
+        map.put("dateSent", TimeUtils.dateToString(dateSent));
         return map;
     }
 

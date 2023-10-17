@@ -3,6 +3,7 @@ package it.uniba.dib.sms22231.model;
 import java.sql.Time;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import it.uniba.dib.sms22231.utility.TimeUtils;
@@ -10,14 +11,14 @@ import it.uniba.dib.sms22231.utility.TimeUtils;
 public class Meeting {
     public String id;
     public String applicationId;
-    public String taskId;
+    public List<String> taskId;
     public Date date;
     public String title;
 
     public Meeting() {
     }
 
-    public Meeting(String id, String applicationId, String taskId, Date date, String title) {
+    public Meeting(String id, String applicationId, List<String> taskId, Date date, String title) {
         this.id = id;
         this.applicationId = applicationId;
         this.taskId = taskId;
@@ -28,7 +29,7 @@ public class Meeting {
     public Meeting(Map<String, Object> data) {
         id = (String) data.get("id");
         applicationId = (String) data.get("applicationId");
-        taskId = (String) data.get("taskId");
+        taskId = (List<String>) data.get("taskId");
         date = TimeUtils.stringToDate((String) data.get("date"));
         title = (String) data.get("title");
     }

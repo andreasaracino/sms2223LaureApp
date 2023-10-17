@@ -12,7 +12,9 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.time.Clock;
 import java.time.Instant;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Date;
@@ -243,7 +245,7 @@ public class ChatService {
     }
 
     public void sendMessage(Message message) {
-        message.dateSent = Date.from(Instant.now());
+        message.dateSent = Date.from(Instant.now(Clock.systemDefaultZone()));
         message.read = false;
         message.senderUID = currentUser.uid;
 

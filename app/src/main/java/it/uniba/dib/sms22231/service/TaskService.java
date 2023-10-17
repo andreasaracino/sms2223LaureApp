@@ -51,7 +51,7 @@ public class TaskService {
     }
 
     public void updateTask(Task task, CallbackFunction<Boolean> callback) {
-        tasksCollection.document(task.id).set(task).addOnCompleteListener(task1 -> callback.apply(task1.isSuccessful()));
+        tasksCollection.document(task.id).set(task.toMap()).addOnCompleteListener(task1 -> callback.apply(task1.isSuccessful()));
     }
 
     private TaskService() {}
