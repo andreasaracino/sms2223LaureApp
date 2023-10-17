@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.text.format.DateFormat;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -36,6 +37,7 @@ public class TaskDetailActivity extends AppCompatActivity {
     private Task task;
     private String taskId;
     private int caller;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -64,7 +66,7 @@ public class TaskDetailActivity extends AppCompatActivity {
     private void setBottomNavigationView() {
         bottomNavigationView = findViewById(R.id.bottomTask);
 
-        if (caller != 4){
+        if (caller != 4) {
             bottomNavigationView.getMenu().findItem(R.id.deleteTask).setVisible(false);
             bottomNavigationView.getMenu().findItem(R.id.modifyTask).setVisible(false);
         }
@@ -72,7 +74,7 @@ public class TaskDetailActivity extends AppCompatActivity {
         bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                if (item.getItemId() == R.id.modifyStatus){
+                if (item.getItemId() == R.id.modifyStatus) {
                     modifyStatus();
                 } else if (item.getItemId() == R.id.modifyTask) {
                     modifyTask();
@@ -108,7 +110,7 @@ public class TaskDetailActivity extends AppCompatActivity {
         int day = Integer.parseInt((String) DateFormat.format("dd", task.dueDate));
         int month = Integer.parseInt((String) DateFormat.format("MM", task.dueDate));
         int year = Integer.parseInt((String) DateFormat.format("yyyy", task.dueDate));
-        datePicker.init(year, month-1, day, null);
+        datePicker.init(year, month - 1, day, null);
 
         alertDialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -133,13 +135,44 @@ public class TaskDetailActivity extends AppCompatActivity {
                 taskService.updateTask(task, isSuccessfully -> {
                     Toast.makeText(TaskDetailActivity.this, R.string.success, Toast.LENGTH_SHORT).show();
                 });
+                alertDialog.dismiss();
                 fillActivity();
             }
         });
     }
 
     private void modifyStatus() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(getString(R.string.modStatus))
+                .setPositiveButton("Ok", null)
+                .setNegativeButton(getString(R.string.cancel), null);
 
+        Spinner statusSpinner = new Spinner(this);
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.taskStatus, android.R.layout.simple_spinner_dropdown_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        statusSpinner.setAdapter(adapter);
+        builder.setView(statusSpinner);
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
+
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (statusSpinner.getSelectedItem().equals(getString(R.string.openStatus))) {
+                    task.status = TaskStatus.open;
+                } else if (statusSpinner.getSelectedItem().equals(getString(R.string.closedStatus))) {
+                    task.status = TaskStatus.closed;
+                } else if (statusSpinner.getSelectedItem().equals(getString(R.string.inProgressStatus))) {
+                    task.status = TaskStatus.inProgress;
+                }
+                taskService.updateTask(task, isSuccessfully -> {
+                    Toast.makeText(TaskDetailActivity.this, R.string.success, Toast.LENGTH_SHORT).show();
+                });
+               dialog.dismiss();
+               fillActivity();
+            }
+        });
     }
 
     private void fillActivity() {
