@@ -33,6 +33,7 @@ import it.uniba.dib.sms22231.model.CardData;
 import it.uniba.dib.sms22231.model.Task;
 import it.uniba.dib.sms22231.service.TaskService;
 import it.uniba.dib.sms22231.utility.RecyclerViewInterface;
+import it.uniba.dib.sms22231.utility.TimeUtils;
 
 public class TaskFragment extends Fragment implements RecyclerViewInterface {
     private final TaskService taskService = TaskService.getInstance();
@@ -77,10 +78,7 @@ public class TaskFragment extends Fragment implements RecyclerViewInterface {
         taskService.getTasksByApplicationId(applicationId).subscribe(tasks -> {
             cardDataArrayList = new ArrayList<>();
             for (Task t : tasks) {
-                String day = (String) DateFormat.format("dd", t.dueDate);
-                String month = (String) DateFormat.format("MM", t.dueDate);
-                String year = (String) DateFormat.format("yyyy", t.dueDate);
-                String date = getString(R.string.dueDate) + " " + day + "/" + month + "/" + year;
+                String date = TimeUtils.getTimeFromDate(t.dueDate, false);
                 CardData cardData = new CardData(t.title, date, t.id, null);
                 cardDataArrayList.add(cardData);
             }
@@ -126,20 +124,20 @@ public class TaskFragment extends Fragment implements RecyclerViewInterface {
                         task.applicationId = applicationId;
 
                         Spinner spinner = alertDialog.findViewById(R.id.taskStatusSpinner);
-                        if (spinner.getSelectedItem().equals(getString(R.string.openStatus))) {
-                            task.status = TaskStatus.open;
-                        } else if (spinner.getSelectedItem().equals(getString(R.string.closedStatus))) {
-                            task.status = TaskStatus.closed;
-                        } else if (spinner.getSelectedItem().equals(getString(R.string.inProgressStatus))) {
-                            task.status = TaskStatus.inProgress;
-                        }
+//                        if (spinner.getSelectedItem().equals(getString(R.string.openStatus))) {
+//                            task.status = TaskStatus.open;
+//                        } else if (spinner.getSelectedItem().equals(getString(R.string.closedStatus))) {
+//                            task.status = TaskStatus.closed;
+//                        } else if (spinner.getSelectedItem().equals(getString(R.string.inProgressStatus))) {
+//                            task.status = TaskStatus.inProgress;
+//                        }
+                        task.status = TaskStatus.values()[spinner.getSelectedItemPosition()];
 
                         calendar.set(Calendar.DAY_OF_MONTH, datePicker.getDayOfMonth());
                         calendar.set(Calendar.MONTH, datePicker.getMonth());
                         calendar.set(Calendar.YEAR, datePicker.getYear());
                         long time = calendar.getTimeInMillis();
-                        Date date = new Date(time);
-                        task.dueDate = date;
+                        task.dueDate = new Date(time);
 
                         taskService.saveNewTask(task, isSuccessfully -> {
                             if (isSuccessfully) {

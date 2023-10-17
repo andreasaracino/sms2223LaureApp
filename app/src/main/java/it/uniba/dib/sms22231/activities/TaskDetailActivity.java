@@ -26,6 +26,7 @@ import it.uniba.dib.sms22231.R;
 import it.uniba.dib.sms22231.config.TaskStatus;
 import it.uniba.dib.sms22231.model.Task;
 import it.uniba.dib.sms22231.service.TaskService;
+import it.uniba.dib.sms22231.utility.TimeUtils;
 
 public class TaskDetailActivity extends AppCompatActivity {
     private final TaskService taskService = TaskService.getInstance();
@@ -87,6 +88,7 @@ public class TaskDetailActivity extends AppCompatActivity {
     }
 
     private void deleteTask() {
+        //TODO
     }
 
     private void modifyTask() {
@@ -117,20 +119,20 @@ public class TaskDetailActivity extends AppCompatActivity {
             public void onClick(View view) {
                 task.title = title.getText().toString();
                 task.description = description.getText().toString();
-                if (statusSpinner.getSelectedItem().equals(getString(R.string.openStatus))) {
-                    task.status = TaskStatus.open;
-                } else if (statusSpinner.getSelectedItem().equals(getString(R.string.closedStatus))) {
-                    task.status = TaskStatus.closed;
-                } else if (statusSpinner.getSelectedItem().equals(getString(R.string.inProgressStatus))) {
-                    task.status = TaskStatus.inProgress;
-                }
+//                if (statusSpinner.getSelectedItem().equals(getString(R.string.openStatus))) {
+//                    task.status = TaskStatus.open;
+//                } else if (statusSpinner.getSelectedItem().equals(getString(R.string.closedStatus))) {
+//                    task.status = TaskStatus.closed;
+//                } else if (statusSpinner.getSelectedItem().equals(getString(R.string.inProgressStatus))) {
+//                    task.status = TaskStatus.inProgress;
+//                }
+                task.status = TaskStatus.values()[statusSpinner.getSelectedItemPosition()];
                 Calendar calendar = Calendar.getInstance();
                 calendar.set(Calendar.DAY_OF_MONTH, datePicker.getDayOfMonth());
                 calendar.set(Calendar.MONTH, datePicker.getMonth());
                 calendar.set(Calendar.YEAR, datePicker.getYear());
                 long time = calendar.getTimeInMillis();
-                Date date = new Date(time);
-                task.dueDate = date;
+                task.dueDate = new Date(time);
 
                 taskService.updateTask(task, isSuccessfully -> {
                     Toast.makeText(TaskDetailActivity.this, R.string.success, Toast.LENGTH_SHORT).show();
@@ -159,13 +161,14 @@ public class TaskDetailActivity extends AppCompatActivity {
         dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (statusSpinner.getSelectedItem().equals(getString(R.string.openStatus))) {
-                    task.status = TaskStatus.open;
-                } else if (statusSpinner.getSelectedItem().equals(getString(R.string.closedStatus))) {
-                    task.status = TaskStatus.closed;
-                } else if (statusSpinner.getSelectedItem().equals(getString(R.string.inProgressStatus))) {
-                    task.status = TaskStatus.inProgress;
-                }
+//                if (statusSpinner.getSelectedItem().equals(getString(R.string.openStatus))) {
+//                    task.status = TaskStatus.open;
+//                } else if (statusSpinner.getSelectedItem().equals(getString(R.string.closedStatus))) {
+//                    task.status = TaskStatus.closed;
+//                } else if (statusSpinner.getSelectedItem().equals(getString(R.string.inProgressStatus))) {
+//                    task.status = TaskStatus.inProgress;
+//                }
+                task.status = TaskStatus.values()[statusSpinner.getSelectedItemPosition()];
                 taskService.updateTask(task, isSuccessfully -> {
                     Toast.makeText(TaskDetailActivity.this, R.string.success, Toast.LENGTH_SHORT).show();
                 });
@@ -181,10 +184,7 @@ public class TaskDetailActivity extends AppCompatActivity {
             titleText.setText(task.title);
             descriptionText.setText(task.description);
             statusText.setText(getResources().getStringArray(R.array.taskStatus)[task.status.ordinal()]);
-            String day = (String) DateFormat.format("dd", task.dueDate);
-            String month = (String) DateFormat.format("MM", task.dueDate);
-            String year = (String) DateFormat.format("yyyy", task.dueDate);
-            String date = day + "/" + month + "/" + year;
+            String date = TimeUtils.getTimeFromDate(task.dueDate, false);
             dueDateText.setText(date);
         });
     }
