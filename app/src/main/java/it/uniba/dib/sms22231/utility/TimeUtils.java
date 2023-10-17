@@ -16,29 +16,33 @@ import java.time.ZoneOffset;
 import java.time.temporal.ChronoField;
 import java.time.temporal.TemporalField;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.Objects;
+import java.util.Date;
+import java.util.TimeZone;
 
 import it.uniba.dib.sms22231.R;
 
 public class TimeUtils {
-    public static String getTodayTimeFromDate(Date input) {
-        Date startDate = Date.from(Instant.now());
-        Calendar cal = Calendar.getInstance();
-        cal.setTime(startDate);
-        cal.set(Calendar.HOUR_OF_DAY, 0);
-        cal.set(Calendar.MINUTE, 0);
-        cal.set(Calendar.SECOND, 0);
-        Date today = cal.getTime();
+    public static String getTimeFromDate(Date input, boolean time) {
         SimpleDateFormat simpleDateFormat;
 
-        if (input.before(today)) {
-            simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm");
-        } else {
+        if (time) {
             simpleDateFormat = new SimpleDateFormat("HH:mm");
+        } else {
+            simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
         }
 
         return simpleDateFormat.format(input);
+    }
+
+    public static boolean areDatesSameDay(Date a, Date b) {
+        Calendar aC = Calendar.getInstance();
+        aC.setTime(a);
+        Calendar bC = Calendar.getInstance();
+        bC.setTime(b);
+
+        return aC.get(Calendar.DAY_OF_YEAR) == bC.get(Calendar.DAY_OF_YEAR) &&
+                aC.get(Calendar.YEAR) == bC.get(Calendar.YEAR);
     }
 
     public static String getTimeAgoFromDate(Date input, Context context) {
@@ -83,17 +87,25 @@ public class TimeUtils {
     @SuppressLint("SimpleDateFormat")
     public static String dateToString(Date date) {
         DateFormat simpleDateFormat = new SimpleDateFormat("yyyy/MM/dd - HH:mm");
-        return simpleDateFormat.format(date);
+        return simpleDateFormat.format(dateToUTC(date));
     }
 
     @SuppressLint("SimpleDateFormat")
     public static Date stringToDate(String date) {
         try {
             DateFormat simpleDateFormat = new SimpleDateFormat("yyyy/MM/dd - HH:mm");
-            return simpleDateFormat.parse(date);
+            return dateFromUTC(simpleDateFormat.parse(date));
         } catch (ParseException e) {
             return null;
         }
+    }
+
+    public static Date dateFromUTC(Date date){
+        return new Date(date.getTime() + Calendar.getInstance().getTimeZone().getOffset(new Date().getTime()));
+    }
+
+    public static Date dateToUTC(Date date){
+        return new Date(date.getTime() - Calendar.getInstance().getTimeZone().getOffset(date.getTime()));
     }
 
     /*public static getCurrentTime() {
