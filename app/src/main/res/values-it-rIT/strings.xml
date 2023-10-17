@@ -95,11 +95,11 @@
     <string name="save">Salva</string>
     <string name="status">Stato:</string>
     <string name="dueDate">Scadenza:</string>
-    <string name="openStatus">Non iniziato</string>
+    <string name="openStatus">Assegnato</string>
     <string name="closedStatus">Completato</string>
     <string name="taskDetail">Dettaglio Task</string>
     <string name="modStatus">Modifica Stato</string>
     <string name="modTask">Modifica Task</string>
     <string name="delTask">Elimina Task</string>
-    <string name="inProgressStatus">In Completamento</string>
+    <string name="inProgressStatus">In Corso</string>
 </resources>
