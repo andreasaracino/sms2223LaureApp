@@ -2,6 +2,7 @@ package it.uniba.dib.sms22231.fragments;
 
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -25,6 +26,7 @@ import java.util.Calendar;
 import java.util.Date;
 
 import it.uniba.dib.sms22231.R;
+import it.uniba.dib.sms22231.activities.TaskDetailActivity;
 import it.uniba.dib.sms22231.adapters.RecyclerAdapter;
 import it.uniba.dib.sms22231.config.TaskStatus;
 import it.uniba.dib.sms22231.model.CardData;
@@ -128,6 +130,8 @@ public class TaskFragment extends Fragment implements RecyclerViewInterface {
                             task.status = TaskStatus.open;
                         } else if (spinner.getSelectedItem().equals(getString(R.string.closedStatus))) {
                             task.status = TaskStatus.closed;
+                        } else if (spinner.getSelectedItem().equals(getString(R.string.inProgressStatus))) {
+                            task.status = TaskStatus.inProgress;
                         }
 
                         calendar.set(Calendar.DAY_OF_MONTH, datePicker.getDayOfMonth());
@@ -151,6 +155,10 @@ public class TaskFragment extends Fragment implements RecyclerViewInterface {
 
     @Override
     public void onItemClick(int position) {
-
+        Intent intent = new Intent(getContext(), TaskDetailActivity.class);
+        String taskId = cardDataArrayList.get(position).getId();
+        intent.putExtra("taskId", taskId);
+        intent.putExtra("caller", caller);
+        startActivity(intent);
     }
 }

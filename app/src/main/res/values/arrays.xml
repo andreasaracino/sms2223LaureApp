@@ -42,5 +42,7 @@
     <string-array name="taskStatus">
         <item>@string/openStatus</item>
         <item>@string/closedStatus</item>
+        <item>@string/inProgressStatus</item>
     </string-array>
+
 </resources>

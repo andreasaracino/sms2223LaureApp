@@ -108,4 +108,9 @@
     <string name="dueDate">Due date:</string>
     <string name="openStatus">Open</string>
     <string name="closedStatus">Closed</string>
+    <string name="taskDetail">Task Detail</string>
+    <string name="modStatus">Modify Status</string>
+    <string name="modTask">Modify Task</string>
+    <string name="delTask">Delete Task</string>
+    <string name="inProgressStatus">In Progress</string>
 </resources>
