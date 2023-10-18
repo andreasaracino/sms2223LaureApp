@@ -90,6 +90,7 @@ public class AddMeeting extends AppCompatActivity {
                 for (Task t : checkedTasksArrayList){
                     meeting.taskId.add(t.id);
                 }
+                meeting.applicationId = applicationId;
                 meetingService.saveNewMeeting(meeting, isSuccessfully -> {
                     Toast.makeText(AddMeeting.this, getString(R.string.success), Toast.LENGTH_SHORT).show();
                 });

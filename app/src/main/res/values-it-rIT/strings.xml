@@ -108,4 +108,5 @@
     <string name="time">Orario:</string>
     <string name="addMeeting">Aggiungi Meeting</string>
     <string name="newMessages">Nuovi messaggi</string>
+    <string name="meetingDetail">Dettaglio Meeting</string>
 </resources>

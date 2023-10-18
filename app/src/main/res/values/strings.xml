@@ -120,4 +120,5 @@
     <string name="addMeeting">Add Meeting</string>
 
     <string name="newMessages">New messages</string>
+    <string name="meetingDetail">Meeting Detail</string>
 </resources>
