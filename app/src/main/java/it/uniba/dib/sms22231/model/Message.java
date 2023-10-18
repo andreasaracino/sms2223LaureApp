@@ -50,7 +50,7 @@ public class Message implements Serializable {
         senderUID = (String) data.get("senderUID");
         taskId = (String) data.get("taskId");
         read = (Boolean) data.get("read");
-        dateSent = TimeUtils.stringToDate((String) data.get("dateSent"));
+        dateSent = TimeUtils.stringToDate((String) data.get("dateSent"), true);
     }
 
     public Map<String, Object> toMap() {
@@ -61,7 +61,7 @@ public class Message implements Serializable {
         map.put("senderUID", senderUID);
         map.put("taskId", taskId);
         map.put("read", read);
-        map.put("dateSent", TimeUtils.dateToString(dateSent));
+        map.put("dateSent", TimeUtils.dateToString(dateSent, true));
         return map;
     }
 

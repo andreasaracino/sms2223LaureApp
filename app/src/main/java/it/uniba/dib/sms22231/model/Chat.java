@@ -54,7 +54,7 @@ public class Chat implements Serializable {
         map.put("applicationId", applicationId);
         map.put("studentId", studentId);
         map.put("teacherId", teacherId);
-        map.put("lastUpdated", TimeUtils.dateToString(lastUpdated));
+        map.put("lastUpdated", TimeUtils.dateToString(lastUpdated, false));
         return map;
     }
 }

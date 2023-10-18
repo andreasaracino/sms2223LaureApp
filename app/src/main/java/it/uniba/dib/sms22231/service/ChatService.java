@@ -104,10 +104,28 @@ public class ChatService {
         });
     }
 
+    private void setChatMessagesAsRead(String chatId) {
+        messagesCollection.whereEqualTo("chatId", chatId).whereNotEqualTo("senderUID", currentUser.uid).whereEqualTo("read", false).get().addOnCompleteListener(task -> {
+            if (task.isSuccessful() && !task.getResult().isEmpty()) {
+                int[] completed = {0};
+                List<DocumentSnapshot> documents = task.getResult().getDocuments();
+                for (DocumentSnapshot message : documents) {
+                    messagesCollection.document(message.getId()).update("read", true).addOnCompleteListener(task1 -> {
+                        completed[0]++;
+                        if (completed[0] == documents.size()) {
+                            updateChat(chatId, Date.from(Instant.now(Clock.systemDefaultZone())).getTime());
+                        }
+                    });
+                }
+            }
+        });
+    }
+
     public Observable<List<Message>> getChatMessages(String chatId) {
         return new Observable<>((next, setOnUnsubscribe) -> messagesCollection.whereEqualTo("chatId", chatId).orderBy("dateSent").get().addOnCompleteListener(task -> {
             List<Message> messageList = mapMessagesResult(task.getResult());
             next.apply(messageList);
+            setChatMessagesAsRead(chatId);
 
             ListenerRegistration listener = messagesCollection.whereEqualTo("chatId", chatId).orderBy("dateSent").addSnapshotListener((snapshot, e) -> {
                 if (e != null || snapshot == null) return;
@@ -117,12 +135,14 @@ public class ChatService {
                     message.id = documentChange.getDocument().getId();
 
                     if (documentChange.getType() == DocumentChange.Type.ADDED && !messageList.contains(message)) {
+                        message.read = true;
                         message.sent = Objects.equals(message.senderUID, userService.getUserData().uid);
                         messageList.add(message);
                     }
                 }
 
                 next.apply(messageList);
+                setChatMessagesAsRead(chatId);
             });
 
             setOnUnsubscribe.apply(listener::remove);
@@ -169,7 +189,7 @@ public class ChatService {
     }
 
     private List<Chat> sortedChatList(List<Chat> chats) {
-        return chats.stream().filter(c -> c.lastMessage != null).sorted(Comparator.comparing(a -> a.lastMessage.dateSent, Comparator.reverseOrder())).collect(Collectors.toList());
+        return chats.stream().filter(c -> c.lastMessage != null && c.lastMessage.dateSent != null).sorted(Comparator.comparing(a -> a.lastMessage.dateSent, Comparator.reverseOrder())).collect(Collectors.toList());
     }
 
     public Observable<Chat> getChatByStudentIdAndTeacherId(String studentUid, String teacherId) {
@@ -254,7 +274,7 @@ public class ChatService {
         message.senderUID = currentUser.uid;
 
         messagesCollection.add(message.toMap()).addOnCompleteListener(task -> {
-            chatsCollection.document(message.chatId).update("lastUpdated", message.dateSent.getTime());
+            updateChat(message.chatId, message.dateSent.getTime());
         });
     }
 
@@ -268,9 +288,13 @@ public class ChatService {
             message.read = false;
 
             messagesCollection.add(message.toMap()).addOnCompleteListener(task -> {
-                chatsCollection.document(message.chatId).update("lastUpdated", message.dateSent.getTime());
+                updateChat(message.chatId, message.dateSent.getTime());
             });
         });
+    }
+
+    public void updateChat(String chatId, long time) {
+        chatsCollection.document(chatId).update("lastUpdated", time);
     }
 
     public static ChatService getInstance() {

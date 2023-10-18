@@ -6,13 +6,72 @@
     android:orientation="vertical"
     android:paddingHorizontal="8dp">
 
-    <TextView
-        android:id="@+id/messageDateText"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:id="@+id/unreadContainer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="bottom"
+        android:orientation="horizontal"
+        android:visibility="invisible">
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_marginBottom="6dp"
+            android:layout_weight="1"
+            android:background="?android:attr/listDivider"
+            android:backgroundTint="@color/color_primary"
+            android:backgroundTintMode="src_over" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:paddingHorizontal="8dp"
+            android:paddingTop="8dp"
+            android:text="@string/newMessages"
+            android:textColor="@color/color_primary" />
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_marginBottom="6dp"
+            android:layout_weight="1"
+            android:background="?android:attr/listDivider"
+            android:backgroundTint="@color/color_primary"
+            android:backgroundTintMode="src_over" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/dateContainer"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:paddingTop="8dp"
-        android:visibility="gone" />
+        android:gravity="bottom"
+        android:orientation="horizontal"
+        android:visibility="invisible">
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_marginBottom="6dp"
+            android:layout_weight="1"
+            android:background="?android:attr/listDivider" />
+
+        <TextView
+            android:id="@+id/messageDateText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:paddingHorizontal="8dp"
+            android:paddingTop="8dp" />
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_marginBottom="6dp"
+            android:layout_weight="1"
+            android:background="?android:attr/listDivider" />
+    </LinearLayout>
 
     <LinearLayout
         android:id="@+id/messageContainer"

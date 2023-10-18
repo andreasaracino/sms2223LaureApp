@@ -75,15 +75,15 @@ public class TimeUtils {
     }
 
     @SuppressLint("SimpleDateFormat")
-    public static String dateToString(Date date) {
-        DateFormat simpleDateFormat = new SimpleDateFormat("yyyy/MM/dd - HH:mm");
+    public static String dateToString(Date date, boolean includeSeconds) {
+        DateFormat simpleDateFormat = new SimpleDateFormat("yyyy/MM/dd - HH:mm" + (includeSeconds ? ":ss" : ""));
         return simpleDateFormat.format(dateToUTC(date));
     }
 
     @SuppressLint("SimpleDateFormat")
-    public static Date stringToDate(String date) {
+    public static Date stringToDate(String date, boolean includeSeconds) {
         try {
-            DateFormat simpleDateFormat = new SimpleDateFormat("yyyy/MM/dd - HH:mm");
+            DateFormat simpleDateFormat = new SimpleDateFormat("yyyy/MM/dd - HH:mm" + (includeSeconds ? ":ss" : ""));
             return dateFromUTC(simpleDateFormat.parse(date));
         } catch (ParseException e) {
             return null;

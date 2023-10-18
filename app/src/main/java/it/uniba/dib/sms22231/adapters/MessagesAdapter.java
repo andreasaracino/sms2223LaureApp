@@ -39,6 +39,8 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.ViewHo
         private final TextView messageTextView;
         private final TextView dateTextView;
         private final LinearLayout messageContainer;
+        private final LinearLayout dateContainer;
+        private final LinearLayout unreadContainer;
 
         public ViewHolder(View view) {
             super(view);
@@ -48,6 +50,8 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.ViewHo
             messageTextView = (TextView) view.findViewById(R.id.messageText);
             dateTextView = (TextView) view.findViewById(R.id.dateText);
             messageContainer = (LinearLayout) view.findViewById(R.id.messageContainer);
+            dateContainer = (LinearLayout) view.findViewById(R.id.dateContainer);
+            unreadContainer = (LinearLayout) view.findViewById(R.id.unreadContainer);
         }
 
         public TextView getMessageDateText() {
@@ -64,6 +68,14 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.ViewHo
 
         public LinearLayout getMessageContainer() {
             return messageContainer;
+        }
+
+        public LinearLayout getDateContainer() {
+            return dateContainer;
+        }
+
+        public LinearLayout getUnreadContainer() {
+            return unreadContainer;
         }
     }
 
@@ -103,6 +115,8 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.ViewHo
         TextView messageTextView = viewHolder.getMessageTextView();
         TextView dateTextView = viewHolder.getDateTextView();
         LinearLayout messageContainer = viewHolder.getMessageContainer();
+        LinearLayout dateContainer = viewHolder.getDateContainer();
+        LinearLayout unreadContainer = viewHolder.getUnreadContainer();
 
         Message message = messageList.get(position);
         Message prevMessage = null;
@@ -144,16 +158,21 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.ViewHo
         } else {
             messageContainer.setOrientation(LinearLayout.HORIZONTAL);
             if (prevMessage == null || !TimeUtils.areDatesSameDay(message.dateSent, prevMessage.dateSent)) {
-                messageDateText.setVisibility(View.VISIBLE);
+                dateContainer.setVisibility(View.VISIBLE);
                 messageDateText.setText(TimeUtils.getTimeFromDate(message.dateSent, false));
             } else {
-                messageDateText.setVisibility(View.GONE);
+                dateContainer.setVisibility(View.GONE);
+            }
+
+            if (!message.sent && !message.read && (prevMessage == null || prevMessage.read)) {
+                unreadContainer.setVisibility(View.VISIBLE);
+            } else {
+                unreadContainer.setVisibility(View.GONE);
             }
 
             if (message.text.length() > 30) {
                 messageContainer.setOrientation(LinearLayout.VERTICAL);
                 messageContainer.setGravity(Gravity.FILL_HORIZONTAL);
-
             }
 
             if (message.sent) {

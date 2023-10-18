@@ -34,7 +34,7 @@ public class Task {
         title = (String) data.get("title");
         description = (String) data.get("description");
         applicationId = (String) data.get("applicationId");
-        dueDate = TimeUtils.stringToDate((String) data.get("dueDate"));
+        dueDate = TimeUtils.stringToDate((String) data.get("dueDate"), false);
     }
 
     public Map<String, Object> toMap() {
@@ -44,7 +44,7 @@ public class Task {
         map.put("title", title);
         map.put("description", description);
         map.put("applicationId", applicationId);
-        map.put("dueDate", TimeUtils.dateToString(dueDate));
+        map.put("dueDate", TimeUtils.dateToString(dueDate, false));
         return map;
     }
 }

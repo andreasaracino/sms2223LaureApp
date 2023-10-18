@@ -34,6 +34,7 @@ public class StudentService {
 
     private void initData() {
         db = FirebaseFirestore.getInstance();
+        studentsCollection = db.collection(COLLECTION_NAME);
         userService = UserService.getInstance();
         userService.userObservable.subscribe((user) -> {
             if (user != null && user.userType == UserTypes.STUDENT) {
@@ -43,7 +44,6 @@ public class StudentService {
     }
 
     private void getStudentByUid(String uid) {
-        studentsCollection = db.collection(COLLECTION_NAME);
         studentDocument = studentsCollection.document(uid);
         updateStudent();
     }
@@ -94,7 +94,7 @@ public class StudentService {
     }
 
     public boolean isThesisFavorite(Thesis thesis) {
-        return studentData.savedThesesIds.containsValue(thesis.id);
+        return studentData.savedThesesIds != null && studentData.savedThesesIds.containsValue(thesis.id);
     }
 
     public void saveStudent(User user, CallbackFunction<Boolean> callback) {
@@ -105,6 +105,7 @@ public class StudentService {
         studentDocument.get().addOnCompleteListener(task -> {
             if (!task.getResult().exists()) {
                 studentDocument.set(new Student(user.uid, new HashMap<>())).addOnCompleteListener(task1 -> callback.apply(task1.isSuccessful()));
+                updateStudent();
             } else {
                 callback.apply(true);
             }

@@ -29,7 +29,7 @@ public class Meeting {
         id = (String) data.get("id");
         applicationId = (String) data.get("applicationId");
         taskId = (List<String>) data.get("taskId");
-        date = TimeUtils.stringToDate((String) data.get("date"));
+        date = TimeUtils.stringToDate((String) data.get("date"), false);
         title = (String) data.get("title");
     }
 
@@ -38,7 +38,7 @@ public class Meeting {
         map.put("id", id);
         map.put("applicationId", applicationId);
         map.put("taskId", taskId);
-        map.put("date", TimeUtils.dateToString(date));
+        map.put("date", TimeUtils.dateToString(date, false));
         map.put("title", title);
         return map;
     }
