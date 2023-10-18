@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.Intent;
 import android.os.Bundle;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import it.uniba.dib.sms22231.R;
@@ -21,7 +22,6 @@ public class ChatListActivity extends AppCompatActivity implements RecyclerViewI
     private RecyclerView chatListRecycler;
     private List<Chat> chatList;
     private Observable.Subscription subscription;
-    private boolean paused;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,12 +38,14 @@ public class ChatListActivity extends AppCompatActivity implements RecyclerViewI
     }
 
     private void subscribeToChatList() {
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        ChatElementAdapter chatElementAdapter = new ChatElementAdapter(new ArrayList<>(), getApplicationContext(), this);
+        chatListRecycler.setLayoutManager(layoutManager);
+        chatListRecycler.setAdapter(chatElementAdapter);
+
         subscription = chatService.getUserChats().subscribe(chats -> {
-            LinearLayoutManager layoutManager = new LinearLayoutManager(this);
-            ChatElementAdapter chatElementAdapter = new ChatElementAdapter(chats, getApplicationContext(), this);
-            chatListRecycler.setLayoutManager(layoutManager);
-            chatListRecycler.setAdapter(chatElementAdapter);
             chatList = chats;
+            chatElementAdapter.setChatList(chatList);
         });
     }
 
@@ -55,20 +57,9 @@ public class ChatListActivity extends AppCompatActivity implements RecyclerViewI
     }
 
     @Override
-    protected void onPause() {
-        super.onPause();
+    protected void onDestroy() {
+        super.onDestroy();
 
-        paused = true;
         subscription.unsubscribe();
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-
-        if (paused) {
-            paused = false;
-            subscribeToChatList();
-        }
     }
 }

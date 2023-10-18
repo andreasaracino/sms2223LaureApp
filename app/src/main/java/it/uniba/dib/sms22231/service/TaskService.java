@@ -9,7 +9,6 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import it.uniba.dib.sms22231.model.Meeting;
 import it.uniba.dib.sms22231.model.Task;
 import it.uniba.dib.sms22231.utility.CallbackFunction;
 import it.uniba.dib.sms22231.utility.Observable;

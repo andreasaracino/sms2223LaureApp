@@ -22,13 +22,18 @@ import it.uniba.dib.sms22231.utility.TimeUtils;
 public class ChatElementAdapter extends RecyclerView.Adapter<ChatElementAdapter.ViewHolder> {
     private final ResUtils resUtils = ResUtils.getInstance();
     private final Context context;
-    private final List<Chat> chatList;
+    private List<Chat> chatList;
     RecyclerViewInterface recyclerViewInterface;
 
     public ChatElementAdapter(List<Chat> chatList, Context context, RecyclerViewInterface recyclerViewInterface) {
         this.chatList = chatList;
         this.context = context;
         this.recyclerViewInterface = recyclerViewInterface;
+    }
+
+    public void setChatList(List<Chat> chatList) {
+        this.chatList = chatList;
+        notifyDataSetChanged();
     }
 
     @NonNull
@@ -76,6 +81,8 @@ public class ChatElementAdapter extends RecyclerView.Adapter<ChatElementAdapter.
         if (chat.unreadMessages > 0) {
             chatUnreadNumber.setText(String.valueOf(chat.unreadMessages));
             chatUnreadNumber.setVisibility(View.VISIBLE);
+        } else {
+            chatUnreadNumber.setVisibility(View.GONE);
         }
     }
 
