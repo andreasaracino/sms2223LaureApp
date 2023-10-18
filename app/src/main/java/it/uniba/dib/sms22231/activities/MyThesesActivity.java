@@ -6,6 +6,7 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -51,13 +52,6 @@ public class MyThesesActivity extends AppCompatActivity implements RecyclerViewI
 
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-
-        thesisService.getUserOwnTheses();
-    }
-
     //riempimento dell RecyclerView con i dati delle tesi del professore
     private void fillCard() {
 
@@ -77,6 +71,14 @@ public class MyThesesActivity extends AppCompatActivity implements RecyclerViewI
                 LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL,false);
                 rec.setLayoutManager(linearLayoutManager);
                 rec.setAdapter(recad);
+                SwipeRefreshLayout swipeRefreshLayout = findViewById(R.id.refreshMyTheses);
+                swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+                    @Override
+                    public void onRefresh() {
+                        swipeRefreshLayout.setRefreshing(false);
+                        fillCard();
+                    }
+                });
             }
         });
 
