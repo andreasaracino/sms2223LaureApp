@@ -13,13 +13,18 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.view.DragEvent;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.navigation.NavigationBarView;
+
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.stream.Collectors;
 
 import it.uniba.dib.sms22231.R;
@@ -36,6 +41,8 @@ public class RankingFragment extends Fragment implements RecyclerViewInterface {
     private final StudentService studentService = StudentService.getInstance();
     private ArrayList<CardData> cardData;
     private RecyclerView rec;
+    private BottomNavigationView bottomNavigationView;
+    private RecyclerAdapter recad;
     private View view;
     private TextView noItemText;
     private boolean paused;
@@ -46,10 +53,56 @@ public class RankingFragment extends Fragment implements RecyclerViewInterface {
         view = inflater.inflate(R.layout.fragment_ranking, container, false);
         noItemText = view.findViewById(R.id.noItemText);
 
+        initBottom();
         initRecyclerView();
         getTheses();
 
         return view;
+    }
+
+    private void initBottom() {
+        bottomNavigationView = view.findViewById(R.id.rankBottom);
+        bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                if (item.getItemId() == R.id.Ascending) {
+                    orderAscending();
+                } else if (item.getItemId() == R.id.Descending) {
+                    orderDescending();
+                }
+                return false;
+            }
+        });
+    }
+
+    private void orderDescending() {
+        Collections.sort(cardData, new Comparator<CardData>() {
+            @Override
+            public int compare(CardData c1, CardData c2) {
+                if (c1.getData() == c2.getData())
+                    return 0;
+                return (Integer) c1.getData() > (Integer) c2.getData() ? -1 : 1;
+            }
+        });
+        for (int i = 0; i < cardData.size(); i++) {
+            cardData.get(i).setRank(i + 1 + ".");
+        }
+        recad.filterList(cardData);
+    }
+
+    private void orderAscending() {
+        Collections.sort(cardData, new Comparator<CardData>() {
+            @Override
+            public int compare(CardData c1, CardData c2) {
+                if (c1.getData() == c2.getData())
+                    return 0;
+                return (Integer) c1.getData() < (Integer) c2.getData() ? -1 : 1;
+            }
+        });
+        for (int i = 0; i < cardData.size(); i++) {
+            cardData.get(i).setRank(i + 1 + ".");
+        }
+        recad.filterList(cardData);
     }
 
     //inizializzazione della RecyclerView
@@ -68,14 +121,14 @@ public class RankingFragment extends Fragment implements RecyclerViewInterface {
             int rank = 0;
             for (Thesis t : theses) {
                 rank++;
-                CardData thesis = new CardData(t.title, t.teacherFullname, t.id, String.valueOf(rank) + ".");
+                CardData thesis = new CardData(t.title, t.teacherFullname, t.id, String.valueOf(rank) + ".", t.averageRequirement);
                 cardData.add(thesis);
             }
-            if (cardData.isEmpty()){
+            if (cardData.isEmpty()) {
                 noItemText.setVisibility(View.VISIBLE);
             } else {
                 noItemText.setVisibility(View.GONE);
-                RecyclerAdapter recad = new RecyclerAdapter(cardData, getContext(), this);
+                recad = new RecyclerAdapter(cardData, getContext(), this);
                 rec.setAdapter(recad);
                 SwipeRefreshLayout swipeRefreshLayout = view.findViewById(R.id.refreshRanking);
                 swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {

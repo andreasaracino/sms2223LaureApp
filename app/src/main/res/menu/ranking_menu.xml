@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/Ascending"
+        android:icon="@drawable/sort2"
+        android:title="@string/averageOrderAscending"/>
+    <item
+        android:id="@+id/Descending"
+        android:icon="@drawable/sort"
+        android:title="@string/averageOrderDescending"/>
+
+</menu>
