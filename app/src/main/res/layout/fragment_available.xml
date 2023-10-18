@@ -151,17 +151,18 @@
                 android:layout_weight="3" />
         </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
-        <com.google.android.material.bottomnavigation.BottomNavigationView
-            android:id="@+id/availableBottom"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom"
-            app:backgroundTint="@color/color_primary"
-            app:itemIconTint="@color/white"
-            app:itemTextAppearanceInactive="@style/Theme.Sms2223LaureApp"
-            app:itemTextColor="@color/white"
-            app:labelVisibilityMode="labeled"
-            app:menu="@menu/filters_menu" />
     </LinearLayout>
+
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/availableBottom"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        app:backgroundTint="@color/color_primary"
+        app:itemIconTint="@color/white"
+        app:itemTextAppearanceInactive="@style/Theme.Sms2223LaureApp"
+        app:itemTextColor="@color/white"
+        app:labelVisibilityMode="labeled"
+        app:menu="@menu/filters_menu" />
 
 </FrameLayout>
