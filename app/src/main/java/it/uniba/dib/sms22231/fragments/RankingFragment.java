@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.view.DragEvent;
 import android.view.LayoutInflater;
@@ -76,6 +77,14 @@ public class RankingFragment extends Fragment implements RecyclerViewInterface {
                 noItemText.setVisibility(View.GONE);
                 RecyclerAdapter recad = new RecyclerAdapter(cardData, getContext(), this);
                 rec.setAdapter(recad);
+                SwipeRefreshLayout swipeRefreshLayout = view.findViewById(R.id.refreshRanking);
+                swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+                    @Override
+                    public void onRefresh() {
+                        swipeRefreshLayout.setRefreshing(false);
+                        getTheses();
+                    }
+                });
             }
         });
     }
@@ -124,19 +133,4 @@ public class RankingFragment extends Fragment implements RecyclerViewInterface {
         startActivity(intent);
     }
 
-    @Override
-    public void onPause() {
-        super.onPause();
-        paused = true;
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-
-        if (paused) {
-            paused = false;
-            getTheses();
-        }
-    }
 }
