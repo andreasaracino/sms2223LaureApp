@@ -9,7 +9,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
-        android:text="@string/title" />
+        android:text="@string/title"
+        android:textColor="@color/black" />
 
     <EditText
         android:id="@+id/taskTitleText"
@@ -24,7 +25,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
-        android:text="@string/description" />
+        android:text="@string/description"
+        android:textColor="@color/black" />
 
     <EditText
         android:id="@+id/taskDescriptionText"
@@ -39,7 +41,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
-        android:text="@string/status" />
+        android:text="@string/status"
+        android:textColor="@color/black" />
 
     <Spinner
         android:id="@+id/taskStatusSpinner"
@@ -53,7 +56,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
-        android:text="@string/dueDate" />
+        android:text="@string/dueDate"
+        android:textColor="@color/black" />
 
     <DatePicker
         android:id="@+id/taskDatePicker"

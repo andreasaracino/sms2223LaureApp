@@ -104,5 +104,8 @@
     <string name="inProgressStatus">In Corso</string>
     <string name="averageOrderDescending">Media Decrescente</string>
     <string name="averageOrderAscending">Media Crescente</string>
+    <string name="date">Data:</string>
+    <string name="time">Orario:</string>
+    <string name="addMeeting">Aggiungi Meeting</string>
     <string name="newMessages">Nuovi messaggi</string>
 </resources>
