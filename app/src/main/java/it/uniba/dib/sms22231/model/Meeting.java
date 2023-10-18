@@ -1,6 +1,5 @@
 package it.uniba.dib.sms22231.model;
 
-import java.sql.Time;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;

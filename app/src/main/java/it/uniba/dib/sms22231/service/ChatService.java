@@ -18,6 +18,7 @@ import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -145,18 +146,21 @@ public class ChatService {
                 });
 
                 ListenerRegistration listener = chatsCollection.whereEqualTo(getFieldKeyByUserType(), currentUser.uid).addSnapshotListener((snapshot, e) -> {
-                   if (e != null || snapshot == null) return;
+                    if (e != null || snapshot == null) return;
 
-                   for (DocumentChange documentChange : snapshot.getDocumentChanges()) {
-                       mapChat(documentChange.getDocument(), chat -> {
-                           if (documentChange.getType() == DocumentChange.Type.MODIFIED) {
-                               Optional<Chat> chatOptional = chats.stream().filter(c -> c.id.equals(chat.id)).findFirst();
-                               chatOptional.ifPresent(value -> value.update(chat));
-                           }
-                       });
-                   }
-
-                   next.apply(sortedChatList(chats));
+                    List<Chat> modifiedChats = new ArrayList<>();
+                    for (DocumentChange documentChange : snapshot.getDocumentChanges()) {
+                        mapChat(documentChange.getDocument(), chat -> {
+                            if (documentChange.getType() == DocumentChange.Type.MODIFIED) {
+                                chats.removeIf(c -> Objects.equals(c.id, chat.id));
+                                modifiedChats.add(chat);
+                                if (modifiedChats.size() == snapshot.getDocumentChanges().size()) {
+                                    chats.addAll(modifiedChats);
+                                    next.apply(sortedChatList(chats));
+                                }
+                            }
+                        });
+                    }
                 });
 
                 setOnUnsubscribe.apply(listener::remove);
@@ -250,7 +254,7 @@ public class ChatService {
         message.senderUID = currentUser.uid;
 
         messagesCollection.add(message.toMap()).addOnCompleteListener(task -> {
-            chatsCollection.document(message.chatId).update("lastUpdated", TimeUtils.dateToString(message.dateSent));
+            chatsCollection.document(message.chatId).update("lastUpdated", message.dateSent.getTime());
         });
     }
 
@@ -263,7 +267,9 @@ public class ChatService {
             message.dateSent = Date.from(Instant.now());
             message.read = false;
 
-            messagesCollection.add(message.toMap());
+            messagesCollection.add(message.toMap()).addOnCompleteListener(task -> {
+                chatsCollection.document(message.chatId).update("lastUpdated", message.dateSent.getTime());
+            });
         });
     }
 
