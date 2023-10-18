@@ -8,6 +8,7 @@ import android.os.Bundle;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.text.format.DateFormat;
 import android.view.LayoutInflater;
@@ -89,6 +90,14 @@ public class TaskFragment extends Fragment implements RecyclerViewInterface {
                 LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
                 taskRecycler.setLayoutManager(linearLayoutManager);
                 taskRecycler.setAdapter(recyclerAdapter);
+                SwipeRefreshLayout swipeRefreshLayout = view.findViewById(R.id.refreshTask);
+                swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+                    @Override
+                    public void onRefresh() {
+                        swipeRefreshLayout.setRefreshing(false);
+                        fillTaskFragment();
+                    }
+                });
             }
         });
     }
