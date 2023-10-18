@@ -53,6 +53,10 @@ public class TaskService {
         tasksCollection.document(task.id).set(task.toMap()).addOnCompleteListener(task1 -> callback.apply(task1.isSuccessful()));
     }
 
+    public void deleteTask(String taskId, CallbackFunction<Boolean> callback) {
+        tasksCollection.document(taskId).delete().addOnCompleteListener(task -> callback.apply(task.isSuccessful()));
+    }
+
     private TaskService() {}
 
     public static TaskService getInstance() {

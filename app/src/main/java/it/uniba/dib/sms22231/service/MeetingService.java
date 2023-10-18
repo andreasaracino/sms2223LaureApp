@@ -52,6 +52,10 @@ public class MeetingService {
         meetingCollection.document(meeting.id).set(meeting).addOnCompleteListener(task -> callback.apply(task.isSuccessful()));
     }
 
+    public void deleteMeeting(String meetingId, CallbackFunction<Boolean> callback) {
+        meetingCollection.document(meetingId).delete().addOnCompleteListener(task -> callback.apply(task.isSuccessful()));
+    }
+
     private MeetingService() {}
 
     public static MeetingService getInstance() {
