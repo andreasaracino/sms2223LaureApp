@@ -113,4 +113,7 @@
     <string name="modTask">Modify Task</string>
     <string name="delTask">Delete Task</string>
     <string name="inProgressStatus">In Progress</string>
+    <string name="averageOrderDescending">Average Descending</string>
+    <string name="averageOrderAscending">Average Ascending</string>
+
 </resources>

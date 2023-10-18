@@ -102,4 +102,6 @@
     <string name="modTask">Modifica Task</string>
     <string name="delTask">Elimina Task</string>
     <string name="inProgressStatus">In Corso</string>
+    <string name="averageOrderDescending">Media Decrescente</string>
+    <string name="averageOrderAscending">Media Crescente</string>
 </resources>
