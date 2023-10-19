@@ -438,7 +438,6 @@ public class AddModifyThesisActivity extends AppCompatActivity {
             if (success.get()) {
                 finish();
             }
-
             success.set(isSuccessful);
         });
     }

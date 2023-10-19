@@ -46,7 +46,6 @@ public class AvailableFragment extends Fragment implements RecyclerViewInterface
     private SearchView searchView;
     private TextView noItemText;
     private RecyclerAdapter recad;
-    private boolean paused;
     private boolean isOpen = false;
 
     @Override
@@ -116,13 +115,11 @@ public class AvailableFragment extends Fragment implements RecyclerViewInterface
                     }
                 }
                 recad.filterList(filteredList);
-                if (filteredList.isEmpty()){
+                if (filteredList.isEmpty()) {
                     noItemText.setVisibility(View.VISIBLE);
                 } else {
                     noItemText.setVisibility(View.GONE);
-
                 }
-
             }
         });
 
@@ -167,7 +164,6 @@ public class AvailableFragment extends Fragment implements RecyclerViewInterface
                 } else if (caller == 2) {
                     filterTeacher(s);
                 }
-
                 return false;
             }
         });
@@ -183,7 +179,7 @@ public class AvailableFragment extends Fragment implements RecyclerViewInterface
         }
         recad.filterList(filteredList);
 
-        if (filteredList.isEmpty()){
+        if (filteredList.isEmpty()) {
             noItemText.setVisibility(View.VISIBLE);
         } else {
             noItemText.setVisibility(View.GONE);
@@ -200,7 +196,7 @@ public class AvailableFragment extends Fragment implements RecyclerViewInterface
         }
         recad.filterList(filteredList);
 
-        if (filteredList.isEmpty()){
+        if (filteredList.isEmpty()) {
             noItemText.setVisibility(View.VISIBLE);
         } else {
             noItemText.setVisibility(View.GONE);
@@ -215,7 +211,7 @@ public class AvailableFragment extends Fragment implements RecyclerViewInterface
                 CardData thesis = new CardData(t.title, t.teacherFullname, t.id, null, t.averageRequirement);
                 cardData.add(thesis);
             }
-            if (cardData.isEmpty()){
+            if (cardData.isEmpty()) {
                 noItemText.setVisibility(View.VISIBLE);
             } else {
                 noItemText.setVisibility(View.GONE);
@@ -225,12 +221,9 @@ public class AvailableFragment extends Fragment implements RecyclerViewInterface
                 rec.setLayoutManager(linearLayoutManager);
                 rec.setAdapter(recad);
                 SwipeRefreshLayout swipeRefreshLayout = view.findViewById(R.id.refreshAvailable);
-                swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-                    @Override
-                    public void onRefresh() {
-                        swipeRefreshLayout.setRefreshing(false);
-                        getTheses();
-                    }
+                swipeRefreshLayout.setOnRefreshListener(() -> {
+                    swipeRefreshLayout.setRefreshing(false);
+                    getTheses();
                 });
             }
         });

@@ -51,7 +51,7 @@ public class MyThesisActivity extends AppCompatActivity {
         viewPager2.setAdapter(vpAdapter);
         vpAdapter.addFragment(new MyThesisFragment(applicationId, caller));
         vpAdapter.addFragment(new TaskFragment(applicationId, caller));
-        vpAdapter.addFragment(new MeetingFragment());
+        vpAdapter.addFragment(new MeetingFragment(applicationId, caller));
 
         new TabLayoutMediator(tabLayout, viewPager2, (tab, position) -> {
             switch (position){

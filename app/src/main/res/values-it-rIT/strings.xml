@@ -104,7 +104,15 @@
     <string name="inProgressStatus">In Corso</string>
     <string name="averageOrderDescending">Media Decrescente</string>
     <string name="averageOrderAscending">Media Crescente</string>
+    <string name="date">Data:</string>
+    <string name="time">Orario:</string>
+    <string name="addMeeting">Aggiungi Meeting</string>
     <string name="newMessages">Nuovi messaggi</string>
+    <string name="meetingDetail">Dettaglio Meeting</string>
+    <string name="subjects">Argomenti:</string>
+    <string name="addCalendar">Aggiungi al Calendario</string>
+    <string name="modMeet">Modifica Meeting</string>
+    <string name="delMeet">Elimina Meeting</string>
     <string name="thesisRef">Messaggio riferito alla tesi \"%1s\"</string>
     <string name="taskRef">Messaggio riferito al task \"%1s\"</string>
 </resources>

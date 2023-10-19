@@ -20,6 +20,12 @@
         android:theme="@style/Theme.Sms2223LaureApp"
         tools:targetApi="31">
         <activity
+            android:name=".activities.MeetingDetailActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.AddModifyMeetingActivity"
+            android:exported="false" />
+        <activity
             android:name=".activities.TaskDetailActivity"
             android:exported="false" />
         <activity

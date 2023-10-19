@@ -271,6 +271,7 @@ public class DetailActivity extends AppCompatActivity {
         }
     }
 
+    //se lo studente ha già effettuato una richiesta, non potrà effettuarne altre
     private void callAlreadyAppliedDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(R.string.alreadyApplied)

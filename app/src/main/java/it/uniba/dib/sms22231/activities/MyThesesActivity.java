@@ -34,7 +34,6 @@ public class MyThesesActivity extends AppCompatActivity implements RecyclerViewI
     private final UserService userService = UserService.getInstance();
     private User user;
     private ArrayList<CardData> cardData;
-    private MenuItem menuItem;
     private TextView noItemText;
 
     @Override
@@ -72,16 +71,12 @@ public class MyThesesActivity extends AppCompatActivity implements RecyclerViewI
                 rec.setLayoutManager(linearLayoutManager);
                 rec.setAdapter(recad);
                 SwipeRefreshLayout swipeRefreshLayout = findViewById(R.id.refreshMyTheses);
-                swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-                    @Override
-                    public void onRefresh() {
-                        swipeRefreshLayout.setRefreshing(false);
-                        fillCard();
-                    }
+                swipeRefreshLayout.setOnRefreshListener(() -> {
+                    swipeRefreshLayout.setRefreshing(false);
+                    fillCard();
                 });
             }
         });
-
         thesisService.getUserOwnTheses();
     }
 
