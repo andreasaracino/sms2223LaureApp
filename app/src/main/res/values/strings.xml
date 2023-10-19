@@ -126,4 +126,5 @@
     <string name="newMessages">New messages</string>
     <string name="thesisRef">Message referred to thesis \"%1s\"</string>
     <string name="taskRef">Message referred to task \"%1s\"</string>
+    <string name="chatList">LaureApp Messenger</string>
 </resources>

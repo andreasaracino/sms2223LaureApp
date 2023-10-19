@@ -39,6 +39,10 @@ public class ApplicationService {
         return new Observable<>((next, setOnUnsubscribe) -> {
             thesisService.userOwnTheses.reset();
             thesisService.userOwnTheses.subscribe(theses -> {
+                if (theses.size() == 0) {
+                    next.apply(new ArrayList<>());
+                    return;
+                }
                 List<String> thesesIds = theses.stream().map(thesis -> thesis.id).collect(Collectors.toList());
                 applicationsCollection.whereIn("thesisId", thesesIds).whereEqualTo("status", applicationStatus).get().addOnCompleteListener(task -> {
                     mapApplications(task.getResult(), theses, next);

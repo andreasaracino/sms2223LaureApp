@@ -1,11 +1,14 @@
 package it.uniba.dib.sms22231.activities;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.MenuItem;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,6 +31,10 @@ public class ChatListActivity extends AppCompatActivity implements RecyclerViewI
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat_list);
 
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setTitle(R.string.chatList);
+        actionBar.setDisplayHomeAsUpEnabled(true);
+
         initUi();
     }
 
@@ -35,6 +42,16 @@ public class ChatListActivity extends AppCompatActivity implements RecyclerViewI
         chatListRecycler = findViewById(R.id.chatListRecycler);
 
         subscribeToChatList();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                this.finish();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     private void subscribeToChatList() {

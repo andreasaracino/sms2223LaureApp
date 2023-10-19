@@ -174,6 +174,11 @@ public class ThesisService {
     private void mapThesesResult(Map<Integer, DocumentSnapshot> documentSnapshots, CallbackFunction<List<Thesis>> callback) {
         Map<Integer, Thesis> theses = new HashMap<>();
 
+        if (documentSnapshots.size() == 0) {
+            callback.apply(new ArrayList<>());
+            return;
+        }
+
         for (Map.Entry<Integer, DocumentSnapshot> thesisRaw : documentSnapshots.entrySet()) {
             Integer index = thesisRaw.getKey();
             DocumentSnapshot data = thesisRaw.getValue();
