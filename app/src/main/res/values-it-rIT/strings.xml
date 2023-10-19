@@ -115,4 +115,5 @@
     <string name="delMeet">Elimina Meeting</string>
     <string name="thesisRef">Messaggio riferito alla tesi \"%1s\"</string>
     <string name="taskRef">Messaggio riferito al task \"%1s\"</string>
+    <string name="chatList">LaureApp Messenger</string>
 </resources>

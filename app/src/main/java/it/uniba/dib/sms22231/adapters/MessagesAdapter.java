@@ -227,10 +227,10 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.ViewHo
             } else {
                 messageContainer.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
                 messageTextView.setTextColor(Color.WHITE);
-                messageContainer.setBackgroundTintList(resUtils.getColorStateList(R.color.teal_700));
+                messageContainer.setBackgroundTintList(resUtils.getColorStateList(R.color.color_primary_dark));
                 messageContainer.setGravity(Gravity.START);
                 dateTextView.setText(TimeUtils.getTimeFromDate(message.dateSent, true));
-                dateTextView.setTextColor(resUtils.getColor(R.color.teal_100));
+                dateTextView.setTextColor(resUtils.getColor(R.color.indigo_100));
                 textLayoutParams.setMargins(0, prevMessage != null && !prevMessage.sent ? 4 : 32, 128, 0);
                 textLayoutParams.gravity = Gravity.START;
                 dateTextParams.gravity = Gravity.END | Gravity.BOTTOM;

@@ -12,13 +12,14 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import it.uniba.dib.sms22231.R;
 import it.uniba.dib.sms22231.model.CardData;
 import it.uniba.dib.sms22231.utility.RecyclerViewInterface;
 
 public class RecyclerAdapter<T> extends RecyclerView.Adapter<RecyclerAdapter.Viewholder> {
-    private ArrayList<CardData<T>> cardData;
+    private List<CardData<T>> cardData;
     private final Context context;
     private final RecyclerViewInterface recyclerViewInterface;
 
@@ -55,7 +56,11 @@ public class RecyclerAdapter<T> extends RecyclerView.Adapter<RecyclerAdapter.Vie
     public void filterList(ArrayList<CardData<T>> filteredList) {
         cardData = filteredList;
         notifyDataSetChanged();
+    }
 
+    public void setCardData(List<CardData<T>> cardData) {
+        this.cardData = cardData;
+        notifyDataSetChanged();
     }
 
     public static class Viewholder extends RecyclerView.ViewHolder {
