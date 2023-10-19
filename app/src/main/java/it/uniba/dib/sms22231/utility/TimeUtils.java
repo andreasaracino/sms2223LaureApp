@@ -81,6 +81,12 @@ public class TimeUtils {
     }
 
     @SuppressLint("SimpleDateFormat")
+    public static String dateToString(Date date) {
+        DateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy - HH:mm");
+        return simpleDateFormat.format(date);
+    }
+
+    @SuppressLint("SimpleDateFormat")
     public static Date stringToDate(String date, boolean includeSeconds) {
         try {
             DateFormat simpleDateFormat = new SimpleDateFormat("yyyy/MM/dd - HH:mm" + (includeSeconds ? ":ss" : ""));
