@@ -23,7 +23,7 @@
             android:name=".activities.MeetingDetailActivity"
             android:exported="false" />
         <activity
-            android:name=".activities.AddMeeting"
+            android:name=".activities.AddModifyMeetingActivity"
             android:exported="false" />
         <activity
             android:name=".activities.TaskDetailActivity"

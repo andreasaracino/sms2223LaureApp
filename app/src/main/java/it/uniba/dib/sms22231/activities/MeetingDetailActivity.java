@@ -6,7 +6,6 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -21,7 +20,6 @@ import com.google.android.material.navigation.NavigationBarView;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 
 import it.uniba.dib.sms22231.R;
 import it.uniba.dib.sms22231.adapters.RecyclerAdapter;
@@ -58,6 +56,7 @@ public class MeetingDetailActivity extends AppCompatActivity implements Recycler
 
     }
 
+    //inizializzazione della BottomNavigationView
     private void initBottom() {
         BottomNavigationView bottomNavigationView = findViewById(R.id.meetingDetailBottom);
 
@@ -68,21 +67,19 @@ public class MeetingDetailActivity extends AppCompatActivity implements Recycler
             bottomNavigationView.getMenu().findItem(R.id.deleteMeeting).setVisible(false);
         }
 
-        bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                if (item.getItemId() == R.id.addDate) {
-                    addToCalendar();
-                } else if (item.getItemId() == R.id.modifyMeeting) {
-                    modifyMeeting();
-                } else if (item.getItemId() == R.id.deleteMeeting) {
-                    deleteMeeting();
-                }
-                return false;
+        bottomNavigationView.setOnItemSelectedListener(item -> {
+            if (item.getItemId() == R.id.addDate) {
+                addToCalendar();
+            } else if (item.getItemId() == R.id.modifyMeeting) {
+                modifyMeeting();
+            } else if (item.getItemId() == R.id.deleteMeeting) {
+                deleteMeeting();
             }
+            return false;
         });
     }
 
+    //eliminazione di un Meeting
     private void deleteMeeting() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setNegativeButton(getString(R.string.cancel), null)
@@ -90,21 +87,17 @@ public class MeetingDetailActivity extends AppCompatActivity implements Recycler
                 .setMessage(getString(R.string.suredelete));
         AlertDialog dialog = builder.create();
         dialog.show();
-        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                meetingService.deleteMeeting(meetingId, isSuccessfully -> {
-                    Toast.makeText(MeetingDetailActivity.this, R.string.success, Toast.LENGTH_SHORT).show();
-                    dialog.dismiss();
-                    finish();
-                });
-            }
-        });
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(view -> meetingService.deleteMeeting(meetingId, isSuccessfully -> {
+            Toast.makeText(MeetingDetailActivity.this, R.string.success, Toast.LENGTH_SHORT).show();
+            dialog.dismiss();
+            finish();
+        }));
 
     }
 
+    //apertura dell'Activity AddModifyMeeting per modificare il Meeting
     private void modifyMeeting() {
-        Intent intent = new Intent(this, AddMeeting.class);
+        Intent intent = new Intent(this, AddModifyMeetingActivity.class);
         intent.putExtra("onModify", true);
         intent.putExtra("meetingId", meetingId);
         intent.putExtra("applicationId", applicationId);
@@ -112,6 +105,7 @@ public class MeetingDetailActivity extends AppCompatActivity implements Recycler
         finish();
     }
 
+    //Aggiunta del Meeting al calendario del device
     private void addToCalendar() {
         meetingService.getMeetingById(meetingId).subscribe(meeting -> {
             Calendar dateToAdd = Calendar.getInstance();
@@ -124,6 +118,7 @@ public class MeetingDetailActivity extends AppCompatActivity implements Recycler
         });
     }
 
+    //riempimento dell'activity con le informazioni sul meeting
     private void fillActivity() {
         TextView title = findViewById(R.id.meetingTitle);
         TextView date = findViewById(R.id.meetingDateText);
@@ -151,10 +146,7 @@ public class MeetingDetailActivity extends AppCompatActivity implements Recycler
                     recyclerView.setAdapter(recyclerAdapter);
                 });
             }
-
         });
-
-
     }
 
     @Override

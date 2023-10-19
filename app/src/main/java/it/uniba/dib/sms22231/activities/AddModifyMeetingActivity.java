@@ -29,15 +29,9 @@ import it.uniba.dib.sms22231.model.Task;
 import it.uniba.dib.sms22231.service.MeetingService;
 import it.uniba.dib.sms22231.service.TaskService;
 
-public class AddMeeting extends AppCompatActivity {
+public class AddModifyMeetingActivity extends AppCompatActivity {
     private final TaskService taskService = TaskService.getInstance();
     private final MeetingService meetingService = MeetingService.getInstance();
-    private ArrayList<Task> taskArrayList;
-    private ArrayList<Task> checkedTasksArrayList = new ArrayList<>();
-    private String[] tasksArray;
-    private String[] taskIdsArray;
-    private String applicationId;
-    private boolean[] checked;
     private EditText title;
     private EditText subjects;
     private DatePicker datePicker;
@@ -46,13 +40,19 @@ public class AddMeeting extends AppCompatActivity {
     private Button saveButton;
     private ListView taskListView;
     private final Calendar calendar = Calendar.getInstance();
+    private ArrayList<Task> taskArrayList;
+    private ArrayList<Task> checkedTasksArrayList = new ArrayList<>();
+    private String[] tasksArray;
+    private String[] taskIdsArray;
+    private boolean[] checked;
+    private String applicationId;
     private String meetingId;
     private boolean onModify;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_add_meeting);
+        setContentView(R.layout.activity_add_modify_meeting);
 
         Intent intent = getIntent();
         applicationId = intent.getStringExtra("applicationId");
@@ -68,7 +68,7 @@ public class AddMeeting extends AppCompatActivity {
         saveButton = findViewById(R.id.saveMeetingButton);
 
         ActionBar actionBar = getSupportActionBar();
-        if (onModify){
+        if (onModify) {
             actionBar.setTitle(R.string.modMeet);
             saveButton.setText(R.string.modMeet);
             fillActivity();
@@ -85,6 +85,7 @@ public class AddMeeting extends AppCompatActivity {
 
     }
 
+    //se l'activity è aperta il modifica, i campi vengono riempiti con i dati del meeting
     private void fillActivity() {
         meetingService.getMeetingById(meetingId).subscribe(meeting -> {
             title.setText(meeting.title);
@@ -94,86 +95,76 @@ public class AddMeeting extends AppCompatActivity {
             int year = Integer.parseInt((String) DateFormat.format("yyyy", meeting.date));
             int hour = Integer.parseInt((String) DateFormat.format("HH", meeting.date));
             int minutes = Integer.parseInt((String) DateFormat.format("mm", meeting.date));
-            datePicker.init(year, month-1, day, null);
+            datePicker.init(year, month - 1, day, null);
             timePicker.setHour(hour);
             timePicker.setMinute(minutes);
-
-
-
         });
     }
 
+    //il metodo specifica quale azione il Button deve svolgere. Dopo aver creato un oggetto di tipo Meeting, se l'activity è stata aperta per l'aggiunta,
+    //il Button effettuerà il salvataggio, altrimenti modificherà il meeting esistente.
     private void saveOrModify() {
-
-        saveButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Meeting meeting = new Meeting();
-                meeting.title = title.getText().toString();
-                meeting.subject = subjects.getText().toString();
-                calendar.set(datePicker.getYear(), datePicker.getMonth(), datePicker.getDayOfMonth(), timePicker.getHour(), timePicker.getMinute(), 0);
-                long milliseconds = calendar.getTimeInMillis();
-                meeting.date = new Date(milliseconds);
-                meeting.taskId = new ArrayList<>();
-                for (Task t : checkedTasksArrayList){
-                    meeting.taskId.add(t.id);
-                }
-                meeting.applicationId = applicationId;
-                if (onModify){
-                    meeting.id = meetingId;
-                    meetingService.updateMeeting(meeting, isSuccessfully -> {
-                        Toast.makeText(AddMeeting.this, getString(R.string.success), Toast.LENGTH_SHORT).show();
-                    });
-                } else {
-                    meetingService.saveNewMeeting(meeting, isSuccessfully -> {
-                        Toast.makeText(AddMeeting.this, getString(R.string.success), Toast.LENGTH_SHORT).show();
-                    });
-                }
-                finish();
+        saveButton.setOnClickListener(view -> {
+            Meeting meeting = new Meeting();
+            meeting.title = title.getText().toString();
+            meeting.subject = subjects.getText().toString();
+            calendar.set(datePicker.getYear(), datePicker.getMonth(), datePicker.getDayOfMonth(), timePicker.getHour(), timePicker.getMinute(), 0);
+            long milliseconds = calendar.getTimeInMillis();
+            meeting.date = new Date(milliseconds);
+            meeting.taskId = new ArrayList<>();
+            for (Task t : checkedTasksArrayList) {
+                meeting.taskId.add(t.id);
             }
-        });
-    }
-
-    private void addTasks() {
-        addTask.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(AddMeeting.this);
-                builder.setTitle(getString(R.string.addTask))
-                        .setNegativeButton(getString(R.string.Cancel), null)
-                        .setPositiveButton("Ok", null);
-                taskArrayList = new ArrayList<>();
-                taskService.getTasksByApplicationId(applicationId).subscribe(tasks -> {
-                    taskArrayList.addAll(tasks);
-                    tasksArray = new String[taskArrayList.size()];
-                    taskIdsArray = new String[taskArrayList.size()];
-                    for (int i = 0; i < taskArrayList.size(); i++) {
-                        tasksArray[i] = taskArrayList.get(i).title;
-                        taskIdsArray[i] = taskArrayList.get(i).id;
-                    }
-                    checked = new boolean[taskArrayList.size()];
-                    Arrays.fill(checked, false);
-                    builder.setMultiChoiceItems(tasksArray, checked, (dialogInterface, i, b) -> checked[i] = b);
-                    AlertDialog dialog = builder.create();
-                    dialog.show();
-                    dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            for (int i = 0; i < taskArrayList.size(); i++) {
-                                if (checked[i]) {
-                                    checkedTasksArrayList.add(taskArrayList.get(i));
-                                }
-                            }
-                            fillTaskList();
-                            dialog.dismiss();
-                        }
-                    });
+            meeting.applicationId = applicationId;
+            if (onModify) {
+                meeting.id = meetingId;
+                meetingService.updateMeeting(meeting, isSuccessfully -> {
+                    Toast.makeText(AddModifyMeetingActivity.this, getString(R.string.success), Toast.LENGTH_SHORT).show();
                 });
-
+            } else {
+                meetingService.saveNewMeeting(meeting, isSuccessfully -> {
+                    Toast.makeText(AddModifyMeetingActivity.this, getString(R.string.success), Toast.LENGTH_SHORT).show();
+                });
             }
+            finish();
         });
     }
 
+    // cliccando sul pulsante appare una Dialog che permette di scegliere i task correlati al meeting
+    private void addTasks() {
+        addTask.setOnClickListener(view -> {
+            AlertDialog.Builder builder = new AlertDialog.Builder(AddModifyMeetingActivity.this);
+            builder.setTitle(getString(R.string.addTask))
+                    .setNegativeButton(getString(R.string.Cancel), null)
+                    .setPositiveButton("Ok", null);
+            taskArrayList = new ArrayList<>();
+            taskService.getTasksByApplicationId(applicationId).subscribe(tasks -> {
+                taskArrayList.addAll(tasks);
+                tasksArray = new String[taskArrayList.size()];
+                taskIdsArray = new String[taskArrayList.size()];
+                for (int i = 0; i < taskArrayList.size(); i++) {
+                    tasksArray[i] = taskArrayList.get(i).title;
+                    taskIdsArray[i] = taskArrayList.get(i).id;
+                }
+                checked = new boolean[taskArrayList.size()];
+                Arrays.fill(checked, false);
+                builder.setMultiChoiceItems(tasksArray, checked, (dialogInterface, i, b) -> checked[i] = b);
+                AlertDialog dialog = builder.create();
+                dialog.show();
+                dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(view1 -> {
+                    for (int i = 0; i < taskArrayList.size(); i++) {
+                        if (checked[i]) {
+                            checkedTasksArrayList.add(taskArrayList.get(i));
+                        }
+                    }
+                    fillTaskList();
+                    dialog.dismiss();
+                });
+            });
+        });
+    }
+
+    //riempimento della ListView dei task
     private void fillTaskList() {
         ArrayList<String> tasksTitle = new ArrayList<>();
         for (Task t : checkedTasksArrayList) {

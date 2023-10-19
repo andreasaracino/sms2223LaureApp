@@ -59,12 +59,9 @@ public class InProgressFragment extends Fragment implements RecyclerViewInterfac
                 rec.setLayoutManager(linearLayoutManager);
                 rec.setAdapter(recad);
                 SwipeRefreshLayout swipeRefreshLayout = view.findViewById(R.id.refreshInProgress);
-                swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-                    @Override
-                    public void onRefresh() {
-                        swipeRefreshLayout.setRefreshing(false);
-                        getApplications();
-                    }
+                swipeRefreshLayout.setOnRefreshListener(() -> {
+                    swipeRefreshLayout.setRefreshing(false);
+                    getApplications();
                 });
             }
         });

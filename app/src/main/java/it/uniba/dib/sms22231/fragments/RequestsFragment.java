@@ -59,12 +59,9 @@ public class RequestsFragment extends Fragment implements RecyclerViewInterface 
                 rec.setLayoutManager(linearLayoutManager);
                 rec.setAdapter(recad);
                 SwipeRefreshLayout swipeRefreshLayout = view.findViewById(R.id.refreshRequest);
-                swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-                    @Override
-                    public void onRefresh() {
-                        swipeRefreshLayout.setRefreshing(false);
-                        getApplications();
-                    }
+                swipeRefreshLayout.setOnRefreshListener(() -> {
+                    swipeRefreshLayout.setRefreshing(false);
+                    getApplications();
                 });
             }
         });

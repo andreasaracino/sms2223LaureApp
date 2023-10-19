@@ -38,12 +38,12 @@ import it.uniba.dib.sms22231.utility.TimeUtils;
 
 public class TaskFragment extends Fragment implements RecyclerViewInterface {
     private final TaskService taskService = TaskService.getInstance();
+    private View view;
     private RecyclerView taskRecycler;
     private FloatingActionButton addTaskButton;
     private TextView noTasksText;
     private ArrayList<CardData> cardDataArrayList;
     private String applicationId;
-    private View view;
     private int caller;
 
     public TaskFragment(String applicationId, int caller) {
@@ -75,6 +75,7 @@ public class TaskFragment extends Fragment implements RecyclerViewInterface {
         return view;
     }
 
+    //riempimento del fragment con le card dei task
     private void fillTaskFragment() {
         taskService.getTasksByApplicationId(applicationId).subscribe(tasks -> {
             cardDataArrayList = new ArrayList<>();
@@ -91,72 +92,57 @@ public class TaskFragment extends Fragment implements RecyclerViewInterface {
                 taskRecycler.setLayoutManager(linearLayoutManager);
                 taskRecycler.setAdapter(recyclerAdapter);
                 SwipeRefreshLayout swipeRefreshLayout = view.findViewById(R.id.refreshTask);
-                swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-                    @Override
-                    public void onRefresh() {
-                        swipeRefreshLayout.setRefreshing(false);
-                        fillTaskFragment();
-                    }
+                swipeRefreshLayout.setOnRefreshListener(() -> {
+                    swipeRefreshLayout.setRefreshing(false);
+                    fillTaskFragment();
                 });
             }
         });
     }
 
+    //aggiunta di un nuovo task tramite Dialog
     private void addTask() {
-        addTaskButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                final View customLayout = getLayoutInflater().inflate(R.layout.custom_alert_add_task, null);
-                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-                builder.setTitle(R.string.addTask)
-                        .setView(customLayout)
-                        .setNegativeButton(getString(R.string.Cancel), null)
-                        .setPositiveButton(getString(R.string.save), null);
+        addTaskButton.setOnClickListener(view -> {
+            final View customLayout = getLayoutInflater().inflate(R.layout.custom_alert_add_task, null);
+            AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+            builder.setTitle(R.string.addTask)
+                    .setView(customLayout)
+                    .setNegativeButton(getString(R.string.Cancel), null)
+                    .setPositiveButton(getString(R.string.save), null);
 
-                AlertDialog alertDialog = builder.create();
-                alertDialog.show();
-                DatePicker datePicker = alertDialog.findViewById(R.id.taskDatePicker);
-                final Calendar calendar = Calendar.getInstance();
-                int day = calendar.get(Calendar.DAY_OF_MONTH);
-                int month = calendar.get(Calendar.MONTH);
-                int year = calendar.get(Calendar.YEAR);
-                datePicker.init(year, month, day, null);
+            AlertDialog alertDialog = builder.create();
+            alertDialog.show();
+            DatePicker datePicker = alertDialog.findViewById(R.id.taskDatePicker);
+            final Calendar calendar = Calendar.getInstance();
+            int day = calendar.get(Calendar.DAY_OF_MONTH);
+            int month = calendar.get(Calendar.MONTH);
+            int year = calendar.get(Calendar.YEAR);
+            datePicker.init(year, month, day, null);
 
-                alertDialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        Task task = new Task();
-                        EditText title = alertDialog.findViewById(R.id.taskTitleText);
-                        task.title = title.getText().toString();
-                        EditText description = alertDialog.findViewById(R.id.taskDescriptionText);
-                        task.description = description.getText().toString();
-                        task.applicationId = applicationId;
+            alertDialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(view1 -> {
+                Task task = new Task();
+                EditText title = alertDialog.findViewById(R.id.taskTitleText);
+                task.title = title.getText().toString();
+                EditText description = alertDialog.findViewById(R.id.taskDescriptionText);
+                task.description = description.getText().toString();
+                task.applicationId = applicationId;
 
-                        Spinner spinner = alertDialog.findViewById(R.id.taskStatusSpinner);
-//                        if (spinner.getSelectedItem().equals(getString(R.string.openStatus))) {
-//                            task.status = TaskStatus.open;
-//                        } else if (spinner.getSelectedItem().equals(getString(R.string.closedStatus))) {
-//                            task.status = TaskStatus.closed;
-//                        } else if (spinner.getSelectedItem().equals(getString(R.string.inProgressStatus))) {
-//                            task.status = TaskStatus.inProgress;
-//                        }
-                        task.status = TaskStatus.values()[spinner.getSelectedItemPosition()];
+                Spinner spinner = alertDialog.findViewById(R.id.taskStatusSpinner);
+                task.status = TaskStatus.values()[spinner.getSelectedItemPosition()];
 
-                        calendar.set(Calendar.DAY_OF_MONTH, datePicker.getDayOfMonth());
-                        calendar.set(Calendar.MONTH, datePicker.getMonth());
-                        calendar.set(Calendar.YEAR, datePicker.getYear());
-                        long time = calendar.getTimeInMillis();
-                        task.dueDate = new Date(time);
+                calendar.set(Calendar.DAY_OF_MONTH, datePicker.getDayOfMonth());
+                calendar.set(Calendar.MONTH, datePicker.getMonth());
+                calendar.set(Calendar.YEAR, datePicker.getYear());
+                long time = calendar.getTimeInMillis();
+                task.dueDate = new Date(time);
 
-                        taskService.saveNewTask(task, isSuccessfully -> {
-                            if (isSuccessfully) {
-                                Toast.makeText(getContext(), R.string.success, Toast.LENGTH_SHORT).show();
-                            }
-                        });
-                        alertDialog.dismiss();
+                taskService.saveNewTask(task, isSuccessfully -> {
+                    if (isSuccessfully) {
+                        Toast.makeText(getContext(), R.string.success, Toast.LENGTH_SHORT).show();
                     }
                 });
-            }
+                alertDialog.dismiss();
+            });
         });
     }
 

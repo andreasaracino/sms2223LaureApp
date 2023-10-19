@@ -45,7 +45,6 @@ public class RankingFragment extends Fragment implements RecyclerViewInterface {
     private RecyclerAdapter recad;
     private View view;
     private TextView noItemText;
-    private boolean paused;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -60,29 +59,25 @@ public class RankingFragment extends Fragment implements RecyclerViewInterface {
         return view;
     }
 
+    //inizializzazione della BottomNavigationView
     private void initBottom() {
         bottomNavigationView = view.findViewById(R.id.rankBottom);
-        bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                if (item.getItemId() == R.id.Ascending) {
-                    orderAscending();
-                } else if (item.getItemId() == R.id.Descending) {
-                    orderDescending();
-                }
-                return false;
+        bottomNavigationView.setOnItemSelectedListener(item -> {
+            if (item.getItemId() == R.id.Ascending) {
+                orderAscending();
+            } else if (item.getItemId() == R.id.Descending) {
+                orderDescending();
             }
+            return false;
         });
     }
 
+    //ordinamento per media decrescente
     private void orderDescending() {
-        Collections.sort(cardData, new Comparator<CardData>() {
-            @Override
-            public int compare(CardData c1, CardData c2) {
-                if (c1.getData() == c2.getData())
-                    return 0;
-                return (Integer) c1.getData() > (Integer) c2.getData() ? -1 : 1;
-            }
+        Collections.sort(cardData, (c1, c2) -> {
+            if (c1.getData() == c2.getData())
+                return 0;
+            return (Integer) c1.getData() > (Integer) c2.getData() ? -1 : 1;
         });
         for (int i = 0; i < cardData.size(); i++) {
             cardData.get(i).setRank(i + 1 + ".");
@@ -90,14 +85,12 @@ public class RankingFragment extends Fragment implements RecyclerViewInterface {
         recad.filterList(cardData);
     }
 
+    //ordinamento per media crescente
     private void orderAscending() {
-        Collections.sort(cardData, new Comparator<CardData>() {
-            @Override
-            public int compare(CardData c1, CardData c2) {
-                if (c1.getData() == c2.getData())
-                    return 0;
-                return (Integer) c1.getData() < (Integer) c2.getData() ? -1 : 1;
-            }
+        Collections.sort(cardData, (c1, c2) -> {
+            if (c1.getData() == c2.getData())
+                return 0;
+            return (Integer) c1.getData() < (Integer) c2.getData() ? -1 : 1;
         });
         for (int i = 0; i < cardData.size(); i++) {
             cardData.get(i).setRank(i + 1 + ".");
@@ -121,7 +114,7 @@ public class RankingFragment extends Fragment implements RecyclerViewInterface {
             int rank = 0;
             for (Thesis t : theses) {
                 rank++;
-                CardData thesis = new CardData(t.title, t.teacherFullname, t.id, String.valueOf(rank) + ".", t.averageRequirement);
+                CardData thesis = new CardData(t.title, t.teacherFullname, t.id, rank + ".", t.averageRequirement);
                 cardData.add(thesis);
             }
             if (cardData.isEmpty()) {
@@ -131,12 +124,9 @@ public class RankingFragment extends Fragment implements RecyclerViewInterface {
                 recad = new RecyclerAdapter(cardData, getContext(), this);
                 rec.setAdapter(recad);
                 SwipeRefreshLayout swipeRefreshLayout = view.findViewById(R.id.refreshRanking);
-                swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-                    @Override
-                    public void onRefresh() {
-                        swipeRefreshLayout.setRefreshing(false);
-                        getTheses();
-                    }
+                swipeRefreshLayout.setOnRefreshListener(() -> {
+                    swipeRefreshLayout.setRefreshing(false);
+                    getTheses();
                 });
             }
         });

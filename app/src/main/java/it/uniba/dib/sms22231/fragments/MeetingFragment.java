@@ -1,7 +1,5 @@
 package it.uniba.dib.sms22231.fragments;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -13,37 +11,29 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.DatePicker;
 import android.widget.TextView;
-import android.widget.TimePicker;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
 
 import it.uniba.dib.sms22231.R;
-import it.uniba.dib.sms22231.activities.AddMeeting;
+import it.uniba.dib.sms22231.activities.AddModifyMeetingActivity;
 import it.uniba.dib.sms22231.activities.MeetingDetailActivity;
-import it.uniba.dib.sms22231.activities.TaskDetailActivity;
 import it.uniba.dib.sms22231.adapters.RecyclerAdapter;
 import it.uniba.dib.sms22231.model.CardData;
 import it.uniba.dib.sms22231.model.Meeting;
-import it.uniba.dib.sms22231.model.Task;
 import it.uniba.dib.sms22231.service.MeetingService;
-import it.uniba.dib.sms22231.service.TaskService;
 import it.uniba.dib.sms22231.utility.RecyclerViewInterface;
 import it.uniba.dib.sms22231.utility.TimeUtils;
 
 public class MeetingFragment extends Fragment implements RecyclerViewInterface {
     private final MeetingService meetingService = MeetingService.getInstance();
-    private ArrayList<CardData> cardDataArrayList;
     private View view;
     private TextView noMeeting;
     private FloatingActionButton addMeetingButton;
     private RecyclerView meetingRecycler;
+    private ArrayList<CardData> cardDataArrayList;
     private String applicationId;
     private int caller;
 
@@ -75,6 +65,7 @@ public class MeetingFragment extends Fragment implements RecyclerViewInterface {
         return view;
     }
 
+    //riempimento del fragment con la lista dei meeting
     private void fillFragment() {
         meetingService.getMeetingsByApplicationId(applicationId).subscribe(meetings -> {
             cardDataArrayList = new ArrayList<>();
@@ -92,28 +83,24 @@ public class MeetingFragment extends Fragment implements RecyclerViewInterface {
                 meetingRecycler.setLayoutManager(linearLayoutManager);
                 meetingRecycler.setAdapter(recyclerAdapter);
                 SwipeRefreshLayout swipeRefreshLayout = view.findViewById(R.id.meetingRefresh);
-                swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-                    @Override
-                    public void onRefresh() {
-                        swipeRefreshLayout.setRefreshing(false);
-                        fillFragment();
-                    }
+                swipeRefreshLayout.setOnRefreshListener(() -> {
+                    swipeRefreshLayout.setRefreshing(false);
+                    fillFragment();
                 });
             }
         });
     }
 
+    //apertura dell'activity per aggiungere un meeting
     private void addMeeting() {
-        addMeetingButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(getContext(), AddMeeting.class);
-                intent.putExtra("applicationId", applicationId);
-                startActivity(intent);
-            }
+        addMeetingButton.setOnClickListener(view -> {
+            Intent intent = new Intent(getContext(), AddModifyMeetingActivity.class);
+            intent.putExtra("applicationId", applicationId);
+            startActivity(intent);
         });
     }
 
+    //apertura del dettaglio del meeting
     @Override
     public void onItemClick(int position) {
         Intent intent = new Intent(getContext(), MeetingDetailActivity.class);
