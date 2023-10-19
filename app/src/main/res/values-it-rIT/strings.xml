@@ -109,4 +109,8 @@
     <string name="addMeeting">Aggiungi Meeting</string>
     <string name="newMessages">Nuovi messaggi</string>
     <string name="meetingDetail">Dettaglio Meeting</string>
+    <string name="subjects">Argomenti:</string>
+    <string name="addCalendar">Aggiungi al Calendario</string>
+    <string name="modMeet">Modifica Meeting</string>
+    <string name="delMeet">Elimina Meeting</string>
 </resources>

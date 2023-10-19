@@ -12,6 +12,7 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.TimePicker;
@@ -38,7 +39,8 @@ public class AddMeeting extends AppCompatActivity {
     private String[] taskIdsArray;
     private String applicationId;
     private boolean[] checked;
-    private TextView title;
+    private EditText title;
+    private EditText subjects;
     private DatePicker datePicker;
     private TimePicker timePicker;
     private Button addTask;
@@ -59,6 +61,7 @@ public class AddMeeting extends AppCompatActivity {
         applicationId = intent.getStringExtra("applicationId");
 
         title = findViewById(R.id.meetingTitleText);
+        subjects = findViewById(R.id.subjectText);
         datePicker = findViewById(R.id.meetingDate);
         timePicker = findViewById(R.id.meetingTime);
         addTask = findViewById(R.id.addTaskBtn);
@@ -83,6 +86,7 @@ public class AddMeeting extends AppCompatActivity {
             public void onClick(View view) {
                 Meeting meeting = new Meeting();
                 meeting.title = title.getText().toString();
+                meeting.subject = subjects.getText().toString();
                 calendar.set(datePicker.getYear(), datePicker.getMonth(), datePicker.getDayOfMonth(), timePicker.getHour(), timePicker.getMinute(), 0);
                 long milliseconds = calendar.getTimeInMillis();
                 meeting.date = new Date(milliseconds);

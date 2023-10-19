@@ -121,4 +121,8 @@
 
     <string name="newMessages">New messages</string>
     <string name="meetingDetail">Meeting Detail</string>
+    <string name="subjects">Subjects:</string>
+    <string name="addCalendar">Add to Calendar</string>
+    <string name="modMeet">Modify Meeting</string>
+    <string name="delMeet">Delete Meeting</string>
 </resources>

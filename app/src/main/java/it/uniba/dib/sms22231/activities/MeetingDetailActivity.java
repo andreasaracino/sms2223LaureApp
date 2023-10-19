@@ -9,11 +9,17 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.provider.CalendarContract;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.navigation.NavigationBarView;
+
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 
 import it.uniba.dib.sms22231.R;
 import it.uniba.dib.sms22231.adapters.RecyclerAdapter;
@@ -44,7 +50,51 @@ public class MeetingDetailActivity extends AppCompatActivity implements Recycler
         caller = intent.getIntExtra("caller", 0);
 
         fillActivity();
+        initBottom();
 
+    }
+
+    private void initBottom() {
+        BottomNavigationView bottomNavigationView = findViewById(R.id.meetingDetailBottom);
+
+        if (caller == 4){
+            bottomNavigationView.getMenu().findItem(R.id.addDate).setVisible(false);
+        } else {
+            bottomNavigationView.getMenu().findItem(R.id.modifyMeeting).setVisible(false);
+            bottomNavigationView.getMenu().findItem(R.id.deleteMeeting).setVisible(false);
+        }
+
+        bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                if (item.getItemId() == R.id.addDate){
+                    addToCalendar();
+                } else if (item.getItemId() == R.id.modifyMeeting) {
+                    modifyMeeting();
+                } else if (item.getItemId() == R.id.deleteMeeting) {
+                    deleteMeeting();
+                }
+                return false;
+            }
+        });
+    }
+
+    private void deleteMeeting() {
+    }
+
+    private void modifyMeeting() {
+    }
+
+    private void addToCalendar() {
+        meetingService.getMeetingById(meetingId).subscribe(meeting -> {
+            Calendar dateToAdd = Calendar.getInstance();
+            dateToAdd.setTimeInMillis(meeting.date.getTime());
+            Intent intent = new Intent(Intent.ACTION_INSERT)
+                    .setData(CalendarContract.Events.CONTENT_URI)
+                    .putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, dateToAdd.getTimeInMillis())
+                    .putExtra(CalendarContract.Events.TITLE, meeting.title);
+            startActivity(intent);
+        });
     }
 
     private void fillActivity() {
@@ -52,11 +102,13 @@ public class MeetingDetailActivity extends AppCompatActivity implements Recycler
         TextView date = findViewById(R.id.meetingDateText);
         RecyclerView recyclerView = findViewById(R.id.taskRecyclerView);
         TextView noTasks = findViewById(R.id.noTasksTextView);
+        TextView subjects = findViewById(R.id.textSubject);
 
         meetingService.getMeetingById(meetingId).subscribe(meeting -> {
             title.setText(meeting.title);
             String meetingDate = TimeUtils.getTimeFromDate(meeting.date, false);
             date.setText(meetingDate);
+            subjects.setText(meeting.subject);
             cardDataArrayList = new ArrayList<>();
             for (String id : meeting.taskId){
                 taskService.getTaskById(id).subscribe(task -> {
