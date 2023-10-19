@@ -116,4 +116,6 @@
     <string name="averageOrderDescending">Average Descending</string>
     <string name="averageOrderAscending">Average Ascending</string>
     <string name="newMessages">New messages</string>
+    <string name="thesisRef">Message referred to thesis \"%1s\"</string>
+    <string name="taskRef">Message referred to task \"%1s\"</string>
 </resources>

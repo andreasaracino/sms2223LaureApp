@@ -20,17 +20,19 @@ public class Message implements Serializable {
     public String attachmentId;
     public String text;
     public String senderUID;
+    public String thesisId;
     public String taskId;
     public Date dateSent;
     public boolean read;
     public boolean sent;
+    public MessageReference messageReference;
 
     public Message() {
     }
 
 
 
-    public Message(String id, String chatId, String attachmentId, String text, String senderUID, String taskId, Date dateSent, Boolean read, Boolean sent) {
+    public Message(String id, String chatId, String attachmentId, String text, String senderUID, String taskId, Date dateSent, Boolean read, Boolean sent, MessageReference messageReference) {
         this.id = id;
         this.chatId = chatId;
         this.attachmentId = attachmentId;
@@ -40,6 +42,7 @@ public class Message implements Serializable {
         this.dateSent = dateSent;
         this.read = read;
         this.sent = sent;
+        this.messageReference = messageReference;
     }
 
     public Message(Map<String, Object> data) {
@@ -48,9 +51,13 @@ public class Message implements Serializable {
         attachmentId = (String) data.get("attachmentId");
         text = (String) data.get("text");
         senderUID = (String) data.get("senderUID");
+        thesisId = (String) data.get("thesisId");
         taskId = (String) data.get("taskId");
         read = (Boolean) data.get("read");
         dateSent = TimeUtils.stringToDate((String) data.get("dateSent"), true);
+        if (data.containsKey("messageReference")) {
+            messageReference = new MessageReference((Map<String, Object>) data.get("messageReference"));
+        }
     }
 
     public Map<String, Object> toMap() {
@@ -59,9 +66,13 @@ public class Message implements Serializable {
         map.put("attachmentId", attachmentId);
         map.put("text", text);
         map.put("senderUID", senderUID);
+        map.put("thesisId", thesisId);
         map.put("taskId", taskId);
         map.put("read", read);
         map.put("dateSent", TimeUtils.dateToString(dateSent, true));
+        if (messageReference != null) {
+            map.put("messageReference", messageReference.toMap());
+        }
         return map;
     }
 

@@ -33,10 +33,12 @@ import java.util.List;
 import it.uniba.dib.sms22231.R;
 import it.uniba.dib.sms22231.adapters.CustomListAdapter;
 import it.uniba.dib.sms22231.config.ApplicationStatus;
+import it.uniba.dib.sms22231.config.MessageReferenceType;
 import it.uniba.dib.sms22231.config.RequirementTypes;
 import it.uniba.dib.sms22231.model.Application;
 import it.uniba.dib.sms22231.model.Attachment;
 import it.uniba.dib.sms22231.model.CustomListData;
+import it.uniba.dib.sms22231.model.MessageReference;
 import it.uniba.dib.sms22231.model.Requirement;
 import it.uniba.dib.sms22231.model.Thesis;
 import it.uniba.dib.sms22231.service.ApplicationService;
@@ -215,6 +217,13 @@ public class DetailActivity extends AppCompatActivity {
         Intent intent = new Intent(this, ChatActivity.class);
         ChatService.getInstance().getChatByStudentIdAndTeacherId(studentService.getStudentData().uid, thesis.teacherId).subscribe(chat -> {
             intent.putExtra("chat", chat);
+
+            MessageReference messageReference = new MessageReference();
+            messageReference.messageReferenceType = MessageReferenceType.thesis;
+            messageReference.referenceId = thesis.id;
+            messageReference.value = thesis.title;
+            intent.putExtra("messageReference", messageReference);
+
             startActivity(intent);
         });
     }

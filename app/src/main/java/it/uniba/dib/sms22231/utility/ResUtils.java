@@ -28,6 +28,10 @@ public class ResUtils {
         return ContextCompat.getColor(context, resId);
     }
 
+    public String getStringWithParams(int resId, Object... args) {
+        return context.getString(resId, args);
+    }
+
     public static void init(Context context) {
         instance = new ResUtils(context);
     }

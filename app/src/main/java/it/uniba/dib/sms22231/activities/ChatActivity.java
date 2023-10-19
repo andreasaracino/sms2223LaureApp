@@ -6,12 +6,16 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewParent;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -20,8 +24,10 @@ import java.util.Objects;
 
 import it.uniba.dib.sms22231.R;
 import it.uniba.dib.sms22231.adapters.MessagesAdapter;
+import it.uniba.dib.sms22231.config.MessageReferenceType;
 import it.uniba.dib.sms22231.model.Chat;
 import it.uniba.dib.sms22231.model.Message;
+import it.uniba.dib.sms22231.model.MessageReference;
 import it.uniba.dib.sms22231.service.ChatService;
 import it.uniba.dib.sms22231.service.UserService;
 import it.uniba.dib.sms22231.utility.Observable;
@@ -32,9 +38,12 @@ public class ChatActivity extends AppCompatActivity {
     private final ChatService chatService = ChatService.getInstance();
     private final UserService userService = UserService.getInstance();
     private RecyclerView messagesView;
-    MessagesAdapter messagesAdapter;
+    private MessagesAdapter messagesAdapter;
+    private LinearLayout messageReferenceContainer;
+    private TextView chatReferenceMessage;
     private EditText editText;
     private Chat chat;
+    private MessageReference messageReference;
     private Observable<List<Message>>.Subscription subscription;
     private boolean paused;
 
@@ -43,6 +52,7 @@ public class ChatActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
         chat = (Chat) getIntent().getSerializableExtra("chat");
+        messageReference = (MessageReference) getIntent().getSerializableExtra("messageReference");
 
         initAppBar();
     }
@@ -53,8 +63,8 @@ public class ChatActivity extends AppCompatActivity {
         actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
         actionBar.setCustomView(customView);
         Toolbar parent = (Toolbar) customView.getParent();
-        parent.setPadding(0,0,0,0);
-        parent.setContentInsetsAbsolute(0,0);
+        parent.setPadding(0, 0, 0, 0);
+        parent.setContentInsetsAbsolute(0, 0);
 
         ImageButton backButton = customView.findViewById(R.id.backButton);
         TextView chatUserFullName = customView.findViewById(R.id.chatUserFullName);
@@ -76,21 +86,40 @@ public class ChatActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
 
+        messageReferenceContainer = findViewById(R.id.messageReferenceContainer);
+        chatReferenceMessage = findViewById(R.id.chatReferenceMessage);
         messagesView = findViewById(R.id.messagesView);
         editText = findViewById(R.id.editTextTextMultiLine);
+
+        if (messageReference != null) {
+            messageReferenceContainer.setVisibility(View.VISIBLE);
+            chatReferenceMessage.setText(resUtils.getStringWithParams(messageReference.messageReferenceType.getStringRes(), messageReference.value));
+        }
 
         List<Message> messageList = new ArrayList<>();
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         layoutManager.setStackFromEnd(true);
 
-        messagesAdapter = new MessagesAdapter(messageList, this);
+        messagesAdapter = new MessagesAdapter(messageList, this, this::goToReference);
         messagesView.setLayoutManager(layoutManager);
         messagesView.setAdapter(messagesAdapter);
 
         userService.userObservable.subscribe(user -> {
             subscribeToChat();
         });
+    }
+
+    private void goToReference(MessageReference messageReference) {
+        Intent intent;
+        if (Objects.requireNonNull(messageReference.messageReferenceType) == MessageReferenceType.task) {
+            intent = new Intent(this, TaskDetailActivity.class);
+            intent.putExtra("taskId", messageReference.referenceId);
+        } else {
+            intent = new Intent(this, DetailActivity.class);
+            intent.putExtra("id", messageReference.referenceId);
+        }
+        startActivity(intent);
     }
 
     private void subscribeToChat() {
@@ -110,9 +139,28 @@ public class ChatActivity extends AppCompatActivity {
 
             message.text = text;
             message.chatId = chat.id;
+            message.messageReference = messageReference;
 
+            removeReference(null);
             chatService.sendMessage(message);
         }
+    }
+
+    public void removeReference(View view) {
+        messageReference = null;
+        messageReferenceContainer
+                .animate()
+                .scaleX(0.5f)
+                .scaleY(0.5f)
+                .translationY(64)
+                .alpha(0)
+                .setListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        super.onAnimationEnd(animation);
+                        messageReferenceContainer.setVisibility(View.GONE);
+                    }
+                });
     }
 
     @Override

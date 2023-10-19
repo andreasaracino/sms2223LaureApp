@@ -7,6 +7,7 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TableLayout;
 import android.widget.TextView;
@@ -22,12 +23,15 @@ import java.util.Locale;
 
 import it.uniba.dib.sms22231.R;
 import it.uniba.dib.sms22231.model.Message;
+import it.uniba.dib.sms22231.model.MessageReference;
+import it.uniba.dib.sms22231.utility.CallbackFunction;
 import it.uniba.dib.sms22231.utility.ResUtils;
 import it.uniba.dib.sms22231.utility.TimeUtils;
 
 public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.ViewHolder> {
     private final ResUtils resUtils = ResUtils.getInstance();
     private List<Message> messageList;
+    private final CallbackFunction<MessageReference> goToReference;
     Context context;
 
     /**
@@ -38,9 +42,12 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.ViewHo
         private final TextView messageDateText;
         private final TextView messageTextView;
         private final TextView dateTextView;
+        private final TextView chatReferenceMessage;
         private final LinearLayout messageContainer;
         private final LinearLayout dateContainer;
         private final LinearLayout unreadContainer;
+        private final LinearLayout messageReferenceContainer;
+        private final ImageButton goToReferenceButton;
 
         public ViewHolder(View view) {
             super(view);
@@ -49,9 +56,12 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.ViewHo
             messageDateText = view.findViewById(R.id.messageDateText);
             messageTextView = (TextView) view.findViewById(R.id.messageText);
             dateTextView = (TextView) view.findViewById(R.id.dateText);
+            chatReferenceMessage = view.findViewById(R.id.chatReferenceMessage);
             messageContainer = (LinearLayout) view.findViewById(R.id.messageContainer);
             dateContainer = (LinearLayout) view.findViewById(R.id.dateContainer);
             unreadContainer = (LinearLayout) view.findViewById(R.id.unreadContainer);
+            messageReferenceContainer = view.findViewById(R.id.messageReferenceContainer);
+            goToReferenceButton = view.findViewById(R.id.goToReference);
         }
 
         public TextView getMessageDateText() {
@@ -77,6 +87,18 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.ViewHo
         public LinearLayout getUnreadContainer() {
             return unreadContainer;
         }
+
+        public LinearLayout getMessageReferenceContainer() {
+            return messageReferenceContainer;
+        }
+
+        public TextView getChatReferenceMessage() {
+            return chatReferenceMessage;
+        }
+
+        public ImageButton getGoToReferenceButton() {
+            return goToReferenceButton;
+        }
     }
 
     /**
@@ -85,9 +107,10 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.ViewHo
      * @param messageList String[] containing the data to populate views to be used
      * by RecyclerView
      */
-    public MessagesAdapter(List<Message> messageList, Context context) {
+    public MessagesAdapter(List<Message> messageList, Context context, CallbackFunction<MessageReference> goToReference) {
         this.messageList = messageList;
         this.context = context;
+        this.goToReference = goToReference;
     }
 
     public void setMessages(List<Message> messageList) {
@@ -114,9 +137,12 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.ViewHo
         TextView messageDateText = viewHolder.getMessageDateText();
         TextView messageTextView = viewHolder.getMessageTextView();
         TextView dateTextView = viewHolder.getDateTextView();
+        TextView chatReferenceMessage = viewHolder.getChatReferenceMessage();
         LinearLayout messageContainer = viewHolder.getMessageContainer();
         LinearLayout dateContainer = viewHolder.getDateContainer();
         LinearLayout unreadContainer = viewHolder.getUnreadContainer();
+        LinearLayout messageReferenceContainer = viewHolder.getMessageReferenceContainer();
+        ImageButton goToReferenceButton = viewHolder.getGoToReferenceButton();
 
         Message message = messageList.get(position);
         Message prevMessage = null;
@@ -156,7 +182,20 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.ViewHo
                 dateTextParams.gravity = Gravity.END | Gravity.BOTTOM;
             } catch (JSONException e) {}
         } else {
-            messageContainer.setOrientation(LinearLayout.HORIZONTAL);
+            MessageReference messageReference = message.messageReference;
+
+            if (messageReference != null) {
+                messageContainer.setOrientation(LinearLayout.VERTICAL);
+                messageReferenceContainer.setVisibility(View.VISIBLE);
+                chatReferenceMessage.setText(resUtils.getStringWithParams(messageReference.messageReferenceType.getStringRes(), messageReference.value));
+                goToReferenceButton.setOnClickListener((view) -> {
+                    goToReference.apply(messageReference);
+                });
+            } else {
+                messageContainer.setOrientation(LinearLayout.HORIZONTAL);
+                messageReferenceContainer.setVisibility(View.GONE);
+                goToReferenceButton.setOnClickListener(null);
+            }
             if (prevMessage == null || !TimeUtils.areDatesSameDay(message.dateSent, prevMessage.dateSent)) {
                 dateContainer.setVisibility(View.VISIBLE);
                 messageDateText.setText(TimeUtils.getTimeFromDate(message.dateSent, false));
