@@ -88,7 +88,22 @@ public class TaskDetailActivity extends AppCompatActivity {
     }
 
     private void deleteTask() {
-        //TODO
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setNegativeButton(getString(R.string.cancel), null)
+                .setPositiveButton("Ok", null)
+                .setMessage(getString(R.string.suredelete));
+        AlertDialog dialog = builder.create();
+        dialog.show();
+        dialog.getButton(androidx.appcompat.app.AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                taskService.deleteTask(taskId, isSuccessfully -> {
+                    Toast.makeText(TaskDetailActivity.this, R.string.success, Toast.LENGTH_SHORT).show();
+                    dialog.dismiss();
+                    finish();
+                });
+            }
+        });
     }
 
     private void modifyTask() {
