@@ -70,7 +70,7 @@ public class MeetingFragment extends Fragment implements RecyclerViewInterface {
         meetingService.getMeetingsByApplicationId(applicationId).subscribe(meetings -> {
             cardDataArrayList = new ArrayList<>();
             for (Meeting m : meetings){
-                String date = TimeUtils.getTimeFromDate(m.date, false);
+                String date = TimeUtils.dateToString(m.date);
                 CardData cardData = new CardData<>(m.title, date, m.id, null);
                 cardDataArrayList.add(cardData);
             }

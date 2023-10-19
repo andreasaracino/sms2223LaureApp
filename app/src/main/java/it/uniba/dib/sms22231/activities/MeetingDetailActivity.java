@@ -128,7 +128,7 @@ public class MeetingDetailActivity extends AppCompatActivity implements Recycler
 
         meetingService.getMeetingById(meetingId).subscribe(meeting -> {
             title.setText(meeting.title);
-            String meetingDate = TimeUtils.getTimeFromDate(meeting.date, false);
+            String meetingDate = TimeUtils.dateToString(meeting.date);
             date.setText(meetingDate);
             subjects.setText(meeting.subject);
             cardDataArrayList = new ArrayList<>();
