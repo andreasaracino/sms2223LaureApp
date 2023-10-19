@@ -86,17 +86,19 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
-            android:background="@drawable/message_all_round"
-            android:backgroundTint="@color/indigo_100"
+            android:background="@drawable/chat_edittext"
+            android:backgroundTint="@color/white"
             android:elevation="4dp"
+            android:gravity="center_vertical"
             android:orientation="horizontal"
-            android:padding="8dp"
-            android:visibility="gone">
+            android:padding="4dp"
+            android:visibility="visible">
 
             <View
                 android:id="@+id/view"
                 android:layout_width="32dp"
                 android:layout_height="32dp"
+                android:layout_marginStart="2dp"
                 android:background="@drawable/baseline_arrow_outward_24"
                 android:backgroundTint="@color/color_primary" />
 
@@ -112,12 +114,16 @@
                 android:id="@+id/goToReference"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginVertical="2dp"
+                android:layout_marginEnd="2dp"
                 android:background="@drawable/message_all_round"
+                android:backgroundTint="@color/color_primary"
                 android:elevation="1dp"
                 android:foreground="@drawable/ripple_effect"
                 android:onClick="removeReference"
                 android:padding="4dp"
-                android:src="@drawable/search" />
+                android:src="@drawable/search"
+                android:tint="@color/white" />
         </LinearLayout>
 
         <TextView
