@@ -36,6 +36,7 @@ public class MeetingDetailActivity extends AppCompatActivity implements Recycler
     private final TaskService taskService = TaskService.getInstance();
     private ArrayList<CardData> cardDataArrayList;
     private String meetingId;
+    private String applicationId;
     private int caller;
 
     @Override
@@ -49,6 +50,7 @@ public class MeetingDetailActivity extends AppCompatActivity implements Recycler
 
         Intent intent = getIntent();
         meetingId = intent.getStringExtra("meetingId");
+        applicationId = intent.getStringExtra("applicationId");
         caller = intent.getIntExtra("caller", 0);
 
         fillActivity();
@@ -102,6 +104,12 @@ public class MeetingDetailActivity extends AppCompatActivity implements Recycler
     }
 
     private void modifyMeeting() {
+        Intent intent = new Intent(this, AddMeeting.class);
+        intent.putExtra("onModify", true);
+        intent.putExtra("meetingId", meetingId);
+        intent.putExtra("applicationId", applicationId);
+        startActivity(intent);
+        finish();
     }
 
     private void addToCalendar() {

@@ -119,6 +119,7 @@ public class MeetingFragment extends Fragment implements RecyclerViewInterface {
         Intent intent = new Intent(getContext(), MeetingDetailActivity.class);
         String meetingId = cardDataArrayList.get(position).getId();
         intent.putExtra("meetingId", meetingId);
+        intent.putExtra("applicationId", applicationId);
         intent.putExtra("caller", caller);
         startActivity(intent);
     }

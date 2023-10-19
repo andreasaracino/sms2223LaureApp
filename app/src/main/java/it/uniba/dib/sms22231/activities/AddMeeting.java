@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.format.DateFormat;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -14,7 +15,6 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
@@ -22,7 +22,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
 
 import it.uniba.dib.sms22231.R;
 import it.uniba.dib.sms22231.model.Meeting;
@@ -47,18 +46,18 @@ public class AddMeeting extends AppCompatActivity {
     private Button saveButton;
     private ListView taskListView;
     private final Calendar calendar = Calendar.getInstance();
+    private String meetingId;
+    private boolean onModify;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_meeting);
 
-        ActionBar actionBar = getSupportActionBar();
-        actionBar.setTitle(R.string.addMeeting);
-        actionBar.setDisplayHomeAsUpEnabled(true);
-
         Intent intent = getIntent();
         applicationId = intent.getStringExtra("applicationId");
+        onModify = intent.getBooleanExtra("onModify", false);
+        meetingId = intent.getStringExtra("meetingId");
 
         title = findViewById(R.id.meetingTitleText);
         subjects = findViewById(R.id.subjectText);
@@ -68,19 +67,44 @@ public class AddMeeting extends AppCompatActivity {
         taskListView = findViewById(R.id.taskList);
         saveButton = findViewById(R.id.saveMeetingButton);
 
-        int day = calendar.get(Calendar.DAY_OF_MONTH);
-        int month = calendar.get(Calendar.MONTH);
-        int year = calendar.get(Calendar.YEAR);
-        datePicker.init(year, month, day, null);
+        ActionBar actionBar = getSupportActionBar();
+        if (onModify){
+            actionBar.setTitle(R.string.modMeet);
+            saveButton.setText(R.string.modMeet);
+            fillActivity();
+        } else {
+            actionBar.setTitle(R.string.addMeeting);
+            saveButton.setText(R.string.addMeeting);
+        }
+        actionBar.setDisplayHomeAsUpEnabled(true);
 
         timePicker.setIs24HourView(true);
 
         addTasks();
-        saveMeeting();
+        saveOrModify();
 
     }
 
-    private void saveMeeting() {
+    private void fillActivity() {
+        meetingService.getMeetingById(meetingId).subscribe(meeting -> {
+            title.setText(meeting.title);
+            subjects.setText(meeting.subject);
+            int day = Integer.parseInt((String) DateFormat.format("dd", meeting.date));
+            int month = Integer.parseInt((String) DateFormat.format("MM", meeting.date));
+            int year = Integer.parseInt((String) DateFormat.format("yyyy", meeting.date));
+            int hour = Integer.parseInt((String) DateFormat.format("HH", meeting.date));
+            int minutes = Integer.parseInt((String) DateFormat.format("mm", meeting.date));
+            datePicker.init(year, month-1, day, null);
+            timePicker.setHour(hour);
+            timePicker.setMinute(minutes);
+
+
+
+        });
+    }
+
+    private void saveOrModify() {
+
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -95,9 +119,16 @@ public class AddMeeting extends AppCompatActivity {
                     meeting.taskId.add(t.id);
                 }
                 meeting.applicationId = applicationId;
-                meetingService.saveNewMeeting(meeting, isSuccessfully -> {
-                    Toast.makeText(AddMeeting.this, getString(R.string.success), Toast.LENGTH_SHORT).show();
-                });
+                if (onModify){
+                    meeting.id = meetingId;
+                    meetingService.updateMeeting(meeting, isSuccessfully -> {
+                        Toast.makeText(AddMeeting.this, getString(R.string.success), Toast.LENGTH_SHORT).show();
+                    });
+                } else {
+                    meetingService.saveNewMeeting(meeting, isSuccessfully -> {
+                        Toast.makeText(AddMeeting.this, getString(R.string.success), Toast.LENGTH_SHORT).show();
+                    });
+                }
                 finish();
             }
         });

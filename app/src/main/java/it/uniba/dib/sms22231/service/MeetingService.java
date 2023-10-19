@@ -49,7 +49,7 @@ public class MeetingService {
     }
 
     public void updateMeeting(Meeting meeting, CallbackFunction<Boolean> callback) {
-        meetingCollection.document(meeting.id).set(meeting).addOnCompleteListener(task -> callback.apply(task.isSuccessful()));
+        meetingCollection.document(meeting.id).set(meeting.toMap()).addOnCompleteListener(task -> callback.apply(task.isSuccessful()));
     }
 
     public void deleteMeeting(String meetingId, CallbackFunction<Boolean> callback) {
