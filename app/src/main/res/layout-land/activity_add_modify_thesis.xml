@@ -25,6 +25,7 @@
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
+                android:gravity="bottom"
                 android:orientation="vertical">
 
                 <TextView
@@ -32,14 +33,17 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
-                    android:text="@string/title" />
+                    android:text="@string/title"
+                    android:textColor="@color/black" />
 
                 <TextView
                     android:id="@+id/textView2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="40dp"
-                    android:text="@string/description" />
+                    android:layout_marginTop="33dp"
+                    android:layout_marginBottom="13dp"
+                    android:text="@string/description"
+                    android:textColor="@color/black" />
             </LinearLayout>
 
             <LinearLayout
@@ -51,6 +55,7 @@
                     android:id="@+id/titleEditText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
                     android:layout_marginTop="16dp"
                     android:ems="10"
                     android:gravity="start|top"
@@ -61,6 +66,7 @@
                     android:id="@+id/descriptionEditText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
                     android:layout_marginTop="8dp"
                     android:ems="10"
                     android:gravity="start|top"
