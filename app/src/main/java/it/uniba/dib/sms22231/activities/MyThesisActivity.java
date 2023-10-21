@@ -24,8 +24,11 @@ public class MyThesisActivity extends AppCompatActivity {
     private ViewPager2 viewPager2;
     private VPAdapter vpAdapter;
     private String applicationId;
-
     private int caller;
+    private Bundle bundle;
+    private MyThesisFragment myThesisFragment;
+    private TaskFragment taskFragment;
+    private MeetingFragment meetingFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,15 +54,15 @@ public class MyThesisActivity extends AppCompatActivity {
         vpAdapter = new VPAdapter(getSupportFragmentManager(), getLifecycle());
         viewPager2.setAdapter(vpAdapter);
 
-        Bundle bundle = new Bundle();
+        bundle = new Bundle();
         bundle.putString("applicationId", applicationId);
         bundle.putInt("caller", caller);
 
-        MyThesisFragment myThesisFragment = new MyThesisFragment();
+        myThesisFragment = new MyThesisFragment();
         myThesisFragment.setArguments(bundle);
         vpAdapter.addFragment(myThesisFragment);
 
-        TaskFragment taskFragment = new TaskFragment();
+        taskFragment = new TaskFragment();
         taskFragment.setArguments(bundle);
         vpAdapter.addFragment(taskFragment);
 
