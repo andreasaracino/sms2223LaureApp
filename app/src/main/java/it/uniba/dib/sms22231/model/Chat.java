@@ -19,15 +19,17 @@ public class Chat implements Serializable {
     public String studentId;
     public String teacherId;
     public Date lastUpdated;
+    public String title;
     public Integer unreadMessages;
     public String userFullName;
     public Message lastMessage;
 
-    public Chat(String applicationId, String studentId, String teacherId, Date lastUpdated) {
+    public Chat(String applicationId, String studentId, String teacherId, Date lastUpdated, String title) {
         this.applicationId = applicationId;
         this.studentId = studentId;
         this.teacherId = teacherId;
         this.lastUpdated = lastUpdated;
+        this.title = title;
     }
 
     public Chat(Map<String, Object> data) {
@@ -35,7 +37,7 @@ public class Chat implements Serializable {
         applicationId = (String) data.get("applicationId");
         studentId = (String) data.get("studentId");
         teacherId = (String) data.get("teacherId");
-
+        title = (String) data.get("title");
     }
 
     public void update(Chat chat) {
@@ -55,6 +57,7 @@ public class Chat implements Serializable {
         map.put("studentId", studentId);
         map.put("teacherId", teacherId);
         map.put("lastUpdated", TimeUtils.dateToString(lastUpdated, false));
+        map.put("title", title);
         return map;
     }
 }

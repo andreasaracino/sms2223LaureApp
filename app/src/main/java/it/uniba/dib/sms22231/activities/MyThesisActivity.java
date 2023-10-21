@@ -9,20 +9,26 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
 
+import com.google.android.material.bottomappbar.BottomAppBar;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 
 import it.uniba.dib.sms22231.R;
 import it.uniba.dib.sms22231.adapters.VPAdapter;
+import it.uniba.dib.sms22231.config.MessageReferenceType;
 import it.uniba.dib.sms22231.fragments.InProgressFragment;
 import it.uniba.dib.sms22231.fragments.MeetingFragment;
 import it.uniba.dib.sms22231.fragments.MyThesisFragment;
 import it.uniba.dib.sms22231.fragments.TaskFragment;
+import it.uniba.dib.sms22231.model.MessageReference;
+import it.uniba.dib.sms22231.service.ChatService;
 
 public class MyThesisActivity extends AppCompatActivity {
     private TabLayout tabLayout;
     private ViewPager2 viewPager2;
     private String applicationId;
+    private ChatService chatService = ChatService.getInstance();
 
     private int caller;
 
@@ -39,6 +45,7 @@ public class MyThesisActivity extends AppCompatActivity {
         actionBar.setTitle(R.string.my_thesis);
         actionBar.setDisplayHomeAsUpEnabled(true);
 
+        setupBottomBar();
         useViewPagerAdapter();
     }
 
@@ -73,6 +80,25 @@ public class MyThesisActivity extends AppCompatActivity {
                     tab.setIcon(R.drawable.meeting);
             }
         }).attach();
+    }
+
+    public void setupBottomBar() {
+        BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigationView);
+        bottomNavigationView.setOnItemSelectedListener(item -> {
+            if (item.getItemId() == R.id.chat) {
+                goToChat();
+            }
+
+            return true;
+        });
+    }
+
+    private void goToChat() {
+        chatService.getChatByApplicationId(applicationId).subscribe(chat -> {
+            Intent intent = new Intent(this, ChatActivity.class);
+            intent.putExtra("chat", chat);
+            startActivity(intent);
+        });
     }
 
     @Override

@@ -15,12 +15,7 @@ import it.uniba.dib.sms22231.R;
 public class TimeUtils {
     public static String getTimeFromDate(Date input, boolean time) {
         SimpleDateFormat simpleDateFormat;
-
-        if (time) {
-            simpleDateFormat = new SimpleDateFormat("HH:mm");
-        } else {
-            simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
-        }
+        simpleDateFormat = new SimpleDateFormat(time ? "HH:mm" : "dd/MM/yyyy");
 
         return simpleDateFormat.format(input);
     }

@@ -85,7 +85,6 @@ public class MyThesisFragment extends Fragment {
         noFile = view.findViewById(R.id.textNoFile);
         attachmentsList = view.findViewById(R.id.fileList);
 
-
         fillFragment();
         onClickAttachmentsList();
 

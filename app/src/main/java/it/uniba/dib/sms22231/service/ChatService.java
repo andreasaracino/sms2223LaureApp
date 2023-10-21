@@ -196,11 +196,21 @@ public class ChatService {
         return new Observable<>((next, setOnUnsubscribe) -> {
             chatsCollection.whereEqualTo("studentId", studentUid).whereEqualTo("teacherId", teacherId).get().addOnCompleteListener(task -> {
                 if (task.getResult().isEmpty()) {
-                    Chat chat = new Chat(null, studentUid, teacherId, Date.from(Instant.now()));
+                    Chat chat = new Chat(null, studentUid, teacherId, Date.from(Instant.now()), null);
                     chatsCollection.add(chat.toMap()).addOnCompleteListener(task1 -> {
                         task1.getResult().get().addOnCompleteListener(task2 -> mapChat(task2.getResult(), next));
                     });
                 } else {
+                    mapChat(task.getResult().getDocuments().get(0), next);
+                }
+            });
+        });
+    }
+
+    public Observable<Chat> getChatByApplicationId(String applicationId) {
+        return new Observable<>((next, setOnUnsubscribe) -> {
+            chatsCollection.whereEqualTo("applicationId", applicationId).get().addOnCompleteListener(task -> {
+                if (task.isSuccessful()) {
                     mapChat(task.getResult().getDocuments().get(0), next);
                 }
             });
@@ -289,12 +299,18 @@ public class ChatService {
 
             messagesCollection.add(message.toMap()).addOnCompleteListener(task -> {
                 updateChat(message.chatId, message.dateSent.getTime());
+                linkApplicationToChat(message.chatId, application);
             });
         });
     }
 
     public void updateChat(String chatId, long time) {
         chatsCollection.document(chatId).update("lastUpdated", time);
+    }
+
+    public void linkApplicationToChat(String chatId, Application application) {
+        chatsCollection.document(chatId).update("applicationId", application.id);
+        chatsCollection.document(chatId).update("title", application.thesisTitle);
     }
 
     public static ChatService getInstance() {

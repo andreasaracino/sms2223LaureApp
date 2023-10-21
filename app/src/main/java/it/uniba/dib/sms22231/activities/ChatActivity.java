@@ -146,6 +146,10 @@ public class ChatActivity extends AppCompatActivity {
         }
     }
 
+    public void showReference() {
+
+    }
+
     public void removeReference(View view) {
         messageReference = null;
         messageReferenceContainer

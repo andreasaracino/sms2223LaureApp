@@ -214,8 +214,8 @@ public class DetailActivity extends AppCompatActivity {
 
     //apertura della chat
     private void goToChat() {
-        Intent intent = new Intent(this, ChatActivity.class);
         ChatService.getInstance().getChatByStudentIdAndTeacherId(studentService.getStudentData().uid, thesis.teacherId).subscribe(chat -> {
+            Intent intent = new Intent(this, ChatActivity.class);
             intent.putExtra("chat", chat);
 
             MessageReference messageReference = new MessageReference();

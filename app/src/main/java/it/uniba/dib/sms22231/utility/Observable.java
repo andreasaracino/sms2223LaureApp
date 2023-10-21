@@ -1,6 +1,7 @@
 package it.uniba.dib.sms22231.utility;
 
 import java.util.ArrayList;
+import java.util.function.Function;
 
 public class Observable<T> {
     private T data;

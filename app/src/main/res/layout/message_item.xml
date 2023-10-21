@@ -9,10 +9,10 @@
     <LinearLayout
         android:id="@+id/unreadContainer"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:gravity="bottom"
         android:orientation="horizontal"
-        android:visibility="invisible">
+        android:visibility="gone">
 
         <View
             android:layout_width="0dp"
@@ -48,7 +48,7 @@
         android:layout_height="wrap_content"
         android:gravity="bottom"
         android:orientation="horizontal"
-        android:visibility="invisible">
+        android:visibility="gone">
 
         <View
             android:layout_width="0dp"
@@ -90,6 +90,7 @@
             android:backgroundTint="@color/white"
             android:elevation="4dp"
             android:gravity="center_vertical"
+            android:layoutDirection="ltr"
             android:orientation="horizontal"
             android:padding="4dp"
             android:visibility="gone">

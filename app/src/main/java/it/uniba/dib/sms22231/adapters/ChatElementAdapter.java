@@ -11,7 +11,13 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.sql.Time;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import it.uniba.dib.sms22231.R;
 import it.uniba.dib.sms22231.model.Chat;
@@ -63,16 +69,33 @@ public class ChatElementAdapter extends RecyclerView.Adapter<ChatElementAdapter.
 
         if (chat.lastMessage != null) {
             String lastMessage = "";
+            if (chat.lastMessage.senderUID == null) {
+                try {
+                    String currentLang = Locale.getDefault().getLanguage();
+                    JSONObject jsonObject = new JSONObject(chat.lastMessage.text);
+                    if (!jsonObject.has(currentLang)) {
+                        currentLang = "en";
+                    }
 
-            if (chat.lastMessage.sent) {
-                lastMessage += context.getString(R.string.you) + ": ";
+                    lastMessage = jsonObject.getString(currentLang);
+                } catch (JSONException ignored) {}
+            } else {
+                if (chat.lastMessage.sent) {
+                    lastMessage += context.getString(R.string.you) + ": ";
+                }
+
+                lastMessage += chat.lastMessage.text;
             }
 
-            lastMessage += chat.lastMessage.text;
             chatLastMessage.setText(lastMessage);
-            chatTimeAgo.setText(TimeUtils.getTimeAgoFromDate(chat.lastMessage.dateSent, context));
+            chatTimeAgo.setText(TimeUtils.getTimeFromDate(chat.lastMessage.dateSent, TimeUtils.areDatesSameDay(chat.lastMessage.dateSent, new Date())));
         } else {
             chatLastMessage.setVisibility(View.GONE);
+        }
+
+
+        if (chat.title != null) {
+            userName += String.format(" · %s", chat.title);
         }
 
         chatUserIcon.setText(initials);

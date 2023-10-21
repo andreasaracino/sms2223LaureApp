@@ -162,9 +162,32 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.ViewHo
 
         messageContainer.setBackground(getBgDrawable(message, position, nextMessage, prevMessage));
 
+        if (prevMessage == null || !TimeUtils.areDatesSameDay(message.dateSent, prevMessage.dateSent)) {
+            dateContainer.setVisibility(View.VISIBLE);
+            messageDateText.setText(TimeUtils.getTimeFromDate(message.dateSent, false));
+        } else {
+            dateContainer.setVisibility(View.GONE);
+        }
+
+        if (!message.sent && !message.read && (prevMessage == null || prevMessage.read)) {
+            unreadContainer.setVisibility(View.VISIBLE);
+        } else {
+            unreadContainer.setVisibility(View.GONE);
+        }
+
         if (message.senderUID == null) {
+            messageContainer.setLayoutDirection(View.LAYOUT_DIRECTION_LTR);
+            messageReferenceContainer.setVisibility(View.GONE);
             messageContainer.setOrientation(LinearLayout.VERTICAL);
             messageContainer.setGravity(Gravity.END);
+            textLayoutParams.gravity = Gravity.CENTER_HORIZONTAL;
+            dateTextParams.gravity = Gravity.END | Gravity.BOTTOM;
+            messageTextView.setTextColor(Color.BLACK);
+            messageContainer.setBackgroundTintList(resUtils.getColorStateList(R.color.indigo_100));
+            dateTextView.setText(TimeUtils.getTimeFromDate(message.dateSent, true));
+            dateTextView.setTextColor(resUtils.getColor(R.color.black));
+            textLayoutParams.setMargins(64, 64, 64, 0);
+
             String currentLang = Locale.getDefault().getLanguage();
             try {
                 JSONObject jsonObject = new JSONObject(message.text);
@@ -173,13 +196,6 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.ViewHo
                 }
 
                 messageTextView.setText(jsonObject.getString(currentLang));
-                messageTextView.setTextColor(Color.BLACK);
-                messageContainer.setBackgroundTintList(resUtils.getColorStateList(R.color.indigo_100));
-                dateTextView.setText(TimeUtils.getTimeFromDate(message.dateSent, true));
-                dateTextView.setTextColor(resUtils.getColor(R.color.black));
-                textLayoutParams.setMargins(64, 64, 64, 0);
-                textLayoutParams.gravity = Gravity.CENTER_HORIZONTAL;
-                dateTextParams.gravity = Gravity.END | Gravity.BOTTOM;
             } catch (JSONException e) {}
         } else {
             MessageReference messageReference = message.messageReference;
@@ -192,26 +208,14 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.ViewHo
                     goToReference.apply(messageReference);
                 });
             } else {
-                messageContainer.setOrientation(LinearLayout.HORIZONTAL);
                 messageReferenceContainer.setVisibility(View.GONE);
-                goToReferenceButton.setOnClickListener(null);
-            }
-            if (prevMessage == null || !TimeUtils.areDatesSameDay(message.dateSent, prevMessage.dateSent)) {
-                dateContainer.setVisibility(View.VISIBLE);
-                messageDateText.setText(TimeUtils.getTimeFromDate(message.dateSent, false));
-            } else {
-                dateContainer.setVisibility(View.GONE);
-            }
 
-            if (!message.sent && !message.read && (prevMessage == null || prevMessage.read)) {
-                unreadContainer.setVisibility(View.VISIBLE);
-            } else {
-                unreadContainer.setVisibility(View.GONE);
-            }
-
-            if (message.text.length() > 30) {
-                messageContainer.setOrientation(LinearLayout.VERTICAL);
-                messageContainer.setGravity(Gravity.FILL_HORIZONTAL);
+                if (message.text.length() <= 30) {
+                    messageContainer.setOrientation(LinearLayout.HORIZONTAL);
+                    goToReferenceButton.setOnClickListener(null);
+                } else {
+                    messageContainer.setOrientation(LinearLayout.VERTICAL);
+                }
             }
 
             if (message.sent) {
@@ -223,18 +227,17 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.ViewHo
                 dateTextView.setTextColor(resUtils.getColor(R.color.indigo_100));
                 textLayoutParams.setMargins(128, prevMessage != null && prevMessage.sent ? 4 : 32, 0, 0);
                 textLayoutParams.gravity = Gravity.END;
-                dateTextParams.gravity = Gravity.END | Gravity.BOTTOM;
             } else {
                 messageContainer.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
                 messageTextView.setTextColor(Color.WHITE);
                 messageContainer.setBackgroundTintList(resUtils.getColorStateList(R.color.color_primary_dark));
-                messageContainer.setGravity(Gravity.START);
+                messageContainer.setGravity(Gravity.END);
                 dateTextView.setText(TimeUtils.getTimeFromDate(message.dateSent, true));
                 dateTextView.setTextColor(resUtils.getColor(R.color.indigo_100));
                 textLayoutParams.setMargins(0, prevMessage != null && !prevMessage.sent ? 4 : 32, 128, 0);
                 textLayoutParams.gravity = Gravity.START;
-                dateTextParams.gravity = Gravity.END | Gravity.BOTTOM;
             }
+            dateTextParams.gravity = Gravity.END | Gravity.BOTTOM;
         }
 
         messageContainer.setLayoutParams(textLayoutParams);
