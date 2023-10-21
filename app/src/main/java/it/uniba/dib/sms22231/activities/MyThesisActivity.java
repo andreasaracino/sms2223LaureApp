@@ -66,7 +66,7 @@ public class MyThesisActivity extends AppCompatActivity {
         taskFragment.setArguments(bundle);
         vpAdapter.addFragment(taskFragment);
 
-        MeetingFragment meetingFragment = new MeetingFragment();
+        meetingFragment = new MeetingFragment();
         meetingFragment.setArguments(bundle);
         vpAdapter.addFragment(meetingFragment);
 
