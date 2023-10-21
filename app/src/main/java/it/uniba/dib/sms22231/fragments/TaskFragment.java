@@ -46,11 +46,7 @@ public class TaskFragment extends Fragment implements RecyclerViewInterface {
     private String applicationId;
     private int caller;
 
-    public TaskFragment(String applicationId, int caller) {
-        super();
-        this.applicationId = applicationId;
-        this.caller = caller;
-    }
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -58,6 +54,8 @@ public class TaskFragment extends Fragment implements RecyclerViewInterface {
 
         view = inflater.inflate(R.layout.fragment_task, container, false);
 
+        applicationId = getArguments().getString("applicationId");
+        caller = getArguments().getInt("caller", 0);
 
         taskRecycler = view.findViewById(R.id.taskRecycler);
         addTaskButton = view.findViewById(R.id.addTaskButton);

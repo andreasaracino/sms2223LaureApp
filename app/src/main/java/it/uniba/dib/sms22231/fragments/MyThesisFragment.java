@@ -64,15 +64,14 @@ public class MyThesisFragment extends Fragment {
     private ListView requirementsList;
     private ListView attachmentsList;
 
-    public MyThesisFragment(String applicationId, int caller) {
-        super();
-        this.applicationId = applicationId;
-        this.caller = caller;
-    }
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
+        applicationId = getArguments().getString("applicationId");
+        caller = getArguments().getInt("caller", 0);
 
         view = inflater.inflate(R.layout.fragment_my_thesis, container, false);
         titleText = view.findViewById(R.id.titleText);

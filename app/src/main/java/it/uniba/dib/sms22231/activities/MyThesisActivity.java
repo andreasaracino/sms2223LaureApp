@@ -22,6 +22,7 @@ import it.uniba.dib.sms22231.fragments.TaskFragment;
 public class MyThesisActivity extends AppCompatActivity {
     private TabLayout tabLayout;
     private ViewPager2 viewPager2;
+    private VPAdapter vpAdapter;
     private String applicationId;
 
     private int caller;
@@ -47,11 +48,24 @@ public class MyThesisActivity extends AppCompatActivity {
         tabLayout = findViewById(R.id.myThesisTab);
         viewPager2 = findViewById(R.id.myThesisViewPager);
 
-        VPAdapter vpAdapter = new VPAdapter(getSupportFragmentManager(), getLifecycle());
+        vpAdapter = new VPAdapter(getSupportFragmentManager(), getLifecycle());
         viewPager2.setAdapter(vpAdapter);
-        vpAdapter.addFragment(new MyThesisFragment(applicationId, caller));
-        vpAdapter.addFragment(new TaskFragment(applicationId, caller));
-        vpAdapter.addFragment(new MeetingFragment(applicationId, caller));
+
+        Bundle bundle = new Bundle();
+        bundle.putString("applicationId", applicationId);
+        bundle.putInt("caller", caller);
+
+        MyThesisFragment myThesisFragment = new MyThesisFragment();
+        myThesisFragment.setArguments(bundle);
+        vpAdapter.addFragment(myThesisFragment);
+
+        TaskFragment taskFragment = new TaskFragment();
+        taskFragment.setArguments(bundle);
+        vpAdapter.addFragment(taskFragment);
+
+        MeetingFragment meetingFragment = new MeetingFragment();
+        meetingFragment.setArguments(bundle);
+        vpAdapter.addFragment(meetingFragment);
 
         new TabLayoutMediator(tabLayout, viewPager2, (tab, position) -> {
             switch (position){

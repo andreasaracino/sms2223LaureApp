@@ -56,6 +56,7 @@ public class AddModifyThesisActivity extends AppCompatActivity {
     private EditText thesisDescription;
     private ListView listViewFile;
     private ListView listViewReq;
+    private Button saveModifyButton;
     private ArrayList<String> fileNames;
     private ArrayList<Requirement> currentRequirements;
     private ArrayList<Uri> filesList;
@@ -74,7 +75,7 @@ public class AddModifyThesisActivity extends AppCompatActivity {
         Intent intent = getIntent();
         int caller = intent.getIntExtra("caller", 0);
 
-        Button saveModifyButton = findViewById(R.id.saveThesisButton);
+        saveModifyButton = findViewById(R.id.saveThesisButton);
 
         ActionBar actionBar = getSupportActionBar();
         setSaveOrModify(caller, saveModifyButton, actionBar);
