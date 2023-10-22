@@ -68,7 +68,6 @@ public class InProgressFragment extends Fragment implements RecyclerViewInterfac
                 CardData<Application> cardData = new CardData<>(application.studentName, application.thesisTitle, application.id, null, application);
                 cardDataArrayList.add(cardData);
             });
-            swipeRefreshLayout.setRefreshing(false);
             if (cardDataArrayList.isEmpty()){
                 noItemText.setVisibility(View.VISIBLE);
                 recyclerView.setVisibility(View.GONE);
