@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">sms2223LaureApp</string>
     <string name="title_activity_login" translatable="false">LoginActivity</string>
+    <string name="resetError">Account not found!</string>
     <string name="prompt_email" translatable="false">Email</string>
     <string name="prompt_password" translatable="false">Password</string>
     <string name="action_sign_up">Sign up</string>
@@ -127,4 +128,5 @@
     <string name="thesisRef">Message referred to thesis \"%1s\"</string>
     <string name="taskRef">Message referred to task \"%1s\"</string>
     <string name="chatList">LaureApp Messenger</string>
+    <string name="resetPassword">Reset password</string>
 </resources>

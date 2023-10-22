@@ -119,6 +119,10 @@ public class UserService {
         mAuth.signOut();
     }
 
+    public void resetPassword(String email, CallbackFunction<Boolean> callback) {
+        mAuth.sendPasswordResetEmail(email).addOnCompleteListener(task -> callback.apply(task.isSuccessful()));
+    }
+
     /*
      * metodo per ottenere il valore corrente dell'observable
      */

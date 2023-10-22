@@ -116,4 +116,6 @@
     <string name="thesisRef">Messaggio riferito alla tesi \"%1s\"</string>
     <string name="taskRef">Messaggio riferito al task \"%1s\"</string>
     <string name="chatList">LaureApp Messenger</string>
+    <string name="resetPassword">Reimposta password</string>
+    <string name="resetError">Account non trovato!</string>
 </resources>
