@@ -27,10 +27,14 @@ import it.uniba.dib.sms22231.service.ChatService;
 public class MyThesisActivity extends AppCompatActivity {
     private TabLayout tabLayout;
     private ViewPager2 viewPager2;
+    private VPAdapter vpAdapter;
     private String applicationId;
     private ChatService chatService = ChatService.getInstance();
-
     private int caller;
+    private Bundle bundle;
+    private MyThesisFragment myThesisFragment;
+    private TaskFragment taskFragment;
+    private MeetingFragment meetingFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,11 +58,24 @@ public class MyThesisActivity extends AppCompatActivity {
         tabLayout = findViewById(R.id.myThesisTab);
         viewPager2 = findViewById(R.id.myThesisViewPager);
 
-        VPAdapter vpAdapter = new VPAdapter(getSupportFragmentManager(), getLifecycle());
+        vpAdapter = new VPAdapter(getSupportFragmentManager(), getLifecycle());
         viewPager2.setAdapter(vpAdapter);
-        vpAdapter.addFragment(new MyThesisFragment(applicationId, caller));
-        vpAdapter.addFragment(new TaskFragment(applicationId, caller));
-        vpAdapter.addFragment(new MeetingFragment(applicationId, caller));
+
+        bundle = new Bundle();
+        bundle.putString("applicationId", applicationId);
+        bundle.putInt("caller", caller);
+
+        myThesisFragment = new MyThesisFragment();
+        myThesisFragment.setArguments(bundle);
+        vpAdapter.addFragment(myThesisFragment);
+
+        taskFragment = new TaskFragment();
+        taskFragment.setArguments(bundle);
+        vpAdapter.addFragment(taskFragment);
+
+        meetingFragment = new MeetingFragment();
+        meetingFragment.setArguments(bundle);
+        vpAdapter.addFragment(meetingFragment);
 
         new TabLayoutMediator(tabLayout, viewPager2, (tab, position) -> {
             switch (position){

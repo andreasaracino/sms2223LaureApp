@@ -37,17 +37,16 @@ public class MeetingFragment extends Fragment implements RecyclerViewInterface {
     private String applicationId;
     private int caller;
 
-    public MeetingFragment(String applicationId, int caller) {
-        super();
-        this.applicationId = applicationId;
-        this.caller = caller;
-    }
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
         view = inflater.inflate(R.layout.fragment_meeting, container, false);
+
+        applicationId = getArguments().getString("applicationId");
+        caller = getArguments().getInt("caller", 0);
 
         noMeeting = view.findViewById(R.id.noMeetingText);
         meetingRecycler = view.findViewById(R.id.meetingRecycler);
@@ -70,7 +69,7 @@ public class MeetingFragment extends Fragment implements RecyclerViewInterface {
         meetingService.getMeetingsByApplicationId(applicationId).subscribe(meetings -> {
             cardDataArrayList = new ArrayList<>();
             for (Meeting m : meetings){
-                String date = TimeUtils.getTimeFromDate(m.date, false);
+                String date = TimeUtils.dateToString(m.date);
                 CardData cardData = new CardData<>(m.title, date, m.id, null);
                 cardDataArrayList.add(cardData);
             }
