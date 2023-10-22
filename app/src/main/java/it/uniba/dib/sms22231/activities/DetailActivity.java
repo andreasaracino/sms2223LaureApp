@@ -35,6 +35,7 @@ import it.uniba.dib.sms22231.adapters.CustomListAdapter;
 import it.uniba.dib.sms22231.config.ApplicationStatus;
 import it.uniba.dib.sms22231.config.MessageReferenceType;
 import it.uniba.dib.sms22231.config.RequirementTypes;
+import it.uniba.dib.sms22231.config.UserTypes;
 import it.uniba.dib.sms22231.model.Application;
 import it.uniba.dib.sms22231.model.Attachment;
 import it.uniba.dib.sms22231.model.CustomListData;
@@ -47,10 +48,12 @@ import it.uniba.dib.sms22231.service.ChatService;
 import it.uniba.dib.sms22231.service.RequirementService;
 import it.uniba.dib.sms22231.service.StudentService;
 import it.uniba.dib.sms22231.service.ThesisService;
+import it.uniba.dib.sms22231.service.UserService;
 
 public class DetailActivity extends AppCompatActivity {
     private final ThesisService thesisService = ThesisService.getInstance();
     private final RequirementService requirementService = RequirementService.getInstance();
+    private final UserService userService = UserService.getInstance();
     private final StudentService studentService = StudentService.getInstance();
     private final ApplicationService applicationService = ApplicationService.getInstance();
     private final AttachmentService attachmentService = AttachmentService.getInstance();
@@ -73,6 +76,7 @@ public class DetailActivity extends AppCompatActivity {
     private int caller;
     private boolean averageControl = false;
     private boolean alreadyApplied;
+    private UserTypes currentUserType;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,6 +91,7 @@ public class DetailActivity extends AppCompatActivity {
         id = intent.getStringExtra("id");
         caller = intent.getIntExtra("caller", 0);
 
+        currentUserType = userService.getUserData().userType;
         createBottomAppBar();
 
         fillActivity();
@@ -170,11 +175,14 @@ public class DetailActivity extends AppCompatActivity {
     private void createBottomAppBar() {
 
         bottomNavigationView = findViewById(R.id.bottomNavBar);
-        switch (caller) {
-            case 1:
+        switch (currentUserType) {
+            case GUEST:
+                bottomNavigationView.inflateMenu(R.menu.guest_detail_available_bottom_menu);
+                break;
+            case STUDENT:
                 bottomNavigationView.inflateMenu(R.menu.detail_available_bottom_menu);
                 break;
-            case 2:
+            case TEACHER:
                 bottomNavigationView.inflateMenu(R.menu.detail_my_theses_bottom_menu);
         }
         //click sugli item del menu
@@ -238,7 +246,7 @@ public class DetailActivity extends AppCompatActivity {
 
     //modifica dell'icona dei preferiti
     private void checkFavorite() {
-        if (caller == 1) {
+        if (currentUserType == UserTypes.STUDENT) {
             MenuItem item = bottomNavigationView.getMenu().findItem(R.id.favorite);
             if (studentService.isThesisFavorite(thesis)) {
                 item.setIcon(R.drawable.favorite_full);

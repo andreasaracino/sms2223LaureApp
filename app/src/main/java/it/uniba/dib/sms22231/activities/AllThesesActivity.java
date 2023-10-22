@@ -13,11 +13,13 @@ import com.google.android.material.tabs.TabLayoutMediator;
 
 import it.uniba.dib.sms22231.R;
 import it.uniba.dib.sms22231.adapters.VPAdapter;
+import it.uniba.dib.sms22231.config.UserTypes;
 import it.uniba.dib.sms22231.fragments.AvailableFragment;
 import it.uniba.dib.sms22231.fragments.RankingFragment;
+import it.uniba.dib.sms22231.service.UserService;
 
 public class AllThesesActivity extends AppCompatActivity {
-
+    private final UserService userService = UserService.getInstance();
     private TabLayout tabLayout;
     private ViewPager2 viewPager2;
 
@@ -42,7 +44,9 @@ public class AllThesesActivity extends AppCompatActivity {
         VPAdapter vpAdapter = new VPAdapter(getSupportFragmentManager(), getLifecycle());
         viewPager2.setAdapter(vpAdapter);
         vpAdapter.addFragment(new AvailableFragment());
-        vpAdapter.addFragment(new RankingFragment());
+        if (userService.getUserData().userType != UserTypes.GUEST) {
+            vpAdapter.addFragment(new RankingFragment());
+        }
 
         new TabLayoutMediator(tabLayout, viewPager2, (tab, position) -> {
             switch (position){

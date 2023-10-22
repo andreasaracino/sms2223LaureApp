@@ -121,4 +121,9 @@ public class SignInActivity extends AppCompatActivity {
 
         builder.show();
     }
+
+    public void loginAsGuest(View view) {
+        userService.signInAsGuest();
+        goToDashboard();
+    }
 }

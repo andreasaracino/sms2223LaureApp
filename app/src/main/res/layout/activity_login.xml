@@ -94,6 +94,7 @@
         style="@style/borderless_button"
         android:layout_width="@dimen/field_width"
         android:layout_height="wrap_content"
+        android:onClick="loginAsGuest"
         android:text="@string/guest"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

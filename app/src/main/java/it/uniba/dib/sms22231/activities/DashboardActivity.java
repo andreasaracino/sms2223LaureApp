@@ -13,11 +13,13 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.google.android.material.button.MaterialButton;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.lang.reflect.Method;
 
 import it.uniba.dib.sms22231.R;
 import it.uniba.dib.sms22231.config.ApplicationStatus;
+import it.uniba.dib.sms22231.config.UserTypes;
 import it.uniba.dib.sms22231.model.User;
 import it.uniba.dib.sms22231.service.ApplicationService;
 import it.uniba.dib.sms22231.service.StudentService;
@@ -62,8 +64,9 @@ public class DashboardActivity extends AppCompatActivity {
         }
         switch (user.userType) {
             case STUDENT:
-                setDash(dash1, R.drawable.all_theses, R.string.all_theses);
                 setDash(dash2, R.drawable.my_thesis, R.string.my_thesis);
+            case GUEST:
+                setDash(dash1, R.drawable.all_theses, R.string.all_theses);
                 break;
             case TEACHER:
                 setDash(dash1, R.drawable.my_theses, R.string.my_theses);
@@ -88,6 +91,7 @@ public class DashboardActivity extends AppCompatActivity {
             return;
         }
         switch (user.userType) {
+            case GUEST:
             case STUDENT:
                 intent = new Intent(this, AllThesesActivity.class);
                 break;
@@ -101,10 +105,10 @@ public class DashboardActivity extends AppCompatActivity {
 
     //onClick del secondo MaterialButton in base all'utente
     public void dash2OnClick(View view) {
-
         if (user.userType == null) {
             return;
         }
+
         switch (user.userType) {
             case STUDENT:
                 String applicationId = studentService.getStudentData().currentApplicationId;
@@ -152,6 +156,12 @@ public class DashboardActivity extends AppCompatActivity {
     //creazione del menu
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+        if (user.userType == UserTypes.GUEST) {
+            FloatingActionButton fab = findViewById(R.id.chatFab);
+            fab.setVisibility(View.GONE);
+            return true;
+        }
+
         getMenuInflater().inflate(R.menu.dashboard_menu, menu);
 
         if (menu.getClass().getSimpleName().equals("MenuBuilder")) {

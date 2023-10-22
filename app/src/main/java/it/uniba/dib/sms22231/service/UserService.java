@@ -9,6 +9,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.Objects;
 
+import it.uniba.dib.sms22231.config.UserTypes;
 import it.uniba.dib.sms22231.model.User;
 import it.uniba.dib.sms22231.utility.Observable;
 import it.uniba.dib.sms22231.utility.CallbackFunction;
@@ -22,6 +23,7 @@ public class UserService {
     private DocumentReference userDocument; // Riferimento al documento sul database
     private final CollectionReference usersCollection = db.collection("users");
     public final Observable<User> userObservable = new Observable<>();  // Observable contenente i dati dell'utente
+    private boolean isGuest;
 
     private UserService() {
         initData();
@@ -99,6 +101,13 @@ public class UserService {
         } else {
             callback.apply(false);
         }
+    }
+
+    public void signInAsGuest() {
+        isGuest = true;
+        User guest = new User();
+        guest.userType = UserTypes.GUEST;
+        userObservable.next(guest);
     }
 
     public void signUp(String email, String password, CallbackFunction<Boolean> callback) {
