@@ -48,6 +48,7 @@ public class AddModifyMeetingActivity extends AppCompatActivity {
     private String applicationId;
     private String meetingId;
     private boolean onModify;
+    private Meeting meeting;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,9 +86,10 @@ public class AddModifyMeetingActivity extends AppCompatActivity {
 
     }
 
-    //se l'activity è aperta il modifica, i campi vengono riempiti con i dati del meeting
+    //se l'activity è aperta in modifica, i campi vengono riempiti con i dati del meeting
     private void fillActivity() {
         meetingService.getMeetingById(meetingId).subscribe(meeting -> {
+            this.meeting = meeting;
             title.setText(meeting.title);
             subjects.setText(meeting.subject);
             int day = Integer.parseInt((String) DateFormat.format("dd", meeting.date));
@@ -172,6 +174,37 @@ public class AddModifyMeetingActivity extends AppCompatActivity {
         }
         ArrayAdapter<String> listAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, tasksTitle);
         taskListView.setAdapter(listAdapter);
+    }
+
+    //se ci sono delle modifiche non salvate e si chiude l'activity, viene chiesta conferma della chiusura
+    @Override
+    public void onBackPressed() {
+        if (!isChanged()) {
+            super.onBackPressed();
+            return;
+        }
+        AlertDialog dialog = new AlertDialog.Builder(this)
+                .setMessage(R.string.sureGoBack)
+                .setPositiveButton(R.string.yes, null)
+                .setNegativeButton("No", null)
+                .show();
+        Button positiveButton = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
+        positiveButton.setOnClickListener(view1 -> {
+            dialog.dismiss();
+            super.onBackPressed();
+        });
+    }
+
+    //controlla se ci sono modifiche da comunicare a onBackPressed()
+    private boolean isChanged() {
+        return onModify && (
+                !meeting.title.equals(title.getText().toString()) ||
+                        !meeting.subject.equals(subjects.getText().toString())
+        ) ||
+                !onModify && (
+                        title.getText().toString().length() > 0 ||
+                                subjects.getText().toString().length() > 0
+                );
     }
 
     @Override
