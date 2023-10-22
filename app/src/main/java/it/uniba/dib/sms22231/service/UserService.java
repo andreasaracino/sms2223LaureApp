@@ -125,7 +125,11 @@ public class UserService {
     }
 
     public void signOut() {
-        mAuth.signOut();
+        if (getUserData().userType == UserTypes.GUEST) {
+            userObservable.reset();
+        } else {
+            mAuth.signOut();
+        }
     }
 
     public void resetPassword(String email, CallbackFunction<Boolean> callback) {

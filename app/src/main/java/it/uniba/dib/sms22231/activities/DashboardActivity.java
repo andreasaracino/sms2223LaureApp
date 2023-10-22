@@ -159,10 +159,10 @@ public class DashboardActivity extends AppCompatActivity {
         if (user.userType == UserTypes.GUEST) {
             FloatingActionButton fab = findViewById(R.id.chatFab);
             fab.setVisibility(View.GONE);
-            return true;
+            getMenuInflater().inflate(R.menu.guest_dashboard_menu, menu);
+        } else {
+            getMenuInflater().inflate(R.menu.dashboard_menu, menu);
         }
-
-        getMenuInflater().inflate(R.menu.dashboard_menu, menu);
 
         if (menu.getClass().getSimpleName().equals("MenuBuilder")) {
             try {
