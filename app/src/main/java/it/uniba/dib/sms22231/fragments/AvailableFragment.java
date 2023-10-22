@@ -14,8 +14,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.SearchView;
 import android.widget.Spinner;
@@ -45,7 +43,9 @@ public class AvailableFragment extends Fragment implements RecyclerViewInterface
     private LinearLayout searchAverageLayout;
     private SearchView searchView;
     private TextView noItemText;
-    private RecyclerAdapter recad;
+    private RecyclerAdapter recyclerAdapter;
+    private RecyclerView recyclerView;
+    private SwipeRefreshLayout swipeRefreshLayout;
     private boolean isOpen = false;
 
     @Override
@@ -59,11 +59,27 @@ public class AvailableFragment extends Fragment implements RecyclerViewInterface
         searchView = view.findViewById(R.id.searchViewThesis);
         noItemText = view.findViewById(R.id.noItemText);
 
+        initUI();
+
         getTheses();
 
         bottomNavBar();
 
         return view;
+    }
+
+    private void initUI() {
+        recyclerView = view.findViewById(R.id.availableRecycler);
+        recyclerAdapter = new RecyclerAdapter(cardData, getContext(), this);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
+        recyclerView.setLayoutManager(linearLayoutManager);
+        recyclerView.setAdapter(recyclerAdapter);
+        swipeRefreshLayout = view.findViewById(R.id.refreshAvailable);
+        swipeRefreshLayout.setOnRefreshListener(() -> {
+            swipeRefreshLayout.setRefreshing(false);
+            getTheses();
+        });
+
     }
 
     //creazione della bottomNavigationView e click sugli items del menu
@@ -114,7 +130,7 @@ public class AvailableFragment extends Fragment implements RecyclerViewInterface
                         filteredList.add(c);
                     }
                 }
-                recad.filterList(filteredList);
+                recyclerAdapter.filterList(filteredList);
                 if (filteredList.isEmpty()) {
                     noItemText.setVisibility(View.VISIBLE);
                 } else {
@@ -177,7 +193,7 @@ public class AvailableFragment extends Fragment implements RecyclerViewInterface
                 filteredList.add(c);
             }
         }
-        recad.filterList(filteredList);
+        recyclerAdapter.filterList(filteredList);
 
         if (filteredList.isEmpty()) {
             noItemText.setVisibility(View.VISIBLE);
@@ -194,7 +210,7 @@ public class AvailableFragment extends Fragment implements RecyclerViewInterface
                 filteredList.add(c);
             }
         }
-        recad.filterList(filteredList);
+        recyclerAdapter.filterList(filteredList);
 
         if (filteredList.isEmpty()) {
             noItemText.setVisibility(View.VISIBLE);
@@ -211,20 +227,14 @@ public class AvailableFragment extends Fragment implements RecyclerViewInterface
                 CardData thesis = new CardData(t.title, t.teacherFullname, t.id, null, t.averageRequirement);
                 cardData.add(thesis);
             }
+            swipeRefreshLayout.setRefreshing(false);
             if (cardData.isEmpty()) {
                 noItemText.setVisibility(View.VISIBLE);
+                recyclerView.setVisibility(View.GONE);
             } else {
                 noItemText.setVisibility(View.GONE);
-                RecyclerView rec = view.findViewById(R.id.availableRecycler);
-                recad = new RecyclerAdapter(cardData, getContext(), this);
-                LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
-                rec.setLayoutManager(linearLayoutManager);
-                rec.setAdapter(recad);
-                SwipeRefreshLayout swipeRefreshLayout = view.findViewById(R.id.refreshAvailable);
-                swipeRefreshLayout.setOnRefreshListener(() -> {
-                    swipeRefreshLayout.setRefreshing(false);
-                    getTheses();
-                });
+                recyclerView.setVisibility(View.VISIBLE);
+                recyclerAdapter.setCardData(cardData);
             }
         });
     }

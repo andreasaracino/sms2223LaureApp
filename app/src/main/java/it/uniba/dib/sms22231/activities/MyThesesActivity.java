@@ -35,6 +35,9 @@ public class MyThesesActivity extends AppCompatActivity implements RecyclerViewI
     private User user;
     private ArrayList<CardData> cardData;
     private TextView noItemText;
+    private RecyclerView recyclerView;
+    private RecyclerAdapter recyclerAdapter;
+    private SwipeRefreshLayout swipeRefreshLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,8 +50,22 @@ public class MyThesesActivity extends AppCompatActivity implements RecyclerViewI
 
         noItemText = findViewById(R.id.noItemText);
 
+        initUI();
         fillCard();
 
+    }
+
+    private void initUI() {
+        recyclerView = findViewById(R.id.thesisRecycler);
+        recyclerAdapter = new RecyclerAdapter(cardData, this, this);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
+        recyclerView.setLayoutManager(linearLayoutManager);
+        recyclerView.setAdapter(recyclerAdapter);
+        swipeRefreshLayout = findViewById(R.id.refreshMyTheses);
+        swipeRefreshLayout.setOnRefreshListener(() -> {
+            swipeRefreshLayout.setRefreshing(false);
+            fillCard();
+        });
     }
 
     //riempimento dell RecyclerView con i dati delle tesi del professore
@@ -61,27 +78,21 @@ public class MyThesesActivity extends AppCompatActivity implements RecyclerViewI
                 CardData thesis = new CardData(t.title, user.fullName, t.id, null);
                 cardData.add(thesis);
             }
-            if (cardData.isEmpty()){
+            swipeRefreshLayout.setRefreshing(false);
+            if (cardData.isEmpty()) {
                 noItemText.setVisibility(View.VISIBLE);
+                recyclerView.setVisibility(View.GONE);
             } else {
                 noItemText.setVisibility(View.GONE);
-                RecyclerView rec = findViewById(R.id.thesisRecycler);
-                RecyclerAdapter  recad = new RecyclerAdapter(cardData, this, this);
-                LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL,false);
-                rec.setLayoutManager(linearLayoutManager);
-                rec.setAdapter(recad);
-                SwipeRefreshLayout swipeRefreshLayout = findViewById(R.id.refreshMyTheses);
-                swipeRefreshLayout.setOnRefreshListener(() -> {
-                    swipeRefreshLayout.setRefreshing(false);
-                    fillCard();
-                });
+                recyclerView.setVisibility(View.VISIBLE);
+                recyclerAdapter.setCardData(cardData);
             }
         });
         thesisService.getUserOwnTheses();
     }
 
     //click sull'item del menu per aggiungere una nuova tesi
-    public void goToAddThesis(){
+    public void goToAddThesis() {
         Intent intent = new Intent(this, AddModifyThesisActivity.class);
         startActivity(intent);
     }
@@ -91,8 +102,8 @@ public class MyThesesActivity extends AppCompatActivity implements RecyclerViewI
     public void onItemClick(int position) {
         Intent intent = new Intent(this, DetailActivity.class);
         String id = cardData.get(position).getId();
-        intent.putExtra("id",id);
-        intent.putExtra("caller",2);
+        intent.putExtra("id", id);
+        intent.putExtra("caller", 2);
         startActivity(intent);
     }
 
@@ -123,7 +134,7 @@ public class MyThesesActivity extends AppCompatActivity implements RecyclerViewI
         if (id == R.id.add) {
             goToAddThesis();
         }
-        if (id == android.R.id.home){
+        if (id == android.R.id.home) {
             this.finish();
         }
         return true;
