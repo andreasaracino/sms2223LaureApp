@@ -23,8 +23,11 @@ import java.util.Calendar;
 import java.util.Date;
 
 import it.uniba.dib.sms22231.R;
+import it.uniba.dib.sms22231.config.MessageReferenceType;
 import it.uniba.dib.sms22231.config.TaskStatus;
+import it.uniba.dib.sms22231.model.MessageReference;
 import it.uniba.dib.sms22231.model.Task;
+import it.uniba.dib.sms22231.service.ChatService;
 import it.uniba.dib.sms22231.service.TaskService;
 import it.uniba.dib.sms22231.utility.TimeUtils;
 
@@ -77,10 +80,25 @@ public class TaskDetailActivity extends AppCompatActivity {
                 modifyStatus();
             } else if (item.getItemId() == R.id.modifyTask) {
                 modifyTask();
+            } else if (item.getItemId() == R.id.openChat) {
+                openChat();
             } else if (item.getItemId() == R.id.deleteTask) {
                 deleteTask();
             }
             return false;
+        });
+    }
+
+    private void openChat() {
+        ChatService.getInstance().getChatByApplicationId(task.applicationId).subscribe(chat -> {
+            Intent intent = new Intent(this, ChatActivity.class);
+            intent.putExtra("chat", chat);
+            MessageReference messageReference = new MessageReference();
+            messageReference.messageReferenceType = MessageReferenceType.task;
+            messageReference.value = task.title;
+            messageReference.referenceId = task.id;
+            intent.putExtra("messageReference", messageReference);
+            startActivity(intent);
         });
     }
 
@@ -163,8 +181,8 @@ public class TaskDetailActivity extends AppCompatActivity {
             taskService.updateTask(task, isSuccessfully -> {
                 Toast.makeText(TaskDetailActivity.this, R.string.success, Toast.LENGTH_SHORT).show();
             });
-           dialog.dismiss();
-           fillActivity();
+            dialog.dismiss();
+            fillActivity();
         });
     }
 

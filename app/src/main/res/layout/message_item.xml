@@ -121,7 +121,6 @@
                 android:backgroundTint="@color/color_primary"
                 android:elevation="1dp"
                 android:foreground="@drawable/ripple_effect"
-                android:onClick="removeReference"
                 android:padding="4dp"
                 android:src="@drawable/search"
                 android:tint="@color/white" />
