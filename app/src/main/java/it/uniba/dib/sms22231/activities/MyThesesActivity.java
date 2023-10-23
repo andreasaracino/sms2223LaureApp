@@ -35,6 +35,9 @@ public class MyThesesActivity extends AppCompatActivity implements RecyclerViewI
     private User user;
     private ArrayList<CardData> cardData;
     private TextView noItemText;
+    private RecyclerView recyclerView;
+    private RecyclerAdapter recyclerAdapter;
+    private SwipeRefreshLayout swipeRefreshLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,8 +50,22 @@ public class MyThesesActivity extends AppCompatActivity implements RecyclerViewI
 
         noItemText = findViewById(R.id.noItemText);
 
+        initUI();
         fillCard();
+    }
 
+    // inizializza lo swipe refresh layout
+    private void initUI() {
+        recyclerView = findViewById(R.id.thesisRecycler);
+        recyclerAdapter = new RecyclerAdapter<>(new ArrayList<>(), this, this);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
+        recyclerView.setLayoutManager(linearLayoutManager);
+        recyclerView.setAdapter(recyclerAdapter);
+        swipeRefreshLayout = findViewById(R.id.refreshMyTheses);
+        swipeRefreshLayout.setOnRefreshListener(() -> {
+            swipeRefreshLayout.setRefreshing(false);
+            fillCard();
+        });
     }
 
     //riempimento dell RecyclerView con i dati delle tesi del professore
@@ -65,16 +82,7 @@ public class MyThesesActivity extends AppCompatActivity implements RecyclerViewI
                 noItemText.setVisibility(View.VISIBLE);
             } else {
                 noItemText.setVisibility(View.GONE);
-                RecyclerView rec = findViewById(R.id.thesisRecycler);
-                RecyclerAdapter  recad = new RecyclerAdapter(cardData, this, this);
-                LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL,false);
-                rec.setLayoutManager(linearLayoutManager);
-                rec.setAdapter(recad);
-                SwipeRefreshLayout swipeRefreshLayout = findViewById(R.id.refreshMyTheses);
-                swipeRefreshLayout.setOnRefreshListener(() -> {
-                    swipeRefreshLayout.setRefreshing(false);
-                    fillCard();
-                });
+                recyclerAdapter.setCardData(cardData);
             }
         });
         thesisService.getUserOwnTheses();
