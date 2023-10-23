@@ -129,4 +129,5 @@
     <string name="taskRef">Message referred to task \"%1s\"</string>
     <string name="chatList">LaureApp Messenger</string>
     <string name="resetPassword">Reset password</string>
+    <string name="signUp">Sign Up</string>
 </resources>
