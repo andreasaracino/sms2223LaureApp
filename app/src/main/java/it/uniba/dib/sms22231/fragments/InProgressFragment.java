@@ -29,6 +29,10 @@ public class InProgressFragment extends Fragment implements RecyclerViewInterfac
     private View view;
     private ArrayList<CardData<Application>> cardDataArrayList;
     private TextView noItemText;
+    private RecyclerView recyclerView;
+    private RecyclerAdapter<Application> recyclerAdapter;
+    private SwipeRefreshLayout swipeRefreshLayout;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -36,9 +40,21 @@ public class InProgressFragment extends Fragment implements RecyclerViewInterfac
         view = inflater.inflate(R.layout.fragment_in_progress, container, false);
         noItemText = view.findViewById(R.id.noThesisFoundText);
 
+        initUI();
         getApplications();
 
         return view;
+    }
+
+    // inizializza lo swipe refresh layout
+    private void initUI() {
+        recyclerView = view.findViewById(R.id.acceptedApplicationsRecycler);
+        recyclerAdapter = new RecyclerAdapter<>(new ArrayList<>(), getContext(), this);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
+        recyclerView.setLayoutManager(linearLayoutManager);
+        recyclerView.setAdapter(recyclerAdapter);
+        swipeRefreshLayout = view.findViewById(R.id.refreshInProgress);
+        swipeRefreshLayout.setOnRefreshListener(this::getApplications);
     }
 
     //riempimento della recycler con tutte le richieste di tesi accettate
@@ -49,20 +65,12 @@ public class InProgressFragment extends Fragment implements RecyclerViewInterfac
                 CardData<Application> cardData = new CardData<>(application.studentName, application.thesisTitle, application.id, null, application);
                 cardDataArrayList.add(cardData);
             });
+            swipeRefreshLayout.setRefreshing(false);
             if (cardDataArrayList.isEmpty()){
                 noItemText.setVisibility(View.VISIBLE);
             } else {
                 noItemText.setVisibility(View.GONE);
-                RecyclerView rec = view.findViewById(R.id.acceptedApplicationsRecycler);
-                RecyclerAdapter<Application> recad = new RecyclerAdapter<>(cardDataArrayList, getContext(), this);
-                LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
-                rec.setLayoutManager(linearLayoutManager);
-                rec.setAdapter(recad);
-                SwipeRefreshLayout swipeRefreshLayout = view.findViewById(R.id.refreshInProgress);
-                swipeRefreshLayout.setOnRefreshListener(() -> {
-                    swipeRefreshLayout.setRefreshing(false);
-                    getApplications();
-                });
+                recyclerAdapter.setCardData(cardDataArrayList);
             }
         });
     }

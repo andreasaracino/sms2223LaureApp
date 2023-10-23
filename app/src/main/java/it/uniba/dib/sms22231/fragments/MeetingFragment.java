@@ -32,11 +32,12 @@ public class MeetingFragment extends Fragment implements RecyclerViewInterface {
     private View view;
     private TextView noMeeting;
     private FloatingActionButton addMeetingButton;
-    private RecyclerView meetingRecycler;
     private ArrayList<CardData> cardDataArrayList;
     private String applicationId;
     private int caller;
-
+    private RecyclerView recyclerView;
+    private RecyclerAdapter recyclerAdapter;
+    private SwipeRefreshLayout swipeRefreshLayout;
 
 
     @Override
@@ -49,7 +50,6 @@ public class MeetingFragment extends Fragment implements RecyclerViewInterface {
         caller = getArguments().getInt("caller", 0);
 
         noMeeting = view.findViewById(R.id.noMeetingText);
-        meetingRecycler = view.findViewById(R.id.meetingRecycler);
 
         addMeetingButton = view.findViewById(R.id.addMeetingButton);
         if (caller == 4) {
@@ -58,10 +58,22 @@ public class MeetingFragment extends Fragment implements RecyclerViewInterface {
             addMeetingButton.setVisibility(View.GONE);
         }
 
+        initUI();
         addMeeting();
         fillFragment();
 
         return view;
+    }
+
+    // inizializza lo swipe refresh layout
+    private void initUI() {
+        recyclerView = view.findViewById(R.id.meetingRecycler);
+        recyclerAdapter = new RecyclerAdapter<>(new ArrayList<>(), getContext(), this);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
+        recyclerView.setLayoutManager(linearLayoutManager);
+        recyclerView.setAdapter(recyclerAdapter);
+        swipeRefreshLayout = view.findViewById(R.id.meetingRefresh);
+        swipeRefreshLayout.setOnRefreshListener(this::fillFragment);
     }
 
     //riempimento del fragment con la lista dei meeting
@@ -73,19 +85,12 @@ public class MeetingFragment extends Fragment implements RecyclerViewInterface {
                 CardData cardData = new CardData<>(m.title, date, m.id, null);
                 cardDataArrayList.add(cardData);
             }
+            swipeRefreshLayout.setRefreshing(false);
             if (cardDataArrayList.isEmpty()){
                 noMeeting.setVisibility(View.VISIBLE);
             } else {
                 noMeeting.setVisibility(View.GONE);
-                RecyclerAdapter recyclerAdapter = new RecyclerAdapter(cardDataArrayList, getContext(), this);
-                LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
-                meetingRecycler.setLayoutManager(linearLayoutManager);
-                meetingRecycler.setAdapter(recyclerAdapter);
-                SwipeRefreshLayout swipeRefreshLayout = view.findViewById(R.id.meetingRefresh);
-                swipeRefreshLayout.setOnRefreshListener(() -> {
-                    swipeRefreshLayout.setRefreshing(false);
-                    fillFragment();
-                });
+                recyclerAdapter.setCardData(cardDataArrayList);
             }
         });
     }

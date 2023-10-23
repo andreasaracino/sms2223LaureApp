@@ -54,7 +54,6 @@ public class RequestsFragment extends Fragment implements RecyclerViewInterface 
         recyclerView.setAdapter(recyclerAdapter);
         swipeRefreshLayout = view.findViewById(R.id.refreshRequest);
         swipeRefreshLayout.setOnRefreshListener(() -> {
-            swipeRefreshLayout.setRefreshing(false);
             getApplications();
         });
     }

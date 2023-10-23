@@ -79,7 +79,6 @@ public class AvailableFragment extends Fragment implements RecyclerViewInterface
         recyclerView.setAdapter(recyclerAdapter);
         swipeRefreshLayout = view.findViewById(R.id.refreshAvailable);
         swipeRefreshLayout.setOnRefreshListener(() -> {
-            swipeRefreshLayout.setRefreshing(false);
             getTheses();
         });
     }
@@ -229,6 +228,7 @@ public class AvailableFragment extends Fragment implements RecyclerViewInterface
                 CardData thesis = new CardData(t.title, t.teacherFullname, t.id, null, t.averageRequirement);
                 cardData.add(thesis);
             }
+            swipeRefreshLayout.setRefreshing(false);
             if (cardData.isEmpty()) {
                 noItemText.setVisibility(View.VISIBLE);
             } else {

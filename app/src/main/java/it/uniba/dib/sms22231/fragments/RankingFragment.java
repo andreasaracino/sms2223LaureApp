@@ -45,6 +45,7 @@ public class RankingFragment extends Fragment implements RecyclerViewInterface {
     private RecyclerAdapter recad;
     private View view;
     private TextView noItemText;
+    private SwipeRefreshLayout swipeRefreshLayout;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -101,10 +102,16 @@ public class RankingFragment extends Fragment implements RecyclerViewInterface {
     //inizializzazione della RecyclerView
     private void initRecyclerView() {
         rec = view.findViewById(R.id.rankRecycler);
+        recad = new RecyclerAdapter(new ArrayList<>(), getContext(), this);
+        rec.setAdapter(recad);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
         rec.setLayoutManager(linearLayoutManager);
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleCallback);
         itemTouchHelper.attachToRecyclerView(rec);
+        swipeRefreshLayout = view.findViewById(R.id.refreshRanking);
+        swipeRefreshLayout.setOnRefreshListener(() -> {
+            getTheses();
+        });
     }
 
     //riempimento della RecyclerView con le tesi preferite
@@ -117,17 +124,12 @@ public class RankingFragment extends Fragment implements RecyclerViewInterface {
                 CardData thesis = new CardData(t.title, t.teacherFullname, t.id, rank + ".", t.averageRequirement);
                 cardData.add(thesis);
             }
+            swipeRefreshLayout.setRefreshing(false);
             if (cardData.isEmpty()) {
                 noItemText.setVisibility(View.VISIBLE);
             } else {
                 noItemText.setVisibility(View.GONE);
-                recad = new RecyclerAdapter(cardData, getContext(), this);
-                rec.setAdapter(recad);
-                SwipeRefreshLayout swipeRefreshLayout = view.findViewById(R.id.refreshRanking);
-                swipeRefreshLayout.setOnRefreshListener(() -> {
-                    swipeRefreshLayout.setRefreshing(false);
-                    getTheses();
-                });
+                recad.setCardData(cardData);
             }
         });
     }

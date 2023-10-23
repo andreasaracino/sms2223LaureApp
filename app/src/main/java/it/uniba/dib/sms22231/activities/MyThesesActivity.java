@@ -63,7 +63,6 @@ public class MyThesesActivity extends AppCompatActivity implements RecyclerViewI
         recyclerView.setAdapter(recyclerAdapter);
         swipeRefreshLayout = findViewById(R.id.refreshMyTheses);
         swipeRefreshLayout.setOnRefreshListener(() -> {
-            swipeRefreshLayout.setRefreshing(false);
             fillCard();
         });
     }
@@ -78,6 +77,7 @@ public class MyThesesActivity extends AppCompatActivity implements RecyclerViewI
                 CardData thesis = new CardData(t.title, user.fullName, t.id, null);
                 cardData.add(thesis);
             }
+            swipeRefreshLayout.setRefreshing(false);
             if (cardData.isEmpty()){
                 noItemText.setVisibility(View.VISIBLE);
             } else {

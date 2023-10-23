@@ -5,6 +5,7 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -37,9 +38,13 @@ public class MeetingService {
         return new Observable<>((next, setOnUnsubscribe) -> {
             meetingCollection.whereEqualTo("applicationId", applicationId).get().addOnCompleteListener(task -> {
                 List<DocumentSnapshot> documents = task.getResult().getDocuments();
-                List<Meeting> meetings = documents.stream().map(this::mapMeeting).collect(Collectors.toList());
+                if (documents.size() == 0) {
+                    next.apply(new ArrayList<>());
+                } else {
+                    List<Meeting> meetings = documents.stream().map(this::mapMeeting).collect(Collectors.toList());
 
-                next.apply(meetings);
+                    next.apply(meetings);
+                }
             });
         });
     }

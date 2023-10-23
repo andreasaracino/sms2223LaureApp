@@ -39,13 +39,14 @@ import it.uniba.dib.sms22231.utility.TimeUtils;
 public class TaskFragment extends Fragment implements RecyclerViewInterface {
     private final TaskService taskService = TaskService.getInstance();
     private View view;
-    private RecyclerView taskRecycler;
     private FloatingActionButton addTaskButton;
     private TextView noTasksText;
     private ArrayList<CardData> cardDataArrayList;
     private String applicationId;
     private int caller;
-
+    private RecyclerView recyclerView;
+    private RecyclerAdapter recyclerAdapter;
+    private SwipeRefreshLayout swipeRefreshLayout;
 
 
     @Override
@@ -57,7 +58,6 @@ public class TaskFragment extends Fragment implements RecyclerViewInterface {
         applicationId = getArguments().getString("applicationId");
         caller = getArguments().getInt("caller", 0);
 
-        taskRecycler = view.findViewById(R.id.taskRecycler);
         addTaskButton = view.findViewById(R.id.addTaskButton);
         noTasksText = view.findViewById(R.id.noTaskText);
 
@@ -67,10 +67,24 @@ public class TaskFragment extends Fragment implements RecyclerViewInterface {
             addTaskButton.setVisibility(View.GONE);
         }
 
+        initUI();
         addTask();
         fillTaskFragment();
 
         return view;
+    }
+
+    // inizializza lo swipe refresh layout
+    private void initUI() {
+        recyclerView = view.findViewById(R.id.taskRecycler);
+        recyclerAdapter = new RecyclerAdapter<>(new ArrayList<>(), getContext(), this);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
+        recyclerView.setLayoutManager(linearLayoutManager);
+        recyclerView.setAdapter(recyclerAdapter);
+        swipeRefreshLayout = view.findViewById(R.id.refreshTask);
+        swipeRefreshLayout.setOnRefreshListener(() -> {
+            fillTaskFragment();
+        });
     }
 
     //riempimento del fragment con le card dei task
@@ -82,18 +96,11 @@ public class TaskFragment extends Fragment implements RecyclerViewInterface {
                 CardData cardData = new CardData(t.title, date, t.id, null);
                 cardDataArrayList.add(cardData);
             }
+            swipeRefreshLayout.setRefreshing(false);
             if (cardDataArrayList.isEmpty()) {
                 noTasksText.setVisibility(View.VISIBLE);
             } else {
-                RecyclerAdapter recyclerAdapter = new RecyclerAdapter(cardDataArrayList, getContext(), this);
-                LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
-                taskRecycler.setLayoutManager(linearLayoutManager);
-                taskRecycler.setAdapter(recyclerAdapter);
-                SwipeRefreshLayout swipeRefreshLayout = view.findViewById(R.id.refreshTask);
-                swipeRefreshLayout.setOnRefreshListener(() -> {
-                    swipeRefreshLayout.setRefreshing(false);
-                    fillTaskFragment();
-                });
+                recyclerAdapter.setCardData(cardDataArrayList);
             }
         });
     }
