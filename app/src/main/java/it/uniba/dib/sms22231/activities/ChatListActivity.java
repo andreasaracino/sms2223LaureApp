@@ -38,6 +38,7 @@ public class ChatListActivity extends AppCompatActivity implements RecyclerViewI
         initUi();
     }
 
+    // Inizializza la recycler view
     private void initUi() {
         chatListRecycler = findViewById(R.id.chatListRecycler);
 
@@ -54,6 +55,7 @@ public class ChatListActivity extends AppCompatActivity implements RecyclerViewI
         return super.onOptionsItemSelected(item);
     }
 
+    // Sottoscrizione alla query che restitusce la lista delle chat associate all'utente e ne riceve i cambiamenti in tempo reale
     private void subscribeToChatList() {
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         ChatElementAdapter chatElementAdapter = new ChatElementAdapter(new ArrayList<>(), getApplicationContext(), this);
@@ -66,6 +68,7 @@ public class ChatListActivity extends AppCompatActivity implements RecyclerViewI
         });
     }
 
+    // Al click su un elemento della recycler apro la ChatActivity passando l'Entity Chat come argomento
     @Override
     public void onItemClick(int position) {
         Intent intent = new Intent(this, ChatActivity.class);
@@ -73,6 +76,7 @@ public class ChatListActivity extends AppCompatActivity implements RecyclerViewI
         startActivity(intent);
     }
 
+    // Chiudo la sottoscrizione alla lista delle chat
     @Override
     protected void onDestroy() {
         super.onDestroy();

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tool="http://schemas.android.com/apk/res-auto"
     android:id="@+id/messageItem"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -123,7 +124,7 @@
                 android:foreground="@drawable/ripple_effect"
                 android:padding="4dp"
                 android:src="@drawable/search"
-                android:tint="@color/white" />
+                tool:tint="@color/white" />
         </LinearLayout>
 
         <TextView

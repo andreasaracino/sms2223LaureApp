@@ -49,6 +49,7 @@ public class ChatService {
         initData();
     }
 
+    // Vengono inizializzate le istanze dei servizi di Firebase
     private void initData() {
         db = FirebaseFirestore.getInstance();
         chatsCollection = db.collection(CHATS_COLLECTION);
@@ -59,37 +60,14 @@ public class ChatService {
         });
     }
 
-    public void getCurrentUserChats() {
-        chatsCollection.whereEqualTo(currentUser.userType.toString().toLowerCase() + "Id", currentUser.uid).get().addOnCompleteListener((task) -> {
-            if (task.isSuccessful()) {
-                mapChatsResult(task.getResult(), chatsObservable::next);
-            }
-        });
-    }
-
-    private void mapChatsResult(QuerySnapshot querySnapshot, CallbackFunction<List<Chat>> callback) {
-        List<Chat> chatList = new ArrayList<>();
-
-        for (QueryDocumentSnapshot rawChat : querySnapshot) {
-            Chat chat = new Chat(rawChat.getData());
-            chat.id = rawChat.getId();
-            getUnreadMessages(chat.id).subscribe(count -> {
-                chat.unreadMessages = count;
-                chatList.add(chat);
-
-                if (chatList.size() == querySnapshot.size()) {
-                    callback.apply(chatList);
-                }
-            });
-        }
-    }
-
+    // Ottengo il numero dei messaggi non letti da parte dell'utente destinatario all'interno di una determinata chat
     private Observable<Integer> getUnreadMessages(String chatId) {
         return new Observable<>((next, setOnUnsubscribe) -> {
             messagesCollection.whereEqualTo("chatId", chatId).whereEqualTo("read", false).whereNotEqualTo("senderUID", currentUser.uid).count().get(AggregateSource.SERVER).addOnCompleteListener(task -> next.apply((int) task.getResult().getCount()));
         });
     }
 
+    // Ottengo l'ultimo messaggio scambiato all'interno di una chat
     private Observable<Message> getLastChatMessage(String chatId) {
         return new Observable<>((next, setOnUnsubscribe) -> {
             messagesCollection.whereEqualTo("chatId", chatId).orderBy("dateSent", Query.Direction.DESCENDING).limit(1).get().addOnCompleteListener(task -> {
@@ -104,6 +82,7 @@ public class ChatService {
         });
     }
 
+    // Segno i messaggi ricevuti di una chat come letti
     private void setChatMessagesAsRead(String chatId) {
         messagesCollection.whereEqualTo("chatId", chatId).whereNotEqualTo("senderUID", currentUser.uid).whereEqualTo("read", false).get().addOnCompleteListener(task -> {
             if (task.isSuccessful() && !task.getResult().isEmpty()) {
@@ -121,6 +100,8 @@ public class ChatService {
         });
     }
 
+    // Ottengo la lista dei messaggi contenuti in una chat e subito dopo effettuo l'ascolto delle modifiche alla lista. Questo permette di mandare aggiornamenti
+    // alla ChatActivity attraverso l'Observable restituito
     public Observable<List<Message>> getChatMessages(String chatId) {
         return new Observable<>((next, setOnUnsubscribe) -> messagesCollection.whereEqualTo("chatId", chatId).orderBy("dateSent").get().addOnCompleteListener(task -> {
             List<Message> messageList = mapMessagesResult(task.getResult());
@@ -149,6 +130,7 @@ public class ChatService {
         }));
     }
 
+    // Ottengo la lista delle chat associate all'utente e, come nel metodo sopra, ne ascolto le modifiche e aggiorno ChatListActivity
     public Observable<List<Chat>> getUserChats() {
         return new Observable<>((next, setOnUnsubscribe) -> {
             chatsCollection.whereEqualTo(getFieldKeyByUserType(), currentUser.uid).get().addOnCompleteListener(task -> {
@@ -188,10 +170,12 @@ public class ChatService {
         });
     }
 
+    // Ordino una lista di chat in base alla data dell'ultimo messaggio scambiato
     private List<Chat> sortedChatList(List<Chat> chats) {
         return chats.stream().filter(c -> c.lastMessage != null && c.lastMessage.dateSent != null).sorted(Comparator.comparing(a -> a.lastMessage.dateSent, Comparator.reverseOrder())).collect(Collectors.toList());
     }
 
+    // Ottengo la chat associata allo studente e al professore passati in input
     public Observable<Chat> getChatByStudentIdAndTeacherId(String studentUid, String teacherId) {
         return new Observable<>((next, setOnUnsubscribe) -> {
             chatsCollection.whereEqualTo("studentId", studentUid).whereEqualTo("teacherId", teacherId).get().addOnCompleteListener(task -> {
@@ -207,6 +191,7 @@ public class ChatService {
         });
     }
 
+    // Ottengo la chat associata all'Application specificata in input
     public Observable<Chat> getChatByApplicationId(String applicationId) {
         return new Observable<>((next, setOnUnsubscribe) -> {
             chatsCollection.whereEqualTo("applicationId", applicationId).get().addOnCompleteListener(task -> {
@@ -217,6 +202,7 @@ public class ChatService {
         });
     }
 
+    // mappatura della singola chat in cui vado a trovare l'utente interlocutore, l'ultimo messaggio e il numero di messaggi nuovi (da leggere)
     private void mapChat(DocumentSnapshot rawChat, CallbackFunction<Chat> callback) {
         Chat chat = new Chat(Objects.requireNonNull(rawChat.getData()));
         chat.id = rawChat.getId();
@@ -248,6 +234,7 @@ public class ChatService {
         });
     }
 
+    // In base alla tipoligia di utente restituisco gli appositi campi "id"
     private String getFieldKeyByUserType() {
         String fieldKey = "";
 
@@ -262,6 +249,7 @@ public class ChatService {
         return fieldKey;
     }
 
+    // Mappatura della lista dei messaggi di una chat
     private List<Message> mapMessagesResult(QuerySnapshot querySnapshot) {
         List<Message> messageList = new ArrayList<>();
 
@@ -275,9 +263,7 @@ public class ChatService {
         return messageList;
     }
 
-    private void createChat() {
-    }
-
+    // Invio di un messaggio ad una chat con relativo aggiornamento della stessa (per triggerare l'aggiornamento di ChatListActivity)
     public void sendMessage(Message message) {
         message.dateSent = Date.from(Instant.now(Clock.systemDefaultZone()));
         message.read = false;
@@ -288,6 +274,7 @@ public class ChatService {
         });
     }
 
+    // Invio di un messaggio di servizio per l'aggiornamento dello stato di un'Application
     public void sendApplicationStatusUpdate(Application application, String text) {
         getChatByStudentIdAndTeacherId(application.studentUid, currentUser.uid).subscribe(chat -> {
             Message message = new Message();
@@ -304,10 +291,12 @@ public class ChatService {
         });
     }
 
+    // Aggiornamento della chat al timestamp specificato
     public void updateChat(String chatId, long time) {
         chatsCollection.document(chatId).update("lastUpdated", time);
     }
 
+    // Collegamento di una specifica Application a una chat
     public void linkApplicationToChat(String chatId, Application application) {
         chatsCollection.document(chatId).update("applicationId", application.id);
         chatsCollection.document(chatId).update("title", application.thesisTitle);

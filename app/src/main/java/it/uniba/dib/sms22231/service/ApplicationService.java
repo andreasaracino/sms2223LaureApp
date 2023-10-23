@@ -35,6 +35,7 @@ public class ApplicationService {
     private final StudentService studentService = StudentService.getInstance();
     private final ChatService chatService = ChatService.getInstance();
 
+    // Ottengo la lista delle richieste filtrate per stato (pending o approved)
     public Observable<List<Application>> getAllApplicationsByStatus(ApplicationStatus applicationStatus) {
         return new Observable<>((next, setOnUnsubscribe) -> {
             thesisService.userOwnTheses.reset();
@@ -53,6 +54,7 @@ public class ApplicationService {
         });
     }
 
+    // Ottengo una singola richiesta per id
     public Observable<Application> getApplicationById(String id) {
         return new Observable<>((next, setOnUnsubscribe) -> {
             applicationsCollection.document(id).get().addOnCompleteListener(task -> {
@@ -63,6 +65,7 @@ public class ApplicationService {
         });
     }
 
+    // salvataggio della richiesta passando una Entity di tipo Application
     public void createApplication(Application application, CallbackFunction<Boolean> callback) {
         applicationsCollection.add(application).addOnCompleteListener(task -> {
             studentService.saveNewCurrentApplicationId(userService.getUserData().uid, task.getResult().getId());
@@ -70,6 +73,7 @@ public class ApplicationService {
         });
     }
 
+    // Salvataggio del nuovo stato di una richiesta (approved o rejected) e invio di un messaggio di servizio alla chat associata
     public void setNewApplicationStatus(Context context, Application application, ApplicationStatus status, CallbackFunction<Boolean> callback) {
         applicationsCollection.document(application.id).update("status", status).addOnCompleteListener(task -> {
             if (status == ApplicationStatus.rejected) {
@@ -83,6 +87,7 @@ public class ApplicationService {
         });
     }
 
+    // mappatura dei dati ottenuti dal server con delle Entity di tipo Application
     private void mapApplications(QuerySnapshot querySnapshot, List<Thesis> theses, CallbackFunction<List<Application>> callback) {
         List<Application> applications = new ArrayList<>();
 
@@ -103,6 +108,7 @@ public class ApplicationService {
 
     }
 
+    // mappatura di una singola Application passando una lista di tesi
     private void mapApplication(List<Thesis> theses, String documentId, Map<String, Object> rawApplication, CallbackFunction<Application> callback) {
         Application application = new Application(rawApplication);
         application.id = documentId;
@@ -118,6 +124,7 @@ public class ApplicationService {
         });
     }
 
+    // mappatura di una singola Application ottenendo la tesi associata dal ThesisService
     private void mapApplication(String documentId, Map<String, Object> rawApplication, CallbackFunction<Application> callback) {
         Application application = new Application(rawApplication);
         application.id = documentId;
@@ -142,6 +149,7 @@ public class ApplicationService {
         });
     }
 
+    // ottengo il messaggio di servizio dalle risorse dell'applicazione in base all'ApplicationStatus
     private void getApplicationStatusMessage(Context context, Application application, ApplicationStatus status, CallbackFunction<String> callback) {
         int itResId = status == ApplicationStatus.approved ? R.string.applicationApproved_it : R.string.applicationRejected_it;
         int enResId = status == ApplicationStatus.approved ? R.string.applicationApproved_en : R.string.applicationRejected_en;

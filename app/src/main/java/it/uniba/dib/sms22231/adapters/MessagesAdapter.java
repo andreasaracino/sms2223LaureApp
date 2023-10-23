@@ -9,7 +9,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
-import android.widget.TableLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -34,10 +33,6 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.ViewHo
     private final CallbackFunction<MessageReference> goToReference;
     Context context;
 
-    /**
-     * Provide a reference to the type of views that you are using
-     * (custom ViewHolder)
-     */
     public static class ViewHolder extends RecyclerView.ViewHolder {
         private final TextView messageDateText;
         private final TextView messageTextView;
@@ -51,7 +46,6 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.ViewHo
 
         public ViewHolder(View view) {
             super(view);
-            // Define click listener for the ViewHolder's View
 
             messageDateText = view.findViewById(R.id.messageDateText);
             messageTextView = (TextView) view.findViewById(R.id.messageText);
@@ -101,12 +95,6 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.ViewHo
         }
     }
 
-    /**
-     * Initialize the dataset of the Adapter
-     *
-     * @param messageList String[] containing the data to populate views to be used
-     * by RecyclerView
-     */
     public MessagesAdapter(List<Message> messageList, Context context, CallbackFunction<MessageReference> goToReference) {
         this.messageList = messageList;
         this.context = context;
@@ -117,23 +105,17 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.ViewHo
         this.messageList = messageList;
     }
 
-    // Create new views (invoked by the layout manager)
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
-        // Create a new view, which defines the UI of the list item
         View view = LayoutInflater.from(viewGroup.getContext())
                 .inflate(R.layout.message_item, viewGroup, false);
 
         return new ViewHolder(view);
     }
 
-    // Replace the contents of a view (invoked by the layout manager)
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, final int position) {
-
-        // Get element from your dataset at this position and replace the
-        // contents of the view with that element
         TextView messageDateText = viewHolder.getMessageDateText();
         TextView messageTextView = viewHolder.getMessageTextView();
         TextView dateTextView = viewHolder.getDateTextView();
@@ -162,6 +144,7 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.ViewHo
 
         messageContainer.setBackground(getBgDrawable(message, position, nextMessage, prevMessage));
 
+        // Se il messaggio, rispetto a quello precedente, è stato inviato in un giorno diverso, viene visualizzata la data prima dello stesso
         if (prevMessage == null || !TimeUtils.areDatesSameDay(message.dateSent, prevMessage.dateSent)) {
             dateContainer.setVisibility(View.VISIBLE);
             messageDateText.setText(TimeUtils.getTimeFromDate(message.dateSent, false));
@@ -169,12 +152,14 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.ViewHo
             dateContainer.setVisibility(View.GONE);
         }
 
+        // Se il messaggio non è stato letto viene mostrata una riga che indica ciò
         if (!message.sent && !message.read && (prevMessage == null || prevMessage.read)) {
             unreadContainer.setVisibility(View.VISIBLE);
         } else {
             unreadContainer.setVisibility(View.GONE);
         }
 
+        // Se non è definito il senderUID allora il messaggio è di servizio
         if (message.senderUID == null) {
             messageContainer.setLayoutDirection(View.LAYOUT_DIRECTION_LTR);
             messageReferenceContainer.setVisibility(View.GONE);
@@ -188,6 +173,7 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.ViewHo
             dateTextView.setTextColor(resUtils.getColor(R.color.black));
             textLayoutParams.setMargins(64, 64, 64, 0);
 
+            // Viene estratto il messaggio corrispondente alla lingua di sistema
             String currentLang = Locale.getDefault().getLanguage();
             try {
                 JSONObject jsonObject = new JSONObject(message.text);
@@ -200,6 +186,7 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.ViewHo
         } else {
             MessageReference messageReference = message.messageReference;
 
+            // Se c'è un riferimento a una tesi o task allora esso viene visualizzato all'interno del messaggio
             if (messageReference != null) {
                 messageContainer.setOrientation(LinearLayout.VERTICAL);
                 messageReferenceContainer.setVisibility(View.VISIBLE);
@@ -210,6 +197,7 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.ViewHo
             } else {
                 messageReferenceContainer.setVisibility(View.GONE);
 
+                // Se il messaggio è più corto di 30 caratteri allora il testo e l'orario vengono visualizzati in riga, altrimenti in colonna
                 if (message.text.length() <= 30) {
                     messageContainer.setOrientation(LinearLayout.HORIZONTAL);
                     goToReferenceButton.setOnClickListener(null);
@@ -218,6 +206,7 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.ViewHo
                 }
             }
 
+            // Si cambia la posizione e l'aspetto del messaggio sullo schermo in base al mittente dello stesso
             if (message.sent) {
                 messageContainer.setLayoutDirection(View.LAYOUT_DIRECTION_LTR);
                 messageTextView.setTextColor(Color.WHITE);
@@ -244,6 +233,7 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.ViewHo
         dateTextView.setLayoutParams(dateTextParams);
     }
 
+    // In base alla posizione del messaggio rispetto a quelli circostanti si mostra uno sfondo di forma diversa
     private Drawable getBgDrawable(Message message, int position, Message nextMessage, Message prevMessage) {
         int resId;
 

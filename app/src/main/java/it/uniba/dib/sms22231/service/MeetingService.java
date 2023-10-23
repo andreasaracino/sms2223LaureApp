@@ -20,6 +20,7 @@ public class MeetingService {
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private CollectionReference meetingCollection = db.collection(MEETING_COLLECTION);
 
+    // Ottengo un meeting attraverso l'id
     public Observable<Meeting> getMeetingById(String meetingId) {
         return new Observable<>((next, setOnUnsubscribe) -> {
             meetingCollection.document(meetingId).get().addOnCompleteListener(task -> {
@@ -28,12 +29,14 @@ public class MeetingService {
         });
     }
 
+    // mappatura dell'Entity di tipo Meeting
     private Meeting mapMeeting(DocumentSnapshot rawMeeting) {
         Meeting meeting = new Meeting(rawMeeting.getData());
         meeting.id = rawMeeting.getId();
         return meeting;
     }
 
+    // Ottengo la lista dei meeting di una specifica Application
     public Observable<List<Meeting>> getMeetingsByApplicationId(String applicationId) {
         return new Observable<>((next, setOnUnsubscribe) -> {
             meetingCollection.whereEqualTo("applicationId", applicationId).get().addOnCompleteListener(task -> {
@@ -49,14 +52,17 @@ public class MeetingService {
         });
     }
 
+    // Salvataggio di una nuova Entity
     public void saveNewMeeting(Meeting meeting, CallbackFunction<Boolean> callback) {
         meetingCollection.add(meeting.toMap()).addOnCompleteListener(task -> callback.apply(task.isSuccessful()));
     }
 
+    // Aggiornamento di un'Entity esistente
     public void updateMeeting(Meeting meeting, CallbackFunction<Boolean> callback) {
         meetingCollection.document(meeting.id).set(meeting.toMap()).addOnCompleteListener(task -> callback.apply(task.isSuccessful()));
     }
 
+    // Elimiazione di un'Entity tramite id
     public void deleteMeeting(String meetingId, CallbackFunction<Boolean> callback) {
         meetingCollection.document(meetingId).delete().addOnCompleteListener(task -> callback.apply(task.isSuccessful()));
     }

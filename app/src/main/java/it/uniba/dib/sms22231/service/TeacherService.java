@@ -30,6 +30,7 @@ public class TeacherService {
         initData();
     }
 
+    // Inizializzo i servizi di Firebase
     private void initData() {
         db = FirebaseFirestore.getInstance();
         userService = UserService.getInstance();
@@ -43,6 +44,7 @@ public class TeacherService {
         });
     }
 
+    // Ottengo il professore tramite l'id utente
     public void getTeacherByUid(String uid) {
         teacherDocument = teacherCollection.document(uid);
         teacherDocument.get().addOnCompleteListener(task -> {
@@ -54,8 +56,8 @@ public class TeacherService {
         });
     }
 
+    // Salvo l'entity Teacher associata all'utente loggato
     public void saveTeacher(User user, CallbackFunction<Boolean> callback) {
-
         if (teacherDocument == null) {
             teacherDocument = teacherCollection.document(user.uid);
         }

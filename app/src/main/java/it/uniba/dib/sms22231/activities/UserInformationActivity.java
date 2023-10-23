@@ -38,6 +38,8 @@ public class UserInformationActivity extends AppCompatActivity {
         initUi();
     }
 
+    // Ottengo i dati dell'utente e compilo tutti i campi corrispondenti ai dati stessi
+    // se l'utente era già registrato lo spinner di selezione del ruolo viene bloccato in sola lettura
     @Override
     protected void onStart() {
         super.onStart();
@@ -62,12 +64,14 @@ public class UserInformationActivity extends AppCompatActivity {
         userSubscription.unsubscribe();
     }
 
+    // inizializzo i componenti grafici
     private void initUi() {
         fullNameField = findViewById(R.id.nameField);
         roleSpinner = findViewById(R.id.roleSpinner);
         regNumberField = findViewById(R.id.regNumberField);
     }
 
+    // Ottengo i dati inseriti nei vari campi e li salvo attraverso l'uso del UserService
     public void doConfirm(View view) {
         user.fullName = fullNameField.getText().toString();
         user.userType = UserTypes.values()[roleSpinner.getSelectedItemPosition()];
@@ -87,18 +91,21 @@ public class UserInformationActivity extends AppCompatActivity {
         }
     }
 
+    // Torno alla DashboardActivity
     private void goToDashboard() {
         Intent intent = new Intent(this, DashboardActivity.class);
         startActivity(intent);
         finish();
     }
 
+    // Vado alla SignInActivity
     private void goToLogin() {
         Intent intent = new Intent(this, SignInActivity.class);
         startActivity(intent);
         finish();
     }
 
+    // Al click del pulsante "Elimina Account" viene mostrata una dialog di conferma e se l'utente clicca "Sì" l'account viene eliminato
     public void deleteUser(View view) {
         AlertDialog dialog = new AlertDialog.Builder(this)
                 .setMessage(R.string.deleteAccountPrompt)

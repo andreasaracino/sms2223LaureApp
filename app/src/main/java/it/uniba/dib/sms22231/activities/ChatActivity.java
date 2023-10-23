@@ -47,6 +47,7 @@ public class ChatActivity extends AppCompatActivity {
     private Observable<List<Message>>.Subscription subscription;
     private boolean paused;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,6 +58,7 @@ public class ChatActivity extends AppCompatActivity {
         initAppBar();
     }
 
+    // Inizializzo l'app bar customizzata con l'icona dell'utente interlocutore e le sue generalità
     private void initAppBar() {
         ActionBar actionBar = Objects.requireNonNull(getSupportActionBar());
         View customView = getLayoutInflater().inflate(R.layout.activity_chat_action_bar, null);
@@ -82,6 +84,7 @@ public class ChatActivity extends AppCompatActivity {
         this.onBackPressed();
     }
 
+    // Inizializzo gli elementi grafici e l'adapter da assegnare alla recycler view contenente la lista dei messaggi in chat
     @Override
     protected void onStart() {
         super.onStart();
@@ -91,10 +94,7 @@ public class ChatActivity extends AppCompatActivity {
         messagesView = findViewById(R.id.messagesView);
         editText = findViewById(R.id.editTextTextMultiLine);
 
-        if (messageReference != null) {
-            messageReferenceContainer.setVisibility(View.VISIBLE);
-            chatReferenceMessage.setText(resUtils.getStringWithParams(messageReference.messageReferenceType.getStringRes(), messageReference.value));
-        }
+        initMessageReference();
 
         List<Message> messageList = new ArrayList<>();
 
@@ -110,6 +110,15 @@ public class ChatActivity extends AppCompatActivity {
         });
     }
 
+    // Se è stato passato un riferimento a una tesi o a un task visualizzo l'apposito messaggio di servizio
+    private void initMessageReference() {
+        if (messageReference != null) {
+            messageReferenceContainer.setVisibility(View.VISIBLE);
+            chatReferenceMessage.setText(resUtils.getStringWithParams(messageReference.messageReferenceType.getStringRes(), messageReference.value));
+        }
+    }
+
+    // Al click su un messaggio con riferimento (tesi o task) vado alla rispettiva activity
     private void goToReference(MessageReference messageReference) {
         Intent intent;
         if (Objects.requireNonNull(messageReference.messageReferenceType) == MessageReferenceType.task) {
@@ -122,6 +131,7 @@ public class ChatActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
+    // Sottoscrivo l'activity all'observable che riceve i messaggi per visualizzarli nella recycler view
     private void subscribeToChat() {
         subscription = chatService.getChatMessages(chat.id).subscribe(messages -> {
             messagesAdapter.setMessages(messages);
@@ -130,6 +140,7 @@ public class ChatActivity extends AppCompatActivity {
         });
     }
 
+    // Creo un'entity di tipo Message e la passo al metodo apposito del ChatService che si occuperà di inviarlo
     public void sendMessage(View view) {
         String text = editText.getText().toString().trim();
 
@@ -146,6 +157,7 @@ public class ChatActivity extends AppCompatActivity {
         }
     }
 
+    // Al click sul pulsante di chiusura del riferimento, lo stesso viene rimosso dall'interfaccia e dall'activity
     public void removeReference(View view) {
         messageReference = null;
         messageReferenceContainer
@@ -163,6 +175,7 @@ public class ChatActivity extends AppCompatActivity {
                 });
     }
 
+    // sospendo la sottoscrizione
     @Override
     protected void onPause() {
         super.onPause();
@@ -171,6 +184,7 @@ public class ChatActivity extends AppCompatActivity {
         paused = true;
     }
 
+    // riavvio la sottoscrizione
     @Override
     protected void onResume() {
         super.onResume();

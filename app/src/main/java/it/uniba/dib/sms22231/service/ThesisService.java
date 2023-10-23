@@ -43,6 +43,7 @@ public class ThesisService {
 
     private ThesisService() {}
 
+    // Ottengo la lista di tutte le tesi salvate
     public Observable<List<Thesis>> getAllTheses() {
         return new Observable<>((next, setOnUnsubscribe) -> {
             thesesCollection.orderBy("title", Query.Direction.ASCENDING).get().addOnCompleteListener(task -> {
@@ -52,6 +53,7 @@ public class ThesisService {
         });
     }
 
+    // Ottengo la lista delle tesi appartenenti all'utente corrente
     public void getUserOwnTheses() {
         String uid = userService.getUserData().uid;
 
@@ -63,6 +65,7 @@ public class ThesisService {
         });
     }
 
+    // Ottengo la lista delle tesi preferite associate allo studente loggato
     public Observable<List<Thesis>> getSavedTheses() {
         Observable<List<Thesis>> savedTheses = new Observable<>();
 
@@ -90,6 +93,7 @@ public class ThesisService {
         return savedTheses;
     }
 
+    // Ottengo una specifica tesi per id
     public void getThesisById(String id, CallbackFunction<Thesis> callback) {
         thesesCollection.document(id).get().addOnCompleteListener(task -> {
             DocumentSnapshot documentSnapshot = task.getResult();
@@ -97,6 +101,7 @@ public class ThesisService {
         });
     }
 
+    // Salvo una nuova tesi passando gli allegati e i requisiti
     public void saveNewThesis(Thesis thesis, List<Requirement> requirements, List<Uri> attachments, List<String> fileNames, CallbackFunction<Boolean> callback) {
         thesesCollection.add(thesis.toMap()).addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
@@ -111,6 +116,7 @@ public class ThesisService {
         });
     }
 
+    // Aggiorno una tesi esistente passando le liste degli eventuali cambiamenti effettuati agli allegati e ai requisiti
     public void updateThesis(Thesis thesis, List<Change<Attachment>> changedAttachments, List<Change<Requirement>> changedRequirements, CallbackFunction<Boolean> callback) {
         DocumentReference thesisDocument = thesesCollection.document(thesis.id);
         thesesCollection.document(thesis.id).set(thesis.toMap()).addOnCompleteListener(task -> {
@@ -134,6 +140,10 @@ public class ThesisService {
         });
     }
 
+    /* Aggiorno gli allegati di una tesi in base al seguente criterio
+     *  - se il cambiamento è di tipo "added" aggiungo i nuovi allegati nello storage e li associo alla tesi
+     *  - se il cambiamento è di tipo "removed" li rimuovo dalla tesi
+     */
     private void updateAttachments(List<Change<Attachment>> changedAttachments, Thesis thesis, DocumentReference thesisDocument, CallbackFunction<Boolean> callbackFunction) {
         List<Uri> newAttachments = changedAttachments.stream().filter(attachmentChange -> attachmentChange.changeType == ChangeTypes.added).map(attachmentChange -> attachmentChange.value.path).collect(Collectors.toList());
         List<String> fileNames = changedAttachments.stream().filter(attachmentChange -> attachmentChange.changeType == ChangeTypes.added).map(attachmentChange -> attachmentChange.value.getFileName()).collect(Collectors.toList());
@@ -148,6 +158,10 @@ public class ThesisService {
         });
     }
 
+    /* Aggiorno i requisiti di una tesi in base al seguente criterio
+     *  - se il cambiamento è di tipo "added" aggiungo i nuovi requisiti nel database e li associo alla tesi
+     *  - se il cambiamento è di tipo "removed" li rimuovo dalla tesi
+     */
     private void updateRequirements(List<Change<Requirement>> changedRequirements, Thesis thesis, CallbackFunction<Boolean> callbackFunction) {
         List<Requirement> newRequirements = changedRequirements.stream().filter(requirementChange -> requirementChange.changeType == ChangeTypes.added).map(requirementChange -> requirementChange.value).collect(Collectors.toList());
         List<String> removedRequirements = changedRequirements.stream().filter(requirementChange -> requirementChange.changeType == ChangeTypes.removed).map(requirementChange -> requirementChange.value.id).collect(Collectors.toList());
@@ -171,6 +185,7 @@ public class ThesisService {
         });
     }
 
+    // Mappatura della Map di documenti per ottenere una lista di tesi
     private void mapThesesResult(Map<Integer, DocumentSnapshot> documentSnapshots, CallbackFunction<List<Thesis>> callback) {
         Map<Integer, Thesis> theses = new HashMap<>();
 
@@ -193,6 +208,7 @@ public class ThesisService {
 
     }
 
+    // Mappatura di una signola tesi, associando ad essa il nome del professore e il valore dell'eventuale requisito media
     private void mapThesis(String id, Map<String, Object> data, CallbackFunction<Thesis> callback) {
         Thesis thesis = new Thesis(data);
         thesis.id = id;

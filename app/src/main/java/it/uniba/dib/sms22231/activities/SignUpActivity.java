@@ -28,15 +28,19 @@ public class SignUpActivity extends AppCompatActivity {
         initUi();
     }
 
+    // Inizializzo i componenti grafici
     private void initUi() {
         emailField = findViewById(R.id.signUpEmail);
         passwordField = findViewById(R.id.signUpPassword);
     }
 
+    // Chiudo l'activity passato alla SignInActivity
     public void goToSignIn(View view) {
         finish();
     }
 
+    // Effettua la richiesta di registrazione dell'account e, se l'operazione va a buon fine, si visualizza un toast apposito
+    // e si viene trasferiti alla pagina di login, mentre se fallisce viene mostrato un toas di errore
     public void doSignUp(View view) {
         String email = emailField.getText().toString();
         String password = passwordField.getText().toString();

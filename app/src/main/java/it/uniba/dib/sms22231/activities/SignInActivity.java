@@ -28,6 +28,7 @@ public class SignInActivity extends AppCompatActivity {
     private Button loginButton;
     private ProgressBar progressBar;
 
+    // Inizializzo l'istanza di FirebaseAuth
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,6 +38,7 @@ public class SignInActivity extends AppCompatActivity {
         initUi();
     }
 
+    // Ottengo un'istanza di UserService e controllo se l'utente è loggato
     @Override
     protected void onStart() {
         super.onStart();
@@ -45,6 +47,7 @@ public class SignInActivity extends AppCompatActivity {
         checkLogin(false);
     }
 
+    // Inizializzo i componenti grafici
     private void initUi() {
         emailField = findViewById(R.id.editTextTextEmailAddress);
         passwordField = findViewById(R.id.editTextTextPassword);
@@ -52,6 +55,8 @@ public class SignInActivity extends AppCompatActivity {
         progressBar = findViewById(R.id.progressBar);
     }
 
+    // Controlli sull'autenticazione. Se l'utente è loggato e la mail verificata si viene trasferiti alla dashboard
+    // se invece la mail non è verificata o l'utente non si è loggato con successo, viene mostrato un toast apposito
     private void checkLogin(Boolean loggingIn) {
         FirebaseUser currentUser = mAuth.getCurrentUser();
 
@@ -66,17 +71,20 @@ public class SignInActivity extends AppCompatActivity {
         }
     }
 
+    // Si passa il controllo alla DashboardActivity
     private void goToDashboard() {
         Intent intent = new Intent(this, DashboardActivity.class);
         startActivity(intent);
         finish();
     }
 
+    // Al click dell'utente si passa alla SignUpActivity
     public void goToSignUp(View view) {
         Intent intent = new Intent(this, SignUpActivity.class);
         startActivity(intent);
     }
 
+    // Blocco i campi in sola lettura mentre viene effettuato il login
     private void setLoading(Boolean loading) {
         progressBar.setVisibility(loading ? View.VISIBLE : View.GONE);
         emailField.setEnabled(!loading);
@@ -84,6 +92,8 @@ public class SignInActivity extends AppCompatActivity {
         loginButton.setEnabled(!loading);
     }
 
+    // Viene richiamato il metodo signIn dello UserService e quando si ha un esito positivo si chiama checkLogin, altrimenti
+    // si visualizza un messagio di errore
     public void doLogin(View view) {
         setLoading(true);
         String email = emailField.getText().toString();
@@ -100,6 +110,8 @@ public class SignInActivity extends AppCompatActivity {
         });
     }
 
+    // Al click sul pulsante per il reset della password, viene mostrata una dialog di conferma, successivamente viene inviata una
+    // richiesta di reset della password
     public void resetPassword(View view) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(R.string.resetPassword);
@@ -122,6 +134,7 @@ public class SignInActivity extends AppCompatActivity {
         builder.show();
     }
 
+    // Si effettua un login come utente ospite
     public void loginAsGuest(View view) {
         userService.signInAsGuest();
         goToDashboard();

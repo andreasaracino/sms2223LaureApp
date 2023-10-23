@@ -13,6 +13,7 @@ import java.util.Date;
 import it.uniba.dib.sms22231.R;
 
 public class TimeUtils {
+    // Ottengo ora e minuti, oppure giorno, mese e anno da una data
     public static String getTimeFromDate(Date input, boolean time) {
         SimpleDateFormat simpleDateFormat;
         simpleDateFormat = new SimpleDateFormat(time ? "HH:mm" : "dd/MM/yyyy");
@@ -20,6 +21,7 @@ public class TimeUtils {
         return simpleDateFormat.format(input);
     }
 
+    // Controllo se due date sono dello stesso giorno
     public static boolean areDatesSameDay(Date a, Date b) {
         Calendar aC = Calendar.getInstance();
         aC.setTime(a);
@@ -30,57 +32,21 @@ public class TimeUtils {
                 aC.get(Calendar.YEAR) == bC.get(Calendar.YEAR);
     }
 
-    public static String getTimeAgoFromDate(Date input, Context context) {
-        String timeAgo;
-        Date currentDate = Date.from(Instant.now());
-
-        long timeElapsed = (currentDate.getTime() - input.getTime()) / 1000;
-
-        if (timeElapsed < 60) {
-            return context.getResources().getString(R.string.now);
-        }
-
-        timeElapsed /= 60;
-        if (timeElapsed < 60) {
-            return context.getResources().getQuantityString(R.plurals.minutesAgo, (int) timeElapsed, (int) timeElapsed);
-        }
-
-        timeElapsed /= 60;
-        if (timeElapsed < 24) {
-            return context.getResources().getQuantityString(R.plurals.hoursAgo, (int) timeElapsed, (int) timeElapsed);
-        }
-
-        timeElapsed /= 24;
-        if (timeElapsed < 7) {
-            return context.getResources().getQuantityString(R.plurals.daysAgo, (int) timeElapsed, (int) timeElapsed);
-        }
-
-        timeElapsed /= 7;
-        if (timeElapsed < 4) {
-            return context.getResources().getQuantityString(R.plurals.weeksAgo, (int) timeElapsed, (int) timeElapsed);
-        }
-
-        timeElapsed /= 4;
-        if (timeElapsed < 12) {
-            return context.getResources().getQuantityString(R.plurals.monthsAgo, (int) timeElapsed, (int) timeElapsed);
-        }
-
-        timeElapsed /= 12;
-        return context.getResources().getQuantityString(R.plurals.yearsAgo, (int) timeElapsed, (int) timeElapsed);
-    }
-
+    // converto una data in UTC e poi in stringa
     @SuppressLint("SimpleDateFormat")
     public static String dateToString(Date date, boolean includeSeconds) {
         DateFormat simpleDateFormat = new SimpleDateFormat("yyyy/MM/dd - HH:mm" + (includeSeconds ? ":ss" : ""));
         return simpleDateFormat.format(dateToUTC(date));
     }
 
+    // converto una data in stringa
     @SuppressLint("SimpleDateFormat")
     public static String dateToString(Date date) {
         DateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy - HH:mm");
         return simpleDateFormat.format(date);
     }
 
+    // converto una stringa in data e poi la converte nel fuso orario di sistema
     @SuppressLint("SimpleDateFormat")
     public static Date stringToDate(String date, boolean includeSeconds) {
         try {
@@ -91,17 +57,13 @@ public class TimeUtils {
         }
     }
 
+    // converte una data da UTC al fuso orario corrente
     public static Date dateFromUTC(Date date){
         return new Date(date.getTime() + Calendar.getInstance().getTimeZone().getOffset(new Date().getTime()));
     }
 
+    // converte una data dal fuso orario corrente a UTC
     public static Date dateToUTC(Date date){
         return new Date(date.getTime() - Calendar.getInstance().getTimeZone().getOffset(date.getTime()));
     }
-
-    /*public static getCurrentTime() {
-        OffsetDateTime date = OffsetDateTime.now(ZoneOffset.UTC);
-        Date date = new Da
-        instant;
-    }*/
 }

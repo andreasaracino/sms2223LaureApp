@@ -22,6 +22,7 @@ public class AttachmentService {
     private FirebaseStorage storage = FirebaseStorage.getInstance();
     private StorageReference storageReference = storage.getReference();
 
+    // Viene salvata nello storage di Firebase una lista di file associati a una tesi e viene restituita la lista dei riferimenti a tali file
     public void saveAttachments(List<Uri> filesList, List<String> fileNames, CallbackFunction<List<String>> callback) {
         List<String> savedFilesPaths = new ArrayList<>();
 
@@ -45,6 +46,7 @@ public class AttachmentService {
         }
     }
 
+    // Si ottiene la lista dei file con link per il download attraverso un'Entity di tipo Thesis
     public Observable<List<Attachment>> getAttachmentsByThesis(Thesis thesis) {
         return new Observable<>((next, setOnUnsubscribe) -> {
             List<String> filesIds = thesis.attachments;

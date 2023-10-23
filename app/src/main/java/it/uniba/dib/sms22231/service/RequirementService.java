@@ -22,6 +22,7 @@ public class RequirementService {
     private final FirebaseFirestore db = FirebaseFirestore.getInstance();
     private final CollectionReference requirementsCollection = db.collection(COLLECTION_NAME);
 
+    // Ottengo la lista dei requisiti associati a una tesi
     public Observable<List<Requirement>> getRequirementsByThesis(Thesis thesis) {
         return new Observable<>((next, setOnUnsubscribe) -> {
             requirementsCollection.whereEqualTo("thesisId", thesis.id).get().addOnCompleteListener(task -> {
@@ -41,6 +42,7 @@ public class RequirementService {
         });
     }
 
+    // Mappatura di un singolo requisito
     private static Requirement mapRequirement(DocumentSnapshot requirementDoc) {
         Requirement requirement = null;
 
@@ -52,6 +54,7 @@ public class RequirementService {
         return requirement;
     }
 
+    // Aggiunta di una lista di requisti associati a una tesi
     public void addRequirements(List<Requirement> requirements, String thesisId, CallbackFunction<Boolean> callback) {
         if (requirements.size() == 0) {
             callback.apply(true);
@@ -70,6 +73,7 @@ public class RequirementService {
         }
     }
 
+    // Rimozione di una lista di requisiti
     public void removeRequirements(List<String> requirementsIds, CallbackFunction<Boolean> callback) {
         if (requirementsIds.size() == 0) {
             callback.apply(true);
@@ -81,6 +85,7 @@ public class RequirementService {
         }
     }
 
+    // Ottengo il requisito "media" di una specifica tesi, se esiste
     public void getAverageRequirementByThesis(String thesisId, CallbackFunction<Integer> callback) {
         requirementsCollection.whereEqualTo("thesisId", thesisId).whereEqualTo("description", RequirementTypes.average).get().addOnCompleteListener(task -> {
             if (task.isSuccessful() && !task.getResult().isEmpty()) {

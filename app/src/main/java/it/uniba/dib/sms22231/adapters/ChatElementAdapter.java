@@ -67,6 +67,8 @@ public class ChatElementAdapter extends RecyclerView.Adapter<ChatElementAdapter.
 
         int iconColor = resUtils.getColorByNumber(userName.length());
 
+        // Se nella chat è presente almeno un messaggio, il contenuto dell'ultimo viene visualizzato sotto il nome dell'utente interlocutore
+        // Se l'ultimo messaggio è un messaggio di servizio, allora viene estratto quello corrispondente alla lingua di sistema (inglese di default)
         if (chat.lastMessage != null) {
             String lastMessage = "";
             if (chat.lastMessage.senderUID == null) {
@@ -94,6 +96,7 @@ public class ChatElementAdapter extends RecyclerView.Adapter<ChatElementAdapter.
         }
 
 
+        // Se la chat è associata a una tesi ne viene visualizzato il titolo a fianco al nome dell'interlocutore
         if (chat.title != null) {
             userName += String.format(" · %s", chat.title);
         }

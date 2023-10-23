@@ -32,6 +32,7 @@ public class StudentService {
         initData();
     }
 
+    // Inizializzo i servizi di Firebase
     private void initData() {
         db = FirebaseFirestore.getInstance();
         studentsCollection = db.collection(COLLECTION_NAME);
@@ -43,11 +44,13 @@ public class StudentService {
         });
     }
 
+    // Ottengo il document dello studente in base all'id utente
     private void getStudentByUid(String uid) {
         studentDocument = studentsCollection.document(uid);
         updateStudent();
     }
 
+    // Aggiungo l'id di una tesi nella lista di tesi preferite dell'Entity dello studente loggato
     public void addThesisToFavourites(Thesis thesis, CallbackFunction<Boolean> callback) {
         updateStudent().subscribe((student, unsubscribe) -> {
             boolean isFavorite = isThesisFavorite(thesis);
@@ -65,6 +68,7 @@ public class StudentService {
         });
     }
 
+    // Aggiorno l'ordine delle tesi preferite in base all'impostazione dell'utente
     public void saveNewFavoritesOrder(List<String> savedTheses) {
         Map<String, String> thesesIdsMap = new HashMap<>();
 
@@ -75,6 +79,7 @@ public class StudentService {
         studentDocument.update("savedThesesIds", thesesIdsMap).addOnCompleteListener(task -> updateStudent());
     }
 
+    // Aggiorno l'observable dello studente
     public Observable<Student> updateStudent() {
         studentObservable.reset();
 
@@ -89,14 +94,17 @@ public class StudentService {
         return studentObservable;
     }
 
+    // Aggiorno l'Application associata allo studente
     public void saveNewCurrentApplicationId(String studentUid, String applicationId) {
         studentsCollection.document(studentUid).update("currentApplicationId", applicationId).addOnCompleteListener(task -> updateStudent());
     }
 
+    // Controllo se una specifica tesi è tra i preferiti dello studente
     public boolean isThesisFavorite(Thesis thesis) {
         return studentData.savedThesesIds != null && studentData.savedThesesIds.containsValue(thesis.id);
     }
 
+    // Salvataggio dell'Entity studente associata all'utente loggato
     public void saveStudent(User user, CallbackFunction<Boolean> callback) {
         if (studentDocument == null) {
             studentDocument = studentsCollection.document(user.uid);

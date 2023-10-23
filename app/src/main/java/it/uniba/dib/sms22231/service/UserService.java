@@ -105,6 +105,7 @@ public class UserService {
         }
     }
 
+    // accedi come ospite
     public void signInAsGuest() {
         isGuest = true;
         User guest = new User();
@@ -112,6 +113,7 @@ public class UserService {
         userObservable.next(guest);
     }
 
+    // effettua la registrazione con email e password
     public void signUp(String email, String password, CallbackFunction<Boolean> callback) {
         if (!email.isEmpty() && !password.isEmpty()) {
             mAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(task -> {
@@ -126,6 +128,7 @@ public class UserService {
         }
     }
 
+    // elimina l'utente loggato
     public void deleteUser(CallbackFunction<Boolean> callback) {
         mAuth.getCurrentUser().delete().addOnCompleteListener(task -> {
             signOut();
@@ -133,6 +136,7 @@ public class UserService {
         });
     }
 
+    // effettua il logout
     public void signOut() {
         if (getUserData().userType == UserTypes.GUEST) {
             userObservable.reset();
@@ -141,6 +145,7 @@ public class UserService {
         }
     }
 
+    // richiedi l'email per il reset della password
     public void resetPassword(String email, CallbackFunction<Boolean> callback) {
         mAuth.sendPasswordResetEmail(email).addOnCompleteListener(task -> callback.apply(task.isSuccessful()));
     }
@@ -152,6 +157,7 @@ public class UserService {
         return userObservable.getValue();
     }
 
+    // ottengo un utente per id
     public void getUserByUid(String uid, CallbackFunction<User> callback) {
         usersCollection.document(uid).get().addOnCompleteListener(task -> {
            User user = new User(task.getResult().getData());

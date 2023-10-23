@@ -19,6 +19,7 @@ public class TaskService {
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private CollectionReference tasksCollection = db.collection(TASK_COLLECTION);
 
+    // Ottengo uno specifico task per id
     public Observable<Task> getTaskById(String taskId) {
         return new Observable<>((next, setOnUnsubscribe) -> {
             tasksCollection.document(taskId).get().addOnCompleteListener(task -> {
@@ -27,6 +28,7 @@ public class TaskService {
         });
     }
 
+    // Ottengo i task per id dell'Application
     public Observable<List<Task>> getTasksByApplicationId(String applicationId) {
         return new Observable<>((next, setOnUnsubscribe) -> {
             tasksCollection.whereEqualTo("applicationId", applicationId).get().addOnCompleteListener(task -> {
@@ -38,6 +40,7 @@ public class TaskService {
         });
     }
 
+    // Mappatura di un singolo task
     @NonNull
     private static Task mapTask(DocumentSnapshot rawTask) {
         Task Task = new Task(rawTask.getData());
@@ -45,14 +48,17 @@ public class TaskService {
         return Task;
     }
 
+    // Salvataggio nuovo task
     public void saveNewTask(Task task, CallbackFunction<Boolean> callback) {
         tasksCollection.add(task.toMap()).addOnCompleteListener(task1 -> callback.apply(task1.isSuccessful()));
     }
 
+    // Aggiornamento task esistente
     public void updateTask(Task task, CallbackFunction<Boolean> callback) {
         tasksCollection.document(task.id).set(task.toMap()).addOnCompleteListener(task1 -> callback.apply(task1.isSuccessful()));
     }
 
+    // eliminazione task
     public void deleteTask(String taskId, CallbackFunction<Boolean> callback) {
         tasksCollection.document(taskId).delete().addOnCompleteListener(task -> callback.apply(task.isSuccessful()));
     }
