@@ -1,5 +1,6 @@
 package it.uniba.dib.sms22231.activities;
 
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
@@ -28,6 +29,9 @@ public class UserInformationActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_information);
+
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setTitle(R.string.account);
 
         initUi();
     }

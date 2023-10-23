@@ -118,5 +118,6 @@
     <string name="chatList">LaureApp Messenger</string>
     <string name="resetPassword">Reimposta password</string>
     <string name="resetError">Account non trovato!</string>
+    <string name="signUp">Registrazione</string>
     <string name="assistantSupervisor">Correlatore</string>
 </resources>

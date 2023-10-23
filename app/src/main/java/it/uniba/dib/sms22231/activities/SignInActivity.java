@@ -117,7 +117,7 @@ public class SignInActivity extends AppCompatActivity {
                 Toast.makeText(this, R.string.resetError, Toast.LENGTH_SHORT).show();
             }
         }));
-        builder.setNegativeButton("Cancel", (dialog, which) -> dialog.cancel());
+        builder.setNegativeButton(R.string.cancel, (dialog, which) -> dialog.cancel());
 
         builder.show();
     }
