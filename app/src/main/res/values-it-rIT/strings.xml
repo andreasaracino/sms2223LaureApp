@@ -120,6 +120,7 @@
     <string name="resetError">Account non trovato!</string>
     <string name="signUp">Registrazione</string>
     <string name="assistantSupervisor">Correlatore</string>
+    <string name="deleteAccountPrompt">Sei sicuro di voler eliminare il tuo account?</string>
     <string name="loginAgain">Accedi di nuovo perfavore</string>
     <string name="accountDeleted">Account eliminato con successo</string>
 </resources>

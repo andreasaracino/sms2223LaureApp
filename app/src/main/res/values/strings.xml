@@ -131,6 +131,7 @@
     <string name="resetPassword">Reset password</string>
     <string name="signUp">Sign Up</string>
     <string name="assistantSupervisor">Assistant supervisor</string>
+    <string name="deleteAccountPrompt">Are you sure you want to delete your account?</string>
     <string name="loginAgain">Please login again</string>
     <string name="accountDeleted">Account deleted successfully</string>
 </resources>
