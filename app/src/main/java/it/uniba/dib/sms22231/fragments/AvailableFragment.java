@@ -47,6 +47,9 @@ public class AvailableFragment extends Fragment implements RecyclerViewInterface
     private TextView noItemText;
     private RecyclerAdapter recad;
     private boolean isOpen = false;
+    private RecyclerView recyclerView;
+    private RecyclerAdapter recyclerAdapter;
+    private SwipeRefreshLayout swipeRefreshLayout;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -59,11 +62,26 @@ public class AvailableFragment extends Fragment implements RecyclerViewInterface
         searchView = view.findViewById(R.id.searchViewThesis);
         noItemText = view.findViewById(R.id.noItemText);
 
+        initUI();
         getTheses();
 
         bottomNavBar();
 
         return view;
+    }
+
+    // inizializza lo swipe refresh layout
+    private void initUI() {
+        recyclerView = view.findViewById(R.id.availableRecycler);
+        recyclerAdapter = new RecyclerAdapter<>(new ArrayList<>(), getContext(), this);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
+        recyclerView.setLayoutManager(linearLayoutManager);
+        recyclerView.setAdapter(recyclerAdapter);
+        swipeRefreshLayout = view.findViewById(R.id.refreshAvailable);
+        swipeRefreshLayout.setOnRefreshListener(() -> {
+            swipeRefreshLayout.setRefreshing(false);
+            getTheses();
+        });
     }
 
     //creazione della bottomNavigationView e click sugli items del menu
@@ -215,16 +233,7 @@ public class AvailableFragment extends Fragment implements RecyclerViewInterface
                 noItemText.setVisibility(View.VISIBLE);
             } else {
                 noItemText.setVisibility(View.GONE);
-                RecyclerView rec = view.findViewById(R.id.availableRecycler);
-                recad = new RecyclerAdapter(cardData, getContext(), this);
-                LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
-                rec.setLayoutManager(linearLayoutManager);
-                rec.setAdapter(recad);
-                SwipeRefreshLayout swipeRefreshLayout = view.findViewById(R.id.refreshAvailable);
-                swipeRefreshLayout.setOnRefreshListener(() -> {
-                    swipeRefreshLayout.setRefreshing(false);
-                    getTheses();
-                });
+                recyclerAdapter.setCardData(cardData);
             }
         });
     }
