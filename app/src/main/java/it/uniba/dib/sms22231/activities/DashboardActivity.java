@@ -156,7 +156,7 @@ public class DashboardActivity extends AppCompatActivity {
     //creazione del menu
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        if (user.userType == UserTypes.GUEST) {
+        if (user != null && user.userType == UserTypes.GUEST) {
             FloatingActionButton fab = findViewById(R.id.chatFab);
             fab.setVisibility(View.GONE);
             getMenuInflater().inflate(R.menu.guest_dashboard_menu, menu);
