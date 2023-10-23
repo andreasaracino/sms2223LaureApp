@@ -44,8 +44,7 @@ public class UserInformationActivity extends AppCompatActivity {
             regNumberField.setText(user.registrationNumber);
             if (user.userType != null) {
                 roleSpinner.setSelection(user.userType.ordinal());
-                // TODO decommentare questa riga
-                // roleSpinner.setEnabled(false);
+                roleSpinner.setEnabled(false);
             }
         });
     }
