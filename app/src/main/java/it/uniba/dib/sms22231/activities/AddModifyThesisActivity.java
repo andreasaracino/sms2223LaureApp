@@ -54,6 +54,7 @@ public class AddModifyThesisActivity extends AppCompatActivity {
     private ActivityResultLauncher<Intent> resultLauncher;
     private EditText thesisTitle;
     private EditText thesisDescription;
+    private EditText assistantSupervisor;
     private ListView listViewFile;
     private ListView listViewReq;
     private Button saveModifyButton;
@@ -83,6 +84,7 @@ public class AddModifyThesisActivity extends AppCompatActivity {
 
         thesisTitle = findViewById(R.id.titleEditText);
         thesisDescription = findViewById(R.id.descriptionEditText);
+        assistantSupervisor = findViewById(R.id.assistantEditText);
         listViewFile = findViewById(R.id.fileListView);
         fileNames = new ArrayList<>();
         listViewReq = findViewById(R.id.reqListView);
@@ -186,6 +188,7 @@ public class AddModifyThesisActivity extends AppCompatActivity {
                 currentThesis = thesis;
                 thesisTitle.setText(thesis.title);
                 thesisDescription.setText(thesis.description);
+                assistantSupervisor.setText(thesis.assistantSupervisor);
 
                 requirementService.getRequirementsByThesis(thesis).subscribe(requirements -> {
                     currentRequirements = (ArrayList<Requirement>) requirements;
@@ -338,13 +341,15 @@ public class AddModifyThesisActivity extends AppCompatActivity {
                 changedAttachments.size() > 0 ||
                         changedRequirements.size() > 0 ||
                         !currentThesis.title.equals(thesisTitle.getText().toString()) ||
-                        !currentThesis.description.equals(thesisDescription.getText().toString())
+                        !currentThesis.description.equals(thesisDescription.getText().toString()) ||
+                        !currentThesis.assistantSupervisor.equals(assistantSupervisor.getText().toString())
         ) ||
                 !isEditing && (
                         fileNames.size() > 0 ||
                                 reqString.size() > 0 ||
                                 thesisTitle.getText().toString().length() > 0 ||
-                                thesisDescription.getText().toString().length() > 0
+                                thesisDescription.getText().toString().length() > 0 ||
+                                assistantSupervisor.getText().toString().length() > 0
                 );
     }
 
@@ -432,6 +437,7 @@ public class AddModifyThesisActivity extends AppCompatActivity {
         thesis.teacherId = userId;
         thesis.title = thesisTitle.getText().toString();
         thesis.description = thesisDescription.getText().toString();
+        thesis.assistantSupervisor = assistantSupervisor.getText().toString();
 
         AtomicReference<Boolean> success = new AtomicReference<>(false);
 
@@ -447,6 +453,7 @@ public class AddModifyThesisActivity extends AppCompatActivity {
     public void onModify(View view) {
         currentThesis.title = thesisTitle.getText().toString();
         currentThesis.description = thesisDescription.getText().toString();
+        currentThesis.assistantSupervisor = assistantSupervisor.getText().toString();
 
         thesisService.updateThesis(currentThesis, changedAttachments, changedRequirements, success -> {
             if (success) {

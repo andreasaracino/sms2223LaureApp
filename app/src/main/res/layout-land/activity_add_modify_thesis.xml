@@ -48,6 +48,15 @@
                         android:layout_marginBottom="13dp"
                         android:text="@string/description"
                         android:textColor="@color/black" />
+
+                    <TextView
+                        android:id="@+id/textView18"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="18dp"
+                        android:layout_marginBottom="13dp"
+                        android:text="@string/assistantSupervisor"
+                        android:textColor="@color/black" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -75,6 +84,17 @@
                         android:ems="10"
                         android:gravity="start|top"
                         android:inputType="textMultiLine"
+                        android:maxLines="1" />
+
+                    <EditText
+                        android:id="@+id/assistantEditText"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginTop="8dp"
+                        android:ems="10"
+                        android:gravity="start|top"
+                        android:inputType="text|textPersonName|textCapWords"
                         android:maxLines="1" />
                 </LinearLayout>
 

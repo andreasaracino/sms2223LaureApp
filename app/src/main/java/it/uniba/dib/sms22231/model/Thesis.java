@@ -11,6 +11,7 @@ public class Thesis {
     public String id;
     public String title;
     public String description;
+    public String assistantSupervisor;
     public String teacherId;
     public String teacherFullname;
     public List<String> attachments;
@@ -32,6 +33,7 @@ public class Thesis {
         id = (String) data.get("id");
         title = (String) data.get("title");
         description = (String) data.get("description");
+        assistantSupervisor = (String) data.get("assistantSupervisor");
         teacherId = (String) data.get("teacherId");
 
         Object attachmentsObject = data.get("attachmentIds");
@@ -47,6 +49,7 @@ public class Thesis {
         map.put("title", title);
         map.put("description", description);
         map.put("teacherId", teacherId);
+        map.put("assistantSupervisor", assistantSupervisor);
         return map;
     }
 }

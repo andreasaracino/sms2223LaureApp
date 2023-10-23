@@ -1,5 +1,7 @@
 package it.uniba.dib.sms22231.activities;
 
+import static android.view.View.GONE;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
@@ -60,6 +62,7 @@ public class DetailActivity extends AppCompatActivity {
     private TextView txtTitle;
     private TextView txtDescription;
     private TextView txtOwner;
+    private TextView txtAssistant;
     private TextView txtNoRequirement;
     private TextView txtNoFile;
     private ListView reqListview;
@@ -108,6 +111,7 @@ public class DetailActivity extends AppCompatActivity {
         txtTitle = findViewById(R.id.titleText);
         txtDescription = findViewById(R.id.descriptionText);
         txtOwner = findViewById(R.id.ownerText);
+        txtAssistant = findViewById(R.id.assistantText);
         reqListview = findViewById(R.id.reqList);
         fileListView = findViewById(R.id.fileList);
         txtNoRequirement = findViewById(R.id.textNoReq);
@@ -123,6 +127,14 @@ public class DetailActivity extends AppCompatActivity {
             txtTitle.setText(thesis.title);
             String temp = getString(R.string.teacher) + ": " + thesis.teacherFullname;
             txtOwner.setText(temp);
+
+            if (thesis.assistantSupervisor == null || thesis.assistantSupervisor.length() == 0) {
+                txtAssistant.setVisibility(GONE);
+            } else {
+                String assistant = getString(R.string.assistantSupervisor) + ": " + thesis.assistantSupervisor;
+                txtAssistant.setText(assistant);
+            }
+
             txtDescription.setText(thesis.description);
 
             requirementService.getRequirementsByThesis(thesis).subscribe(requirements -> {
@@ -145,11 +157,11 @@ public class DetailActivity extends AppCompatActivity {
                     }
                 }
                 if (req.isEmpty()) {
-                    reqListview.setVisibility(View.GONE);
+                    reqListview.setVisibility(GONE);
                     txtNoRequirement.setVisibility(View.VISIBLE);
                 } else {
                     fillRequirementList(req, reqListview);
-                    txtNoRequirement.setVisibility(View.GONE);
+                    txtNoRequirement.setVisibility(GONE);
                 }
             });
             attachmentService.getAttachmentsByThesis(thesis).subscribe(attachments -> {
@@ -161,10 +173,10 @@ public class DetailActivity extends AppCompatActivity {
                     this.attachments.add(attachment);
                 }
                 if (attach.isEmpty()) {
-                    fileListView.setVisibility(View.GONE);
+                    fileListView.setVisibility(GONE);
                     txtNoFile.setVisibility(View.VISIBLE);
                 } else {
-                    txtNoFile.setVisibility(View.GONE);
+                    txtNoFile.setVisibility(GONE);
                     fillAttachmentsList();
                 }
             });
