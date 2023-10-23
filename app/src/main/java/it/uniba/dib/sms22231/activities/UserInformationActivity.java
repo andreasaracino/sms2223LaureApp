@@ -90,4 +90,22 @@ public class UserInformationActivity extends AppCompatActivity {
         startActivity(intent);
         finish();
     }
+
+    private void goToLogin() {
+        Intent intent = new Intent(this, SignInActivity.class);
+        startActivity(intent);
+        finish();
+    }
+
+    public void deleteUser(View view) {
+        userService.deleteUser(success -> {
+            if (success) {
+                Toast.makeText(this, R.string.accountDeleted, Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(this, R.string.loginAgain, Toast.LENGTH_SHORT).show();
+            }
+
+            goToLogin();
+        });
+    }
 }

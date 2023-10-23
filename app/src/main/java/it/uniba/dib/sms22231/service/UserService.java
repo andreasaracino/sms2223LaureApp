@@ -1,5 +1,7 @@
 package it.uniba.dib.sms22231.service;
 
+import android.telecom.Call;
+
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
@@ -122,6 +124,13 @@ public class UserService {
                 callback.apply(task.isSuccessful());
             });
         }
+    }
+
+    public void deleteUser(CallbackFunction<Boolean> callback) {
+        mAuth.getCurrentUser().delete().addOnCompleteListener(task -> {
+            signOut();
+            callback.apply(task.isSuccessful());
+        });
     }
 
     public void signOut() {
