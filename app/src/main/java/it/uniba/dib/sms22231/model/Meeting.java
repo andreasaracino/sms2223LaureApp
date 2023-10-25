@@ -10,7 +10,7 @@ import it.uniba.dib.sms22231.utility.TimeUtils;
 public class Meeting {
     public String id;
     public String applicationId;
-    public List<String> taskId;
+    public List<String> taskIds;
     public Date date;
     public String title;
     public String subject;
@@ -18,10 +18,10 @@ public class Meeting {
     public Meeting() {
     }
 
-    public Meeting(String id, String applicationId, List<String> taskId, Date date, String title, String subject) {
+    public Meeting(String id, String applicationId, List<String> taskIds, Date date, String title, String subject) {
         this.id = id;
         this.applicationId = applicationId;
-        this.taskId = taskId;
+        this.taskIds = taskIds;
         this.date = date;
         this.title = title;
         this.subject = subject;
@@ -30,7 +30,7 @@ public class Meeting {
     public Meeting(Map<String, Object> data) {
         id = (String) data.get("id");
         applicationId = (String) data.get("applicationId");
-        taskId = (List<String>) data.get("taskId");
+        taskIds = (List<String>) data.get("taskIds");
         date = TimeUtils.stringToDate((String) data.get("date"), false);
         title = (String) data.get("title");
         subject = (String) data.get("subject");
@@ -40,7 +40,7 @@ public class Meeting {
         Map<String, Object> map = new HashMap<>();
         map.put("id", id);
         map.put("applicationId", applicationId);
-        map.put("taskId", taskId);
+        map.put("taskIds", taskIds);
         map.put("date", TimeUtils.dateToString(date, false));
         map.put("title", title);
         map.put("subject", subject);

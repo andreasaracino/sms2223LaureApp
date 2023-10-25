@@ -15,19 +15,17 @@ public class Application {
     public String thesisId;
     public String studentUid;
     public List<Requirement> requirements;
-    public String chatId;
     public String thesisTitle;
     public String studentName;
 
     public Application() {}
 
-    public Application(String id, ApplicationStatus status, String thesisId, String studentUid, List<Requirement> requirements, String chatId) {
+    public Application(String id, ApplicationStatus status, String thesisId, String studentUid, List<Requirement> requirements) {
         this.id = id;
         this.status = status;
         this.thesisId = thesisId;
         this.studentUid = studentUid;
         this.requirements = requirements;
-        this.chatId = chatId;
     }
 
     public Application(Map<String, Object> data) {
@@ -36,7 +34,6 @@ public class Application {
             status = ApplicationStatus.valueOf((String) data.get("status"));
             thesisId = (String) data.get("thesisId");
             studentUid = (String) data.get("studentUid");
-            chatId = (String) data.get("chatId");
             try {
                 List<Map<String, Object>> requirements = (List<Map<String, Object>>) data.get("requirements");
                 this.requirements = requirements.stream().map(Requirement::new).collect(Collectors.toList());
@@ -52,7 +49,6 @@ public class Application {
         map.put("status", status);
         map.put("thesisId", thesisId);
         map.put("studentUid", studentUid);
-        map.put("chatId", chatId);
         return map;
     }
 }

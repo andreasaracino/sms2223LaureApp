@@ -16,7 +16,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.android.material.navigation.NavigationBarView;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -132,7 +131,7 @@ public class MeetingDetailActivity extends AppCompatActivity implements Recycler
             date.setText(meetingDate);
             subjects.setText(meeting.subject);
             cardDataArrayList = new ArrayList<>();
-            for (String id : meeting.taskId) {
+            for (String id : meeting.taskIds) {
                 taskService.getTaskById(id).subscribe(task -> {
                     String duedate = TimeUtils.getTimeFromDate(task.dueDate, false);
                     CardData cardData = new CardData<>(task.title, duedate, task.id, null);

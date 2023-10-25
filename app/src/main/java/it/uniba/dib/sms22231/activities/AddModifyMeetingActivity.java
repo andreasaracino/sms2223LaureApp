@@ -9,7 +9,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.format.DateFormat;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
@@ -113,9 +112,9 @@ public class AddModifyMeetingActivity extends AppCompatActivity {
             calendar.set(datePicker.getYear(), datePicker.getMonth(), datePicker.getDayOfMonth(), timePicker.getHour(), timePicker.getMinute(), 0);
             long milliseconds = calendar.getTimeInMillis();
             meeting.date = new Date(milliseconds);
-            meeting.taskId = new ArrayList<>();
+            meeting.taskIds = new ArrayList<>();
             for (Task t : checkedTasksArrayList) {
-                meeting.taskId.add(t.id);
+                meeting.taskIds.add(t.id);
             }
             meeting.applicationId = applicationId;
             if (onModify) {
