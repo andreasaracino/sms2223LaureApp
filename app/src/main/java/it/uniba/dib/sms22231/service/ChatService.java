@@ -83,21 +83,19 @@ public class ChatService {
     }
 
     // Segno i messaggi ricevuti di una chat come letti
-    private void setChatMessagesAsRead(String chatId) {
-        messagesCollection.whereEqualTo("chatId", chatId).whereNotEqualTo("senderUID", currentUser.uid).whereEqualTo("read", false).get().addOnCompleteListener(task -> {
-            if (task.isSuccessful() && !task.getResult().isEmpty()) {
-                int[] completed = {0};
-                List<DocumentSnapshot> documents = task.getResult().getDocuments();
-                for (DocumentSnapshot message : documents) {
-                    messagesCollection.document(message.getId()).update("read", true).addOnCompleteListener(task1 -> {
-                        completed[0]++;
-                        if (completed[0] == documents.size()) {
-                            updateChat(chatId, Date.from(Instant.now(Clock.systemDefaultZone())).getTime());
-                        }
-                    });
-                }
+    private void setChatMessagesAsRead(String chatId, QuerySnapshot messages) {
+        new Thread(() -> {
+            int[] completed = {0};
+            List<DocumentSnapshot> documents = messages.getDocuments().stream().filter(documentSnapshot -> !((boolean) documentSnapshot.getData().get("read")) && !currentUser.uid.equals((String) documentSnapshot.getData().get("senderUID"))).collect(Collectors.toList());
+            for (DocumentSnapshot message : documents) {
+                messagesCollection.document(message.getId()).update("read", true).addOnCompleteListener(task1 -> {
+                    completed[0]++;
+                    if (completed[0] == documents.size()) {
+                        updateChat(chatId, Date.from(Instant.now(Clock.systemDefaultZone())).getTime());
+                    }
+                });
             }
-        });
+        }).start();
     }
 
     // Ottengo la lista dei messaggi contenuti in una chat e subito dopo effettuo l'ascolto delle modifiche alla lista. Questo permette di mandare aggiornamenti
@@ -106,7 +104,7 @@ public class ChatService {
         return new Observable<>((next, setOnUnsubscribe) -> messagesCollection.whereEqualTo("chatId", chatId).orderBy("dateSent").get().addOnCompleteListener(task -> {
             List<Message> messageList = mapMessagesResult(task.getResult());
             next.apply(messageList);
-            setChatMessagesAsRead(chatId);
+            setChatMessagesAsRead(chatId, task.getResult());
 
             ListenerRegistration listener = messagesCollection.whereEqualTo("chatId", chatId).orderBy("dateSent").addSnapshotListener((snapshot, e) -> {
                 if (e != null || snapshot == null) return;
@@ -123,7 +121,7 @@ public class ChatService {
                 }
 
                 next.apply(messageList);
-                setChatMessagesAsRead(chatId);
+                setChatMessagesAsRead(chatId, task.getResult());
             });
 
             setOnUnsubscribe.apply(listener::remove);
