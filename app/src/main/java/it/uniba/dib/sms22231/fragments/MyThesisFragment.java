@@ -1,5 +1,7 @@
 package it.uniba.dib.sms22231.fragments;
 
+import static android.view.View.GONE;
+
 import android.app.AlertDialog;
 import android.app.DownloadManager;
 import android.content.Context;
@@ -56,6 +58,7 @@ public class MyThesisFragment extends Fragment {
     private ArrayList<String> fileNames;
     private TextView titleText;
     private TextView ownerText;
+    private TextView assistantSupervisorText;
     private TextView descriptionText;
     private TextView requirementText;
     private TextView noRequirements;
@@ -76,6 +79,7 @@ public class MyThesisFragment extends Fragment {
         view = inflater.inflate(R.layout.fragment_my_thesis, container, false);
         titleText = view.findViewById(R.id.titleText);
         ownerText = view.findViewById(R.id.ownerText);
+        assistantSupervisorText = view.findViewById(R.id.assistantSupervisor);
         descriptionText = view.findViewById(R.id.descriptionText);
         requirementText = view.findViewById(R.id.textView6);
         noRequirements = view.findViewById(R.id.textNoReq);
@@ -134,6 +138,14 @@ public class MyThesisFragment extends Fragment {
                 } else {
                     owner = getString(R.string.teacher) + ": " + thesis.teacherFullname;
                 }
+
+                if (thesis.assistantSupervisor == null || thesis.assistantSupervisor.length() == 0) {
+                    assistantSupervisorText.setVisibility(GONE);
+                } else {
+                    String assistant = getString(R.string.assistantSupervisor) + ": " + thesis.assistantSupervisor;
+                    assistantSupervisorText.setText(assistant);
+                }
+
                 ownerText.setText(owner);
                 descriptionText.setText(thesis.description);
 
