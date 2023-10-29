@@ -123,4 +123,6 @@
     <string name="deleteAccountPrompt">Sei sicuro di voler eliminare il tuo account?</string>
     <string name="loginAgain">Accedi di nuovo perfavore</string>
     <string name="accountDeleted">Account eliminato con successo</string>
+    <string name="logInAsTeacher">Accedi come professore</string>
+    <string name="logInAsStudent">Accedi come studente</string>
 </resources>

@@ -1,5 +1,6 @@
 package it.uniba.dib.sms22231.activities;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -7,6 +8,9 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.InputType;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.SurfaceHolder;
 import android.view.View;
 import android.widget.Button;
@@ -138,5 +142,40 @@ public class SignInActivity extends AppCompatActivity {
     public void loginAsGuest(View view) {
         userService.signInAsGuest();
         goToDashboard();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.direct_access_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        String directEmail;
+        String directPassword;
+        if (item.getItemId() == R.id.asTeacher){
+            directEmail = "m.piteo@studenti.uniba.it";
+            directPassword = "test123";
+            directLogIn(directEmail, directPassword);
+        } else if (item.getItemId() == R.id.asStudent) {
+            directEmail = "a.saracino62@studenti.uniba.it";
+            directPassword = "test123";
+            directLogIn(directEmail, directPassword);
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void directLogIn(String directEmail, String directPassword) {
+        userService.signIn(directEmail, directPassword, isSuccessful -> {
+            setLoading(false);
+
+            if (isSuccessful) {
+                checkLogin(true);
+            } else {
+                Toast.makeText(SignInActivity.this, R.string.sign_in_fail, Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 }
