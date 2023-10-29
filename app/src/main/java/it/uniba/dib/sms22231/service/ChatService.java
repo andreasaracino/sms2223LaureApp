@@ -10,18 +10,13 @@ import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.time.Clock;
 import java.time.Instant;
-import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import it.uniba.dib.sms22231.config.UserTypes;
@@ -31,7 +26,6 @@ import it.uniba.dib.sms22231.model.Message;
 import it.uniba.dib.sms22231.model.User;
 import it.uniba.dib.sms22231.utility.CallbackFunction;
 import it.uniba.dib.sms22231.utility.Observable;
-import it.uniba.dib.sms22231.utility.TimeUtils;
 
 public class ChatService {
     private static final String CHATS_COLLECTION = "chats";
