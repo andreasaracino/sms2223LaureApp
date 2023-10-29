@@ -223,7 +223,7 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.ViewHo
                 messageContainer.setGravity(Gravity.END);
                 dateTextView.setText(TimeUtils.getTimeFromDate(message.dateSent, true));
                 dateTextView.setTextColor(resUtils.getColor(R.color.indigo_100));
-                textLayoutParams.setMargins(0, prevMessage != null && !prevMessage.sent ? 4 : 32, 128, 0);
+                textLayoutParams.setMargins(0, prevMessage != null && !prevMessage.sent && prevMessage.senderUID != null ? 4 : 32, 128, 0);
                 textLayoutParams.gravity = Gravity.START;
             }
             dateTextParams.gravity = Gravity.END | Gravity.BOTTOM;
@@ -242,7 +242,7 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.ViewHo
         } else if (position == 0) {
             if (message.sent && nextMessage.sent) {
                 resId = R.drawable.message_top_round_s;
-            } else if (!message.sent && !nextMessage.sent) {
+            } else if (!message.sent && !nextMessage.sent && nextMessage.senderUID != null) {
                 resId = R.drawable.message_top_round;
             } else {
                 resId = R.drawable.message_all_round;
@@ -250,7 +250,7 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.ViewHo
         } else if (position == messageList.size() - 1) {
             if (message.sent && prevMessage.sent) {
                 resId = R.drawable.message_bottom_round_s;
-            } else if (!message.sent && !prevMessage.sent) {
+            } else if (!message.sent && !prevMessage.sent && prevMessage.senderUID != null) {
                 resId = R.drawable.message_bottom_round;
             } else {
                 resId = R.drawable.message_all_round;
@@ -258,15 +258,15 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.ViewHo
         } else {
             if (message.sent && prevMessage.sent && nextMessage.sent) {
                 resId = R.drawable.message_square_s;
-            } else if (!message.sent && !prevMessage.sent && !nextMessage.sent) {
+            } else if (!message.sent && message.senderUID != null && !prevMessage.sent && !nextMessage.sent && prevMessage.senderUID != null && nextMessage.senderUID != null) {
                 resId = R.drawable.message_square;
-            } else if (message.sent && nextMessage.sent && !prevMessage.sent) {
+            } else if (message.sent && nextMessage.sent && !prevMessage.sent && prevMessage.senderUID != null) {
                 resId = R.drawable.message_top_round_s;
-            } else if (!message.sent && !nextMessage.sent && prevMessage.sent) {
+            } else if (!message.sent && message.senderUID != null && !nextMessage.sent && prevMessage.sent && nextMessage.senderUID != null) {
                 resId = R.drawable.message_top_round;
-            } else if (message.sent && !nextMessage.sent && prevMessage.sent) {
+            } else if (message.sent && !nextMessage.sent && prevMessage.sent && nextMessage.senderUID != null) {
                 resId = R.drawable.message_bottom_round_s;
-            } else if (!message.sent && nextMessage.sent && !prevMessage.sent) {
+            } else if (!message.sent && message.senderUID != null && nextMessage.sent && !prevMessage.sent && prevMessage.senderUID != null) {
                 resId = R.drawable.message_bottom_round;
             } else {
                 resId = R.drawable.message_all_round;
