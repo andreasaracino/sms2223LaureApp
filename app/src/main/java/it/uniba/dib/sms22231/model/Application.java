@@ -20,12 +20,14 @@ public class Application {
 
     public Application() {}
 
-    public Application(String id, ApplicationStatus status, String thesisId, String studentUid, List<Requirement> requirements) {
+    public Application(String id, ApplicationStatus status, String thesisId, String studentUid, List<Requirement> requirements, String thesisTitle, String studentName) {
         this.id = id;
         this.status = status;
         this.thesisId = thesisId;
         this.studentUid = studentUid;
         this.requirements = requirements;
+        this.thesisTitle = thesisTitle;
+        this.studentName = studentName;
     }
 
     public Application(Map<String, Object> data) {

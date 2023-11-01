@@ -176,4 +176,12 @@ public class UserService {
 
         return instance;
     }
+
+    public boolean isLoggedIn() {
+        return mAuth.getCurrentUser() != null;
+    }
+
+    public boolean isEmailVerified() {
+        return isLoggedIn() && mAuth.getCurrentUser().isEmailVerified();
+    }
 }

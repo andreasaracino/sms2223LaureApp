@@ -14,6 +14,12 @@ public class Student {
     public Student() {
     }
 
+    public Student(String uid, String currentApplicationId, Map<String, String> savedThesesIds) {
+        this.uid = uid;
+        this.currentApplicationId = currentApplicationId;
+        this.savedThesesIds = savedThesesIds;
+    }
+
     public Student(String uid, Map<String, String> savedThesesIds) {
         this.uid = uid;
         this.savedThesesIds = savedThesesIds;

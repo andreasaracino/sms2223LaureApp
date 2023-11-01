@@ -21,12 +21,16 @@ public class Thesis {
     public Thesis() {
     }
 
-    public Thesis(String id, String title, String description, String teacherId, List<String> attachments) {
+    public Thesis(String id, String title, String description, String assistantSupervisor, String teacherId, String teacherFullname, List<String> attachments, List<Requirement> requirements, Integer averageRequirement) {
         this.id = id;
         this.title = title;
         this.description = description;
+        this.assistantSupervisor = assistantSupervisor;
         this.teacherId = teacherId;
+        this.teacherFullname = teacherFullname;
         this.attachments = attachments;
+        this.requirements = requirements;
+        this.averageRequirement = averageRequirement;
     }
 
     public Thesis(Map<String, Object> data) {

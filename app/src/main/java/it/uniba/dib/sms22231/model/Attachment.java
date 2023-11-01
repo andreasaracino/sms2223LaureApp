@@ -2,6 +2,8 @@ package it.uniba.dib.sms22231.model;
 
 import android.net.Uri;
 
+import org.checkerframework.checker.units.qual.A;
+
 import it.uniba.dib.sms22231.config.FileType;
 
 public class Attachment {
@@ -9,6 +11,15 @@ public class Attachment {
     public Uri path;
     private String fileName;
     public FileType fileType;
+
+    public Attachment() {}
+
+    public Attachment(String id, Uri path, String fileName, FileType fileType) {
+        this.id = id;
+        this.path = path;
+        this.fileName = fileName;
+        this.fileType = fileType;
+    }
 
     public void setFileName(String fileName) {
         this.fileName = fileName;

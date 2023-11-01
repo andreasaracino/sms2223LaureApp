@@ -24,6 +24,14 @@ public class Chat implements Serializable {
     public String userFullName;
     public Message lastMessage;
 
+    public Chat(String id, String applicationId, String studentId, String teacherId, Date lastUpdated) {
+        this.id = id;
+        this.applicationId = applicationId;
+        this.studentId = studentId;
+        this.teacherId = teacherId;
+        this.lastUpdated = lastUpdated;
+    }
+
     public Chat(String applicationId, String studentId, String teacherId, Date lastUpdated, String title) {
         this.applicationId = applicationId;
         this.studentId = studentId;

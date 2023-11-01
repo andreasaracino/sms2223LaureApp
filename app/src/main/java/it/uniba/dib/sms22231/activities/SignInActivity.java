@@ -26,7 +26,6 @@ import it.uniba.dib.sms22231.service.UserService;
 
 public class SignInActivity extends AppCompatActivity {
     private UserService userService;
-    private FirebaseAuth mAuth;
     private EditText emailField;
     private EditText passwordField;
     private Button loginButton;
@@ -38,7 +37,6 @@ public class SignInActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        mAuth = FirebaseAuth.getInstance();
         initUi();
     }
 
@@ -62,10 +60,8 @@ public class SignInActivity extends AppCompatActivity {
     // Controlli sull'autenticazione. Se l'utente è loggato e la mail verificata si viene trasferiti alla dashboard
     // se invece la mail non è verificata o l'utente non si è loggato con successo, viene mostrato un toast apposito
     private void checkLogin(Boolean loggingIn) {
-        FirebaseUser currentUser = mAuth.getCurrentUser();
-
-        if (currentUser != null) {
-            if (currentUser.isEmailVerified()) {
+        if (userService.isLoggedIn()) {
+            if (userService.isEmailVerified()) {
                 goToDashboard();
             } else {
                 Toast.makeText(this, R.string.verify_mail, Toast.LENGTH_SHORT).show();

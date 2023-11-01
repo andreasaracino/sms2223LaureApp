@@ -34,6 +34,64 @@
           ]
         }
       }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:54524878651:android:d13b20e47abb2db17ca11e",
+        "android_client_info": {
+          "package_name": "it.uniba.dib.sms22231.full"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "54524878651-0tv14iucik7roigjkijm37h1oalf8r5p.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCryVZEkSqLj-sTQkWSQII0Rblvfw4fNW8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "54524878651-0tv14iucik7roigjkijm37h1oalf8r5p.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:54524878651:android:d13b20e47abb2db17ca11e",
+        "android_client_info": {
+          "package_name": "it.uniba.dib.sms22231.demo"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "54524878651-0tv14iucik7roigjkijm37h1oalf8r5p.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCryVZEkSqLj-sTQkWSQII0Rblvfw4fNW8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "54524878651-0tv14iucik7roigjkijm37h1oalf8r5p.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
     }
   ],
   "configuration_version": "1"

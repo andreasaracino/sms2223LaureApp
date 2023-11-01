@@ -13,6 +13,12 @@ public class MessageReference implements Serializable {
 
     public MessageReference() {}
 
+    public MessageReference(MessageReferenceType messageReferenceType, String referenceId, String value) {
+        this.messageReferenceType = messageReferenceType;
+        this.referenceId = referenceId;
+        this.value = value;
+    }
+
     public MessageReference(Map<String, Object> map) {
         messageReferenceType = MessageReferenceType.valueOf((String) map.get("messageReferenceType"));
         referenceId = (String) map.get("referenceId");
