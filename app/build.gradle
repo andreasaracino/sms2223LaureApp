@@ -26,10 +26,12 @@ android {
     productFlavors {
         full {
             applicationId "it.uniba.dib.sms22231.full"
+            signingConfig signingConfigs.debug
         }
 
         demo {
             applicationId "it.uniba.dib.sms22231.demo"
+            signingConfig signingConfigs.debug
         }
     }
 
